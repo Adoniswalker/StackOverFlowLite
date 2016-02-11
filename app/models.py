@@ -219,17 +219,17 @@ class Question:
         try:
             user_id = int(user_id)
         except ValueError as e:
-            return {"Error": user_id}
+            return {"message": {"Authorization": user_id}}, 403
         if not user_id == self.check_question_owner(question_id):
-            return {"Error": "UnAuthorised"}, 401
+            return {"message": {"Authorization": "You are not allowed to edit this question"}}, 401
         params = args['question_subject'], args['question_body'], question_id
         query = "UPDATE questions SET question_subject = %s, " \
                 "question_body = %s WHERE question_id = %s " \
                 "RETURNING question_id, question_subject, " \
                 "question_body, posted_by, date_posted;"
-        question = db.qry(query, params, fetch="one")
+        question = db.qry(query, params, fetch="one", commit=True)
         if not question:
-            return {"Error": "No question found"}, 404
+            return {"message": {"question": "No question found"}}, 404
         question["date_posted"] = str(question["date_posted"])
         return question, 200
 

@@ -10,16 +10,22 @@
             </div>
             <template id="question_detail_template">
                 {% raw %}
-                <h3> {{ question_subject }}</h3>
-                <button class="delete-question auth" title="Delete question" data-id="{{ question_id }}">X</button>
-                <button class="edit-question auth" title="Edit question">edit</button>
-                <label>Subject</label>
-                <input type="text" name="subject_body">
-                <label>Body</label>
-                <textarea name="question_subject"></textarea>
-                <span class="question_vote">5</span><span class="votes">Answers</span>
-                <p> {{ question_body }}</p>
-                <span class="question_tip">Asked at {{ date_posted }} by {{ posted_by }}</span>
+                <div class="noedit">
+                    <h3> {{ question_subject }}</h3>
+                    <button class="delete-question auth" title="Delete question" data-id="{{ question_id }}">X</button>
+                    <button class="edit-question auth" title="Edit question">edit</button>
+                    <span class="question_vote">5</span><span class="votes">Answers</span>
+                    <p> {{ question_body }}</p>
+                    <span class="question_tip">Asked at {{ date_posted }} by {{ posted_by }}</span>
+                </div>
+                <div class="edit">
+                    <label>Subject</label>
+                    <input type="text" name="subject_body" id="question_subject_edit">
+                    <label>Body</label>
+                    <textarea name="question_subject" id="question_body_edit"></textarea>
+                    <input type="submit" name="save" id="update_edit" value="save"/>
+                    <input type="button" name="cancel" id="cancel_edit" value="cancel"/>
+                </div>
                 <span class="auth alert-danger" id="question_error"></span>
                 {% endraw %}
             </template>

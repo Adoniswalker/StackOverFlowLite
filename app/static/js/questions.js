@@ -77,6 +77,8 @@ function addQuestion() {
             res.json().then((data) => {
                 if (res.status === 201) {
                     insert_question_list(data);
+                    question_subject_tag.value = '';
+                    question_body_tag.value = '';
                 }
                 else if (res.status === 400) {
                     changeHtml(data["message"]["Authorization"], "login_error");
@@ -96,8 +98,8 @@ function addQuestion() {
 function insert_question_list(data) {
     // This function will inset posted questions to a list
     let user = get_user();
-    if (user){
-        if(user.account_id == data.posted_by){
+    if (user) {
+        if (user.account_id === data.posted_by) {
             data["delete_span"] = "edit";
         }
     }

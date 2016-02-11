@@ -104,7 +104,7 @@ textarea {
 .clear{
     clear: both;
 }
-/**********************edit****************/
+/**********************edit auth****************/
 div .auth{
     display: none;
     color: red;
@@ -115,6 +115,18 @@ div .auth{
 }
 div.auth-priv .auth{
     display: initial;
-
 }
+/**********************edit**********************/
+.edit{
+    display: none;
+}
+.main-edit .edit{
+    display: initial;
+}
+.main-edit .noedit{
+    display: none;
+}
+
+
+/*************************endEdit***************/
 
