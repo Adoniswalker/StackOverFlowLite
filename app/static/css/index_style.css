@@ -104,6 +104,16 @@ textarea {
 .clear{
     clear: both;
 }
+
+/**********************answer***accepted*********/
+.accepted{
+    display: none;
+    height: 20px;
+    width:20px;
+}
+.accepted-display .accepted{
+    display: initial;
+}
 /**********************edit auth****************/
 div .auth{
     display: none;
@@ -117,7 +127,7 @@ div.auth-priv .auth{
     display: initial;
 }
 /**********************edit**********************/
-.edit{
+.question_detail .edit{
     display: none;
 }
 .main-edit .edit{
@@ -130,3 +140,27 @@ div.auth-priv .auth{
 
 /*************************endEdit***************/
 
+/****************************editanswer*********/
+div .auth{
+    display: none;
+    color: red;
+    float: right;
+    cursor: pointer;
+    padding: 5px;
+    margin: 2px;
+}
+div.auth-answer .auth{
+    display: initial;
+}
+
+.answers .edit{
+    display: none;
+}
+.answer-edit .edit{
+    display: initial;
+}
+.answer-edit .noedit{
+    display: none;
+}
+
+/************************endanswer************************/

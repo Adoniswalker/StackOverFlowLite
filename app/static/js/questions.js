@@ -108,14 +108,3 @@ function insert_question_list(data) {
     let content = Mustache.render(temp.innerHTML, data);
     question_list_Div.insertAdjacentHTML('afterbegin', content);
 }
-
-// function handleErrors(response) {
-//     if (!response.ok) {
-//         throw Error(response.statusText);
-//     }
-//     return response;
-// }
-// function delete_question() {
-//     console.log("Calling"+this.getAttribute("data-id"));
-//     // this.attribute("data-id");
-// }

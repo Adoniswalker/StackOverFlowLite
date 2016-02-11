@@ -104,9 +104,6 @@ class Users:
 class Question:
     """This class manipulates the question"""
 
-    def __init__(self):
-        pass
-
     def get_all_questions(self):
         """
         Get all questions
@@ -305,20 +302,17 @@ class Answer:
         try:
             user_id = int(user_id)
         except ValueError as e:
-            return {"Error": user_id}
-        question_response = self.is_question_owner(question_id, user_id, args["vote"],
-                                                   answer_id)
-        if question_response[0] is None:
-            return {"Error": "Answer not found"}, 404
-        if question_response[0].get("answer_id"):
-            question_response[0]["answer_date"] = str(question_response[0]["answer_date"])
-            return question_response
-        answer_response = self.is_answer_owner(answer_id, user_id, args["answer"])
-        if answer_response[0].get("answer_id"):
-            answer_response[0]["answer_date"] = str(answer_response[0]["answer_date"])
-            return answer_response
+            return {"message": {"Authorization": user_id}}, 403
+        vote = args["vote"]
+        answer = args["answer"]
+        if vote and answer:
+            return {"message": {"vote": "Kindly provide one parameter to be filled"}}, 403
+        if vote:
+            return self.is_question_owner(question_id, user_id, args["vote"], answer_id)
+        if answer:
+            return self.is_answer_owner(answer_id, user_id, args["answer"])
         else:
-            return question_response
+            return {"message", {"vote": "Provide atleast one of this parameters 'vote' or 'answer' "}}
 
     def is_question_exist(self, value):
         """
@@ -354,7 +348,9 @@ class Answer:
         update_query = "update answers set accepted = TRUE where answer_id = %s returning " \
                        "answer_id, question_id, answeres_by, answer_date, answer," \
                        " accepted "
-        return db.qry(update_query, params, commit=True, fetch="one"), 200
+        question_response = db.qry(update_query, params, commit=True, fetch="one")
+        question_response["answer_date"] = str(question_response[0]["answer_date"])
+        return question_response
 
     def valid_answer(self, value, name):
         """
@@ -398,7 +394,9 @@ class Answer:
         update_query = "update answers set answer = %s where answer_id = %s returning " \
                        "answer_id, question_id, answeres_by, answer_date, answer," \
                        " accepted "
-        return db.qry(update_query, params, commit=True, fetch="one"), 200
+        answer_response = db.qry(update_query, params, commit=True, fetch="one")
+        answer_response["answer_date"] = str(answer_response["answer_date"])
+        return answer_response
 
     def check_answer_posted(self, value):
         """

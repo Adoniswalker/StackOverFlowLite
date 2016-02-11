@@ -1,118 +1,88 @@
 //This file will be used to manipulate questions
 "use strict"; //enable strict mode for debugging
 
-document.addEventListener('DOMContentLoaded', get_question_detail, true);
-const question_body = document.getElementById("question");
-const answer_body = document.getElementById("answers_id");
-let question_id = question_body.getAttribute("data-id");
+// const question_body = document.getElementById("question");
+// const answer_body = document.getElementById("answers_id");
+// let question_id = question_body.getAttribute("data-id");
 
 
-function set_question() {
-    question_body.classList.add("main-edit");
-    question_body.querySelector("#question_subject_edit").value = question_body.querySelector("h3").innerText;
-    question_body.querySelector("#question_body_edit").value = question_body.querySelector("p").innerText;
-}
+class Questions {
+    constructor() {
+        this.question_body = document.getElementById("question");
+        this.question_id = this.question_body.getAttribute("data-id");
+        this.answer_body = document.getElementById("answers_id");
+    }
 
-function remove_edit() {
-    question_body.classList.remove("main-edit");
-}
+    get_question_detail() {
+        self = this;
+        fetch(`/api/v1/questions/${this.question_id}/`, {
+            method: "GET",
+            mode: "cors",
+        }).then((res) => {
+            res.json().then((data) => {
+                if (res.status === 200) {
+                    let temp = document.getElementById("question_detail_template");
+                    let question = Mustache.render(temp.innerHTML, data);
+                    this.question_body.insertAdjacentHTML('afterbegin', question);
+                    this.set_delete_function(data);
+                    if ((data["answers"] !== "undefined") && data["answers"].length) {
+                        for (let i = 0; i < data["answers"].length; i++) {
+                            self.insert_answer(data["answers"][i], this.answer_body);
+                        }
+                    } else {
+                        popup(".question_detail", "No answers found");
+                    }
+                } else if (res.status === 404) {
+                    show_notification("No questions found!!");
+                }
 
-function update_question() {
-    let data = {
-        "question_subject": question_body.querySelector("#question_subject_edit").value,
-        "question_body": question_body.querySelector("#question_body_edit").value
-    };
-    fetch("/api/v1/questions/" + question_id + "/", {
-        method: "PUT",
-        mode: "cors",
-        headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            "Authorization": "Bearer " + read_cookie("token")
-        },
-        body: JSON.stringify(data)
-    }).then((res) => {
-        res.json().then((data) => {
-            if (res.status === 200) {
-                question_body.querySelector("h3").innerText = data["question_subject"];
-                question_body.querySelector("p").innerText = data["question_body"];
-                console.log(data);
-                remove_edit()
-            }
-            else if (res.status === 400) {
-                popup("#question_error", data["message"]["question_subject"]);
-                popup("#question_error", data["message"]["question_body"]);
-            }
-            else if (res.status === 401) {
-                popup("#question_error", data["message"]["Authorization"]);
-            } else if (res.status === 403) {
-                popup("#question_error", data["message"]["Authorization"]);
-            }
-            else if (res.status === 404) {
-                popup("#question_error", data["message"]["question"] + question_id);
-            }
+            });
+        }).catch((err) => {
+            show_notification("Error" + err);
         });
-    }).catch((err) => {
-        show_notification("Error" + err);
-    });
-}
+    }
 
-function set_delete_function(data) {
-    let delete_btn = question_body.querySelector(".delete-question");
-    let edit_btn = question_body.querySelector(".edit-question");
-    delete_btn.addEventListener("click", delete_question);
-    edit_btn.addEventListener("click", set_question);
-    document.getElementById('cancel_edit').addEventListener("click", remove_edit);
-    document.getElementById('update_edit').addEventListener("click", update_question);
-    let user = get_user();
-    if (user) {
-        if (user.account_id === data.posted_by) {
-            question_body.classList.add("auth-priv");
+    set_delete_function(data) {
+        let self = this;
+        let delete_btn = this.question_body.querySelector(".delete-question");
+        let edit_btn = this.question_body.querySelector(".edit-question");
+        delete_btn.addEventListener("click", function () {
+            self.delete_question();
+        });
+        edit_btn.addEventListener("click", function () {
+            self.set_question();
+        });
+        document.getElementById('cancel_edit').addEventListener("click", function () {
+            self.question_remove_edit();
+        });
+        document.getElementById('update_edit').addEventListener("click", function () {
+            self.update_question();
+        });
+        let user = get_user();
+        if (user) {
+            if (user.account_id === data.posted_by) {
+                this.question_body.classList.add("auth-priv");
+            }
         }
     }
-}
 
-function get_question_detail() {
-    fetch("/api/v1/questions/" + question_id + "/", {
-        method: "GET",
-        mode: "cors",
-    }).then((res) => {
-        res.json().then((data) => {
-            if (res.status === 200) {
-                let temp = document.getElementById("question_detail_template");
-                let question = Mustache.render(temp.innerHTML, data);
-                question_body.insertAdjacentHTML('afterbegin', question);
-                set_delete_function(data);
-                if ((data["answers"] !== "undefined") && data["answers"].length) {
-                    for (let i = 0; i < data["answers"].length; i++) {
-                        insert_answer(data["answers"][i]);
-                    }
-                } else {
-                    popup(".question_detail", "No answers found");
-                }
-            } else if (res.status === 404) {
-                show_notification("No questions found!!");
-            }
+    set_question() {
+        this.question_body.classList.add("main-edit");
+        this.question_body.querySelector("#question_subject_edit").value = this.question_body.querySelector("h3").innerText;
+        this.question_body.querySelector("#question_body_edit").value = this.question_body.querySelector("p").innerText;
+    }
 
-        });
-    }).catch((err) => {
-        console.log("Error", err);
-        show_notification("Error" + err);
-    });
-}
+    question_remove_edit() {
+        this.question_body.classList.remove("main-edit");
+    }
 
-function addAnswer() {
-    let answer_tag = document.forms["post_answer"]["answer"];
-    let answer = trimfield(answer_tag.value);
-    if (!(answer.length <= 2000 && answer.length >= 5)) {
-        changeHtml("Kindly provide an answer between 5 and 2000 characters!", "answer_error");
-        answer_tag.focus();
-        return false;
-    } else {
-        //clear any previous errors
-        changeHtml(false, "answer_error");
-        let data = {"answer": answer};
-        fetch("/api/v1/questions/" + question_id + "/answers/", {
-            method: "POST",
+    update_question() {
+        let data = {
+            "question_subject": this.question_body.querySelector("#question_subject_edit").value,
+            "question_body": this.question_body.querySelector("#question_body_edit").value
+        };
+        fetch("/api/v1/questions/" + this.question_id + "/", {
+            method: "PUT",
             mode: "cors",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
@@ -121,19 +91,22 @@ function addAnswer() {
             body: JSON.stringify(data)
         }).then((res) => {
             res.json().then((data) => {
-                if (res.status === 201) {
-                    insert_answer(data);
-                    answer_tag.value = ''
+                if (res.status === 200) {
+                    this.question_body.querySelector("h3").innerText = data["question_subject"];
+                    this.question_body.querySelector("p").innerText = data["question_body"];
+                    this.question_remove_edit()
                 }
                 else if (res.status === 400) {
-                    // changeHtml(data["message"]["Authorization"], "login_err");
-                    popup("#login_err", data["message"]["Authorization"]);
-                    changeHtml(data["message"]["answer"], "answer_error");
-                } else if (res.status === 404) {
-                    changeHtml(data["message"]["question"], "login_err");
+                    popup("#question_error", data["message"]["question_subject"]);
+                    popup("#question_error", data["message"]["question_body"]);
                 }
-                else if (res.status === 403) {
-                    popup("#login_err", data["message"]["Authorization"]);
+                else if (res.status === 401) {
+                    popup("#question_error", data["message"]["Authorization"]);
+                } else if (res.status === 403) {
+                    popup("#question_error", data["message"]["Authorization"]);
+                }
+                else if (res.status === 404) {
+                    popup("#question_error", data["message"]["question"] + this.question_id);
                 }
             });
         }).catch((err) => {
@@ -141,41 +114,167 @@ function addAnswer() {
         });
     }
 
-}
-
-function insert_answer(answer) {
-    answer["accepted"] = answer["accepted"] ? "Accepted" : '';
-    let temp = document.getElementById("answers_template");
-    let content = Mustache.render(temp.innerHTML, answer);
-    answer_body.insertAdjacentHTML('afterbegin', content)
-}
-
-function delete_question() {
-    fetch("/api/v1/questions/" + this.getAttribute("data-id") + "/", {
-        method: "DELETE",
-        mode: "cors",
-        headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            "Authorization": "Bearer " + read_cookie("token")
-        },
-    }).then((res) => {
-        res.json().then((data) => {
-            if (res.status === 200) {
-                show_notification("Error" + "Question successfully deleted");
-                window.location.replace("/");
-            }
-            else if (res.status === 401) {
-                // changeHtml(data["message"]["Authorization"], "login_err");
-                popup("#question_error", data["message"]["Authorization"]);
-            } else if (res.status === 403) {
-                popup("#question_error", data["message"]["Authorization"]);
-            }
-            else if (res.status === 404) {
-                popup("#question_error", data["message"]["question"] + question_id);
-            }
+    delete_question() {
+        fetch("/api/v1/questions/" + this.question_body.getAttribute("data-id") + "/", {
+            method: "DELETE",
+            mode: "cors",
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "Authorization": "Bearer " + read_cookie("token")
+            },
+        }).then((res) => {
+            res.json().then((data) => {
+                if (res.status === 200) {
+                    show_notification("Error" + "Question successfully deleted");
+                    window.location.replace("/");
+                }
+                else if (res.status === 401) {
+                    // changeHtml(data["message"]["Authorization"], "login_err");
+                    popup("#question_error", data["message"]["Authorization"]);
+                } else if (res.status === 403) {
+                    popup("#question_error", data["message"]["Authorization"]);
+                }
+                else if (res.status === 404) {
+                    popup("#question_error", data["message"]["question"] + this.question_id);
+                }
+            });
+        }).catch((err) => {
+            show_notification("Error" + err);
         });
-    }).catch((err) => {
-        show_notification("Error" + err);
-    });
+    }
+
+    addAnswer() {
+        let answer_tag = document.forms["post_answer"]["answer"];
+        let answer = trimfield(answer_tag.value);
+        if (!(answer.length <= 2000 && answer.length >= 5)) {
+            changeHtml("Kindly provide an answer between 5 and 2000 characters!", "answer_error");
+            answer_tag.focus();
+            return false;
+        } else {
+            //clear any previous errors
+            changeHtml(false, "answer_error");
+            let data = {"answer": answer};
+            fetch(`/api/v1/questions/${this.question_id}/answers/`, {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                    "Authorization": "Bearer " + read_cookie("token")
+                },
+                body: JSON.stringify(data)
+            }).then((res) => {
+                res.json().then((data) => {
+                    if (res.status === 201) {
+                        insert_answer(data, this.answer_body);
+                        answer_tag.value = ''
+                    }
+                    else if (res.status === 400) {
+                        // changeHtml(data["message"]["Authorization"], "login_err");
+                        popup("#login_err", data["message"]["Authorization"]);
+                        changeHtml(data["message"]["answer"], "answer_error");
+                    } else if (res.status === 404) {
+                        changeHtml(data["message"]["question"], "login_err");
+                    }
+                    else if (res.status === 403) {
+                        popup("#login_err", data["message"]["Authorization"]);
+                    }
+                });
+            }).catch((err) => {
+                show_notification("Error" + err);
+            });
+        }
+
+    }
 }
+
+class Answers extends Questions {
+
+    cancelAnswerEdit(answer) {
+        answer.classList.remove("answer-edit");
+    }
+
+    submitEdit(answer) {
+        let answer_text = answer.querySelector(".answer-edit").value;
+        let answer_id = answer.getAttribute("data-id");
+        fetch(`/api/v1/questions/${this.question_id}/answers/${answer_id}/`, {
+            method: "PUT",
+            mode: "cors",
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "Authorization": "Bearer " + read_cookie("token"),
+            },
+            body: JSON.stringify({"answer": answer_text}),
+        }).then((res) => {
+            res.json().then((data) => {
+                if (res.status === 200) {
+                    show_notification("Successfully" + "Question successfully deleted");
+                    this.cancelAnswerEdit(answer);
+                    answer.querySelector("p").innerText = answer.querySelector(".answer-edi" +
+                        "t").value;
+                }
+                else if (res.status === 401) {
+                    // changeHtml(data["message"]["Authorization"], "login_err");
+                    popup("#answer_edit_error", data["message"]["Authorization"]);
+                } else if (res.status === 403) {
+                    popup("#answer_edit_error", data["message"]["Authorization"]);
+                }
+                else if (res.status === 404) {
+                    popup("#answer_edit_error", data["message"]["question"] + this.question_id);
+                }
+            });
+        }).catch((err) => {
+            show_notification("Error" + err);
+        });
+    }
+
+    insert_answer(answer, answer_body) {
+        self = this;
+        let answer_id = answer["answer_id"];
+        answer = Answers.set_edit_btn_answer(answer);
+        let temp = document.getElementById("answers_template");
+        let content = Mustache.render(temp.innerHTML, answer);
+        answer_body.insertAdjacentHTML('afterbegin', content);
+        let d = answer_body.querySelector(`[data-id='${answer_id}'`);
+        if (answer["accepted"]){
+            d.classList.add("accepted-display");
+        }
+        if (d) {
+            d.querySelector(".click-edit-answer").addEventListener('click', function () {
+                d.classList.add("answer-edit");
+                d.querySelector(".answer-edit").value = d.querySelector("p").innerText;
+                d.querySelector(".answer_edit").addEventListener("click", function () {
+                    self.submitEdit(d);
+                });
+                d.querySelector(".cancel_answer_edit").addEventListener("click", function () {
+                    self.cancelAnswerEdit(d);
+                })
+            })
+        }
+    }
+
+
+    static set_edit_btn_answer(answer, answer_body) {
+        let user = get_user();
+        if (user && (user["account_id"] === answer.answeres_by)) {
+            answer["class_name"] = "auth-answer";
+            return answer
+
+        }
+        if(user && (user["account_id"]))
+        return answer
+    }
+
+}
+
+const q = new Answers();
+document.addEventListener('DOMContentLoaded', function () {
+    q.get_question_detail();
+}, true);
+
+function addAnswer() {
+    q.addAnswer()
+}
+
+
+
 

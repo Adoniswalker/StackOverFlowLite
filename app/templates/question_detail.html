@@ -19,7 +19,7 @@
                     <span class="question_tip">Asked at {{ date_posted }} by {{ posted_by }}</span>
                 </div>
                 <div class="edit">
-                    <label>Subject</label>
+                    <label for="question_body_edit">Subject</label>
                     <input type="text" name="subject_body" id="question_subject_edit">
                     <label>Body</label>
                     <textarea name="question_subject" id="question_body_edit"></textarea>
@@ -33,10 +33,21 @@
             </div>
             <template id="answers_template">
                 {% raw %}
-                <div class="answer" data-id="{{answer_id}}">
-                    <p>{{answer}}</p>
-                    <span class="question_tip">Answered at {{answer_date}} by {{answeres_by}}</span>
-                    <p class="success">{{ accepted }}</p>
+                <div class="{{ class_name }}" data-id="{{ answer_id }}" >
+                    <div class="answer noedit">
+                        <p>{{answer}}</p>
+                        <button class="click-edit-answer auth">Edit</button>
+                        <span class="question_tip">Answered at {{answer_date}} by {{answeres_by}}</span>
+                        <p><img src="../static/images/icons/tick.png" class="accepted"
+                                title="Accepted by who asked"></p>
+                    </div>
+                    <div class="edit answer">
+                        <label for="answer_edit">Update answer</label>
+                        <input type="text" name="name" class="answer-edit">
+                        <span class="alert-danger" id="answer_edit_error"></span>
+                        <input type="submit" name="update" class="answer_edit" value="save"/>
+                        <input type="button" name="cancel" class="cancel_answer_edit" value="cancel"/>
+                    </div>
                 </div>
                 {% endraw %}
             </template>
