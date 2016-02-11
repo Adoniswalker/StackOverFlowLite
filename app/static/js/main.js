@@ -96,7 +96,8 @@ function createCookie(name, value, days) {
 
 set_unset_user();
 
-function show_notification() {
+function show_notification(text) {
+    $("#message span").text(text);
     $("#message").fadeIn("slow");
     $("#message a.close-notify").click(function () {
         $("#message").fadeOut("slow");

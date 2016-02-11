@@ -27,10 +27,10 @@ function get_question_detail() {
                         insert_answer(data["answers"][i]);
                     }
                 } else {
-                    console.log("No answers found")
+                    popup(".question_detail", "No answers found");
                 }
             } else if (res.status === 404) {
-                console.log("No questions found!!")
+                show_notification("No questions found!!");
             }
 
         });
@@ -70,7 +70,7 @@ function addAnswer() {
                 }
             });
         }).catch((err) => {
-            console.log("Eror", err);
+            show_notification("Error" + err);
         });
     }
 

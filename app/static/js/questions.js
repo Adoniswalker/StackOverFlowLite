@@ -16,13 +16,12 @@ function get_all_questions() {
                 }
 
             } else if (res.status === 404) {
-                console.log("No questions found!!")
+                show_notification("No questions found");
             }
 
         });
     }).catch((err) => {
-        show_notification();
-        console.log("No questions found!!")
+        show_notification("Unable to load questions, try again later");
     });
 }
 
