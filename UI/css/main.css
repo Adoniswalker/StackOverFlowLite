@@ -16,7 +16,7 @@ body {
 
 .body {
     margin: 0 auto;
-    width: 80%;
+    width: 100%;
     clear: both;
 }
 h1{
@@ -96,12 +96,14 @@ input {
 }
 
 input[type=text]:focus {
-    border: 3px solid cornflowerblue;
+    /*border: 3px solid lightskyblue;*/
 }
 
 .form_div {
-    width: 50%;
+    width: 30%;
     padding-top: 50px;
+    position: relative;
+    margin: 0 auto;
 }
 
 .button {
