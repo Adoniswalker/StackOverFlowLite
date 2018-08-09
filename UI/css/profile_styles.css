@@ -1,0 +1,34 @@
+.container{
+    margin-top: 50px;
+}
+.left_nav{
+    float: left;
+    background: #cccccc;
+    height: 600px;
+    width: 10%;
+    padding: 10px 0 0 10px;
+    border-right: 1px solid #d6d9dc;
+    /*flex-shrink: 0;*/
+    z-index: 0;
+    position: relative;
+    box-shadow: 0 0 0 rgba(12,13,14,0.05);
+    transition: box-shadow ease-in-out .1s,transform ease-in-out .1s;
+}
+.content-nav{
+    float: left;
+    width: 80%;
+}
+.content-nav .question_list{
+    width: 100%;
+}
+/* styling h1, p, h3 */
+.content-nav h3{
+    text-align: center;
+    font-size: 180%;
+    line-height: 120%;
+    color: #405580;
+}
+
+
+
+
