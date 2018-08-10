@@ -172,3 +172,9 @@ input[type=text]:focus {
 .question_container .form{
     margin-bottom: 100px;
 }
+.question_tip{
+    color: grey;
+    font-size: 90%;
+    float: right;
+    padding-top:5px;
+}
