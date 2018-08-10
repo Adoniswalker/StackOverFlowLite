@@ -6,7 +6,7 @@
 .question_list{
     width: 68%;
     float: left;
-    margin: 55px 20px 5px 10px;
+    margin: 55px 20px 50px 10px;
 }
 .question_item {
     background-color: #f1f1f1;
@@ -41,4 +41,15 @@ textarea {
 }
 .question_link{
     color: darkblue !important;
+}
+.question_vote{
+    color: black;
+    margin: 8px;
+    padding: 2px 7px;
+    background: #cccccc;
+    clear: both;
+}
+.votes{
+    color: #00001e;
+    font-size: 120%;
 }
