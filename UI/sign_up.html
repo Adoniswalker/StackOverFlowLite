@@ -20,22 +20,22 @@
 </header>
 <div class="form_div">
     <h1>Signup</h1>
-    <form method="POST" class="form">
+    <form method="POST" class="form" onsubmit="event.preventDefault();">
         <div>
             <label for="username">User name</label>
-            <input type="text" id="username">
+            <input type="text" id="username" required>
         </div>
         <div>
             <label for="mail">Email</label>
-            <input type="text" id='mail'>
+            <input type="text" id='mail' required>
         </div>
         <div>
             <label for="password1">Password</label>
-            <input type="password" id="password1">
+            <input type="password" id="password1" required>
         </div>
         <div>
             <label for="password2">Password</label>
-            <input type="password" id="password2">
+            <input type="password" id="password2" required>
         </div>
         <button class="button">Sign up</button>
     </form>

@@ -71,10 +71,11 @@
             </div>
         </div>
         <!--<form class="form">-->
-        <form class="form" onsubmit="return addAnswer()" name="post_answer">
+        <form class="form" onsubmit="event.preventDefault(); return addAnswer()" name="post_answer">
 
             <h3>Post an answer</h3>
-            <textarea name="answer">This should be an aswer</textarea>
+            <textarea id ="answer_area" name="answer">This should be an aswer</textarea>
+            <span id = "answer_error"></span>
             <button class="button">Answer</button>
         </form>
     </div>
