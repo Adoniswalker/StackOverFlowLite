@@ -22,7 +22,7 @@
 </header>
 
 <div class="question">
-    <div class="question_list">
+    <div class="question_list" id="question_list_id">
         <a href="UI/question_detail.html" class="question_link">
             <div class="question_item">
                 <h4>What are the tags used in html?</h4>
@@ -68,20 +68,19 @@
         </a>
     </div>
     <div class="post_question">
-        <form method="post">
-            <form method="POST" class="form">
-                <div>
-                    <label for="username">Subject</label>
-                    <input type="text" id="username">
-                </div>
-                <div>
-                    <label for="content_question">Question content</label>
-                    <textarea id="content_question">
+        <h2>Post a question</h2>
+        <form method="POST" class="form" onsubmit="return addQuestion()" name="post_question">
+            <div>
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+            <div>
+                <label for="content_question">Question content</label>
+                <textarea id="content_question" name="content_question" required>
 
                         </textarea>
-                </div>
-                <button class="button">Sign up</button>
-            </form>
+            </div>
+            <input type="submit" value="Submit">
         </form>
     </div>
 </div>
@@ -101,5 +100,6 @@
         </div>
     </div>
 </footer>
+<script src="UI/js/main.js"></script>
 </body>
 </html>

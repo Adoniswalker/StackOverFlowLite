@@ -39,7 +39,7 @@
 
                 So, is there any ways to remove this language showing in the screenshot?</p>
         </div>
-        <div class="answers">
+        <div class="answers" id="answers_id">
             <div class="answer">
 
                 1
@@ -70,9 +70,11 @@
                 which have the characters zh in the folders name.
             </div>
         </div>
-        <form class="form">
-            <h3>Post an answer?</h3>
-            <textarea name="question" id = "question message"></textarea>
+        <!--<form class="form">-->
+        <form class="form" onsubmit="return addAnswer()" name="post_answer">
+
+            <h3>Post an answer</h3>
+            <textarea name="answer">This should be an aswer</textarea>
             <button class="button">Answer</button>
         </form>
     </div>
@@ -95,5 +97,6 @@
         </div>
     </div>
 </footer>
+<script src="js/main.js"></script>
 </body>
 </html>
