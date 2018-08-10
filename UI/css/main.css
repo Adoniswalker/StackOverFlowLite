@@ -151,3 +151,24 @@ input[type=text]:focus {
     color:#1c7430;
     font-weight: bold;
 }
+/* question details */
+.question_container{
+    width: 70%;
+    margin: 0 auto;
+}
+.question_detail{
+    padding: 10px 40px;
+    background-color: lightskyblue;
+}
+.answers{
+    margin-left: 70px;
+
+}
+.answer{
+    margin: 40px;
+    padding: 10px 40px;
+    background: #c2e8fc;
+}
+.question_container .form{
+    margin-bottom: 100px;
+}
