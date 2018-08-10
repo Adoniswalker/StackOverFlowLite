@@ -69,7 +69,7 @@
     </div>
     <div class="post_question">
         <h2>Post a question</h2>
-        <form method="POST" class="form" onsubmit="return addQuestion()" name="post_question">
+        <form method="POST" class="form" onsubmit="event.preventDefault();return addQuestion()" name="post_question">
             <div>
                 <label for="subject">Subject</label>
                 <input type="text" id="subject" name="subject" required>
