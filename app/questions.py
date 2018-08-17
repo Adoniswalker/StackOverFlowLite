@@ -17,3 +17,14 @@ class Questions:
 
     def get_one_question(self, questionId):
         return [position for position in self.questions if position['id'] == questionId]
+
+    def post_question(self, subject, body):
+        id = max([i['id'] for i in self.questions]) + 1 or 1
+        question_dict = {
+            'id': id,
+            'subject': subject,
+            'body': body,
+            'answers': []
+        }
+        self.questions.append(question_dict)
+        return question_dict
