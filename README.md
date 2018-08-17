@@ -2,7 +2,6 @@
 ## Introduction
 StackOverflow-lite is a platform where people can ask questions and provide answers
 
-[![Coverage Status](https://coveralls.io/repos/github/adoniswaker/StackOverflow-lite/badge.svg?branch=development)](https://coveralls.io/github/rickynyairo/StackOverflow-lite?branch=development)
 
 ### Features
 1. Users can post questions.
@@ -14,16 +13,22 @@ StackOverflow-lite is a platform where people can ask questions and provide answ
 Clone the repository [```here```](https://github.com/adoniswalker/StackOverflowlite/)
 
 ### Testing
-*To test the UI:*
+*To test the UI:*\
 Navigate to the UI directory
 On your preferred browser, open index.html
 
-*To test the API:*
+*To test the API:*\
 Navigate to the API/ directory
 In a virtual environment, perform the following:
 
->git checkout development
->pip install -r requirements.txt
->pytest tests/
+>git checkout feature\
+>pip install -r requirements.txt\
+>pytest tests/\
 >python run.py
 
+*API HOSTED*\
+Api are hosted here\
+https://stack-overflowlite.herokuapp.com
+
+*Pivotal link*\
+https://www.pivotaltracker.com/n/projects/2189449
