@@ -11,3 +11,10 @@ questions_object = Questions()
 def get_all_questions():
     return jsonify(questions_object.get_all_questions())
 
+
+@app.route('/api/v1/questions/<int:questionId>/', methods=['get'])
+def fetch_question(questionId):
+    question = questions_object.get_one_question(questionId)
+    if not question:
+        return jsonify({"Error": "Question not found"}), 404
+    return jsonify(question)

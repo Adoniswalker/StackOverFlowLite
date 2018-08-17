@@ -14,3 +14,6 @@ class Questions:
         questions_list = [{'id': question['id'], 'subject': question['subject'],
                            'body': question['body']} for question in self.questions]
         return questions_list
+
+    def get_one_question(self, questionId):
+        return [position for position in self.questions if position['id'] == questionId]
