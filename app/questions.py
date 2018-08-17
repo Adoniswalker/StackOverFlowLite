@@ -28,3 +28,10 @@ class Questions:
         }
         self.questions.append(question_dict)
         return question_dict
+
+    def post_answer(self, questionId, answer):
+        question = [position for position in self.questions if position['id'] == questionId]
+        if not question:
+            return None
+        question[0]['answers'].append(answer)
+        return answer
