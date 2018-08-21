@@ -48,3 +48,32 @@ class Questions:
             return None
         question[0]['answers'].append(answer)
         return answer
+
+    def delete_question(self, question_id):
+        """
+        This function is used to delete a question
+        :param question_id:
+        :return: Bool
+        """
+        question_position = [position for position in self.questions if
+                             position['id'] == question_id]
+        if not question_position:
+            return None
+        self.questions.remove(question_position[0])
+        return True
+
+    def update_question(self, question_id, subject, body):
+        """
+        This function will update the question
+        :param question_id:
+        :param subject:
+        :param body:
+        :return: Bool/ dict
+        """
+        question_position = [position for position in self.questions
+                             if position['id'] == question_id]
+        if not question_position:
+            return None
+        question_position[0]["subject"] = subject
+        question_position[0]["body"] = body
+        return question_position[0]
