@@ -1,7 +1,8 @@
-.container{
+.container {
     margin-top: 50px;
 }
-.left_nav{
+
+.left_nav {
     float: left;
     background: #cccccc;
     height: 600px;
@@ -11,24 +12,38 @@
     /*flex-shrink: 0;*/
     z-index: 0;
     position: relative;
-    box-shadow: 0 0 0 rgba(12,13,14,0.05);
-    transition: box-shadow ease-in-out .1s,transform ease-in-out .1s;
+    box-shadow: 0 0 0 rgba(12, 13, 14, 0.05);
+    transition: box-shadow ease-in-out .1s, transform ease-in-out .1s;
 }
-.content-nav{
+
+.content-nav {
     float: left;
-    width: 80%;
+    width: 75%;
 }
-.content-nav .question_list{
+
+.content-nav .question_list {
     width: 100%;
 }
+
 /* styling h1, p, h3 */
-.content-nav h3{
+.content-nav h3 {
     text-align: center;
     font-size: 180%;
-    line-height: 120%;
+    /*line-height: 120%;*/
     color: #405580;
 }
 
+@media only screen and (max-width: 600px) {
+    .left_nav {
+        height: 600px;
+        width: 20%;
+    }
+
+    .content-nav {
+        float: left;
+        width: 75%;
+    }
+}
 
 
 
