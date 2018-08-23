@@ -5,7 +5,7 @@ from flask import jsonify, request
 from flask_bcrypt import Bcrypt, check_password_hash
 from flask_restful import Api, Resource, reqparse
 
-from app import app, db
+from app import app, db, auth
 
 from app.questions import Questions
 
@@ -110,7 +110,6 @@ class RegisterUser(Resource):
             args['first_name'], args['last_name'], args['email'],
             b_crypt.generate_password_hash(args['password']).decode('utf-8'))
         results = db.qry(query, arguments, fetch="all", commit=True)
-        print(results)
         return results, 201
 
 
@@ -142,12 +141,17 @@ class LoginUser(Resource):
         results = db.qry(query, fetch="one")
         # import pdb; pdb.set_trace()
         if not results:
-            return {"Error": "Email not registred"}
+            return {"Error": "Email not registred"}, 400
         elif check_password_hash(results['password_hash'], args['password']):
             results.pop("password_hash")
+            auth_token = auth.encode_auth_token(str(results["account_id"])).decode()
+            print(results)
+            results["auth_token"] = auth_token
+            print(results)
             return results, 201
         else:
-            return {"Error": "Wrong password"}
+            return {"Error": "Wrong password"}, 400
+
 
 
 api.add_resource(QuestionsApi, '/api/v1/questions/')

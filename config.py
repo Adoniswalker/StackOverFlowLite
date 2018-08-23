@@ -25,3 +25,5 @@ class DevelopmentConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     """For production enviroment"""
     DEBUG = True
+
+SECRET_KEY = os.getenv("SECRET_KEY") or '\xab\x03\xb1LN\xaf\xaf\xc3xoYpw\xe8\x05sib\xc0k\xa3|\x17J'
