@@ -12,7 +12,7 @@ from app.questions import Questions
 QUESTION_OBJECT = Questions()
 
 api = Api(app)
-bcrypt = Bcrypt(app)
+b_crypt = Bcrypt(app)
 
 
 class QuestionsApi(Resource):
@@ -107,7 +107,8 @@ class RegisterUser(Resource):
         query = "insert into users (first_name, last_name, email, password_hash)" \
                 " values (%s,%s,%s, %s) returning account_id, first_name, last_name,  email"
         arguments = (
-            args['first_name'], args['last_name'], args['email'], bcrypt.generate_password_hash(args['password']))
+            args['first_name'], args['last_name'], args['email'],
+            b_crypt.generate_password_hash(args['password']).decode('utf-8'))
         results = db.qry(query, arguments, fetch="all", commit=True)
         print(results)
         return results, 201
@@ -128,9 +129,30 @@ def post_answer(question_id):
     return jsonify({'question_id': question_id, 'answer': answer}), 201
 
 
+LOGIN_PARSER = reqparse.RequestParser(bundle_errors=True)
+LOGIN_PARSER.add_argument('email', required=True)
+LOGIN_PARSER.add_argument('password', required=True)
+
+
+class LoginUser(Resource):
+    def post(self):
+        args = LOGIN_PARSER.parse_args()
+        query = "select account_id, first_name, last_name, email, password_hash from users where  email = '{}';".format(
+            args['email'])
+        results = db.qry(query, fetch="one")
+        # import pdb; pdb.set_trace()
+        if not results:
+            return {"Error": "Email not registred"}
+        elif check_password_hash(results['password_hash'], args['password']):
+            results.pop("password_hash")
+            return results, 201
+        else:
+            return {"Error": "Wrong password"}
+
+
 api.add_resource(QuestionsApi, '/api/v1/questions/')
 api.add_resource(QuestionGetUpdateDelete, '/api/v1/questions/<int:question_id>/')
 api.add_resource(RegisterUser, '/api/v1/auth/user/')
-# api.add_resource(LoginUser, '/api/v1/auth/login/')
+api.add_resource(LoginUser, '/api/v1/auth/login/')
 if __name__ == '__main__':
     app.run(debug=True)
