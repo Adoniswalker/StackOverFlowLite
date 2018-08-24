@@ -1,3 +1,4 @@
+"""This module is used to test user"""
 import json
 import unittest
 
@@ -14,12 +15,12 @@ class TestQuestions(unittest.TestCase):
         Used in setting up before doing the testcases
         """
         with app.app_context():
-            set_up = db.qry(ddl.ddl, commit=True)
+            db.qry(ddl.ddl, commit=True)
         self.client_app = views.app.test_client()
 
     def tearDown(self):
         with app.app_context():
-            db.qry("drop TABLE answers; drop TABLE questions; drop TABLE users; ", commit=True);
+            db.qry("drop TABLE answers; drop TABLE questions; drop TABLE users; ", commit=True)
 
     def test_registration(self):
         """ Test for user registration """
@@ -41,28 +42,10 @@ class TestQuestions(unittest.TestCase):
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 201)
 
-    def get_token(self):
-        with self.client_app:
-            self.client_app.post(
-                '/api/v1/auth/signup/',
-                data=json.dumps(dict(
-                    last_name='james',
-                    email='joe@gmail.com',
-                    password='123456sddfdf'
-                )),
-                content_type='application/json'
-            )
-            response = self.client_app.post(
-                '/api/v1/auth/login/',
-                data=json.dumps(dict(
-                    email='joe@gmail.com',
-                    password='123456sddfdf',
-                )),
-                content_type='application/json'
-            )
-        return json.loads(response.data.decode())["token"]
-
     def test_login(self):
+        """
+        This method will test user login
+        """
         with self.client_app:
             self.client_app.post(
                 '/api/v1/auth/signup/',
@@ -103,6 +86,7 @@ class TestQuestions(unittest.TestCase):
             self.assertTrue(data['Error'] == 'Email not registered')
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 404)
+
 
 if __name__ == "__main__":
     unittest.main()

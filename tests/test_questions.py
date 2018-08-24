@@ -4,7 +4,6 @@ import unittest
 
 from app import views, app, db
 
-
 # @pytest.fixture
 # def client():
 #     """This function is using for setting up test environment
@@ -27,12 +26,14 @@ class TestQuestions(unittest.TestCase):
         Used in setting up before doing the testcases
         """
         with app.app_context():
-            # db.qry("drop TABLE answers; drop TABLE questions; drop TABLE users; ", commit=True);
-            set_up = db.qry(ddl, commit=True)
+            db.qry(ddl, commit=True)
         self.client_app = views.app.test_client()
 
-
     def get_token(self):
+        """
+        This function is used to get token for testing
+        :return:
+        """
         with self.client_app:
             self.client_app.post(
                 '/api/v1/auth/signup/',
@@ -173,8 +174,11 @@ class TestQuestions(unittest.TestCase):
     #     assert response.status_code == 204
 
     def tearDown(self):
+        """
+        Used to reset or delete the database
+        """
         with app.app_context():
-            db.qry("drop TABLE answers; drop TABLE questions; drop TABLE users; ", commit=True);
+            db.qry("drop TABLE answers; drop TABLE questions; drop TABLE users; ", commit=True)
 
 
 if __name__ == "__main__":
