@@ -20,15 +20,15 @@
 </header>
 <div class="form_div">
     <h1>Login</h1>
-    <form method="POST" class="form">
+    <form method="POST" class="form" onsubmit="event.preventDefault();">
         <fieldset>
             <div>
                 <label for="username">User name</label>
-                <input type="text" id="username">
+                <input type="text" id="username" required>
             </div>
             <div>
                 <label for="password">Password</label>
-                <input type="password" id='password'>
+                <input type="password" id='password' required>
             </div>
             <button class="button">Login</button>
         </fieldset>
