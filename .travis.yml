@@ -15,7 +15,6 @@ addons:
 
 before_script:
   - psql -c 'CREATE DATABASE stackoverflow_lite' -U postgres
-  - psql -f stackovflow.sql stackoverflow_lite
   - psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to postgres ;" -U postgres
   - python from app import db; db.create_all()
 
