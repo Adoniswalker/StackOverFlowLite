@@ -11,6 +11,11 @@ import psycopg2.extras
 from flask import g
 
 from app import app
+from app.ddl import ddl
+
+
+def create_all():
+    qry(ddl, commit=True)
 
 
 def load_row(row):
