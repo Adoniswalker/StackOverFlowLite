@@ -15,8 +15,9 @@ addons:
 
 before_script:
   - psql -c 'CREATE DATABASE stackoverflow_lite' -U postgres
+  - psql -f ddl.sql stackoverflow_lite
   - psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to postgres ;" -U postgres
-  - python from app import db; db.create_all()
+#  - python from app import db; db.create_all()
 
 script:
   - nosetests tests -v --with-coverage --cover-package=app
