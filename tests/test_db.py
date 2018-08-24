@@ -14,7 +14,6 @@ class TestQuestions(unittest.TestCase):
         Used in setting up before doing the testcases
         """
         with app.app_context():
-            # db.qry("drop TABLE answers; drop TABLE questions; drop TABLE users; ", commit=True);
             set_up = db.qry(ddl.ddl, commit=True)
         self.client_app = views.app.test_client()
 
