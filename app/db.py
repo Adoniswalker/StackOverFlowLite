@@ -12,15 +12,13 @@ from flask import g
 
 from app import app
 from app.ddl import ddl
+from config import BaseConfig
 
-
+configs = BaseConfig()
 def create_all():
-    # with app.app_context():
-    #     qry(ddl, commit=True)
     with app.app_context():
         with app.open_resource('../ddl.sql', mode='r') as f:
             qry(f.read(), commit=True)
-        # db.commit()
 
 
 def drop_all():
@@ -49,7 +47,7 @@ def connect_db():
     if "DATABASE_URL" in os.environ:
         url = parse.urlparse(os.environ["DATABASE_URL"])
     else:
-        url = parse.urlparse(app.config["DATABASE_URL"])
+        url = parse.urlparse(configs.DATABASE_URI)
     conn = psycopg2.connect(
         database=url.path[1:],
         user=url.username,
