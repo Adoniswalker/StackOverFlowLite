@@ -1,6 +1,6 @@
 language: python
 env:
-  - DATABASE_URL = postgres://postgres:@127.0.0.1:5432/stackoverflow_lite
+  - DATABASE_URL = "postgres://postgres:@127.0.0.1:5432/stackoverflow_lite"
 python:
   - "3.6"
 cache: pip
