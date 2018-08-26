@@ -45,7 +45,7 @@ class RegisterUser(Resource):
         arguments = (
             args['first_name'], args['last_name'], args['email'],
             b_crypt.generate_password_hash(args['password']).decode('utf-8'))
-        results = db.qry(query, arguments, fetch="all", commit=True)
+        results = db.qry(query, arguments, fetch="one", commit=True)
         return results, 201
 
 

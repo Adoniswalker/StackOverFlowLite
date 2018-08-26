@@ -1,4 +1,4 @@
-create table users
+create table if not exists users
 (
 	account_id serial not null
 		constraint users_pkey
@@ -10,7 +10,7 @@ create table users
 )
 ;
 
-create table questions
+create table if not exists questions
 (
 	question_id serial not null
 		constraint questions_pkey
@@ -25,7 +25,7 @@ create table questions
 )
 ;
 
-create table answers
+create table if not exists answers
 (
 	answer_id serial not null
 		constraint answers_pkey

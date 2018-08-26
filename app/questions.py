@@ -7,13 +7,13 @@ QUESTION_PARSER = reqparse.RequestParser(bundle_errors=True)
 QUESTION_PARSER.add_argument('question_subject', required=True,
                              help="Question subject is required")
 QUESTION_PARSER.add_argument('question_body', required=True,
-                             help="Question subject is required")
+                             help="Question body is required")
 QUESTION_PARSER.add_argument('Authorization', location='headers', required=True,
-                             help="You have to be looged in")
+                             help="Token is required. Please login")
 
 TOKEN_PARSER = reqparse.RequestParser(bundle_errors=True)
 TOKEN_PARSER.add_argument('Authorization', location='headers',
-                          required=True, help="You have to be looged in")
+                          required=True, help="Token is required. Please login")
 
 
 class QuestionsApi(Resource):
@@ -34,7 +34,7 @@ class QuestionsApi(Resource):
         try:
             user_id = int(user_id)
         except ValueError as e:
-            return {"Error": "You have to be logged in"}
+            return {"Error": "You have to be logged in"}, 403
         query = "INSERT into questions (question_subject, question_body, posted_by)" \
                 " VALUES (%s, %s, %s)returning question_id, question_subject, " \
                 "question_body, posted_by, date_posted"
@@ -48,7 +48,9 @@ class QuestionsApi(Resource):
 def check_question_owner(question_id):
     query = "select users.account_id from questions inner join users on " \
             "(account_id=posted_by) where question_id = {}".format(question_id)
-    return db.qry(query, fetch="one")["account_id"]
+    question_result = db.qry(query, fetch="one")
+    if question_result:
+        return db.qry(query, fetch="one")["account_id"]
 
 
 class QuestionGetUpdateDelete(Resource):

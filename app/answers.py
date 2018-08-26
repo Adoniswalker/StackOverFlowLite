@@ -114,6 +114,7 @@ class PostAnswer(Resource):
         args = ANSWER_PARSER.parse_args()
 
         user_id = jwt_required(args)
+        # import pdb; pdb.set_trace()
         try:
             user_id = int(user_id)
         except ValueError as e:

@@ -15,8 +15,17 @@ from app.ddl import ddl
 
 
 def create_all():
+    # with app.app_context():
+    #     qry(ddl, commit=True)
     with app.app_context():
-        qry(ddl, commit=True)
+        with app.open_resource('../ddl.sql', mode='r') as f:
+            qry(f.read(), commit=True)
+        # db.commit()
+
+
+def drop_all():
+    with app.app_context():
+        qry("drop TABLE answers; drop TABLE questions; drop TABLE users; ", commit=True)
 
 
 def load_row(row):
