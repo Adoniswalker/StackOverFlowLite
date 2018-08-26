@@ -23,7 +23,7 @@ class TestQuestions(unittest.TestCase):
                 '/api/v1/auth/signup/',
                 data=json.dumps(dict(
                     last_name='james',
-                    email='joe@gmail.com',
+                    email='joe4@gmail.com',
                     password='123456sddfdf'
                 )),
                 content_type='application/json'
@@ -31,7 +31,7 @@ class TestQuestions(unittest.TestCase):
             response = cls.client_app.post(
                 '/api/v1/auth/login/',
                 data=json.dumps(dict(
-                    email='joe@gmail.com',
+                    email='joe4@gmail.com',
                     password='123456sddfdf',
                 )),
                 content_type='application/json'

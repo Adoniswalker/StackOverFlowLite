@@ -2,7 +2,7 @@
 import json
 import unittest
 
-from app import views, ddl, db, app
+from app import views, db, app
 
 
 class TestQuestions(unittest.TestCase):
@@ -15,12 +15,12 @@ class TestQuestions(unittest.TestCase):
         Used in setting up before doing the testcases
         """
         with app.app_context():
-            db.qry(ddl.ddl, commit=True)
+            db.create_all()
         self.client_app = views.app.test_client()
 
     def tearDown(self):
         with app.app_context():
-            db.qry("drop TABLE answers; drop TABLE questions; drop TABLE users; ", commit=True)
+            db.drop_all()
 
     def test_registration(self):
         """ Test for user registration """

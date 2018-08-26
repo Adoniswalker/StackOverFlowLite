@@ -11,7 +11,6 @@ import psycopg2.extras
 from flask import g
 
 from app import app
-from app.ddl import ddl
 from config import BaseConfig
 
 configs = BaseConfig()
