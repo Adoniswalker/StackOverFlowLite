@@ -36,9 +36,9 @@ class TestQuestions(unittest.TestCase):
             )
             # import pdb; pdb.set_trace()
             data = json.loads(response.data.decode())
-            self.assertTrue(data[0]['email'] == 'joe@gmail.com')
-            self.assertTrue(data[0]['first_name'] is None)
-            self.assertTrue(data[0]['last_name'] == 'james')
+            self.assertTrue(data['email'] == 'joe@gmail.com')
+            self.assertTrue(data['first_name'] is None)
+            self.assertTrue(data['last_name'] == 'james')
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 201)
 
