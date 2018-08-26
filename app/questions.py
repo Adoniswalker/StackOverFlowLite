@@ -22,7 +22,7 @@ class QuestionsApi(Resource):
             This endponint will get all the questions
             :return:
             """
-        questions = db.qry("select  * from questions", fetch="all")
+        questions = db.qry("select  * from questions order by date_posted desc", fetch="all")
         for j in questions:
             j["date_posted"] = str(j["date_posted"])
         return questions, 200
@@ -63,7 +63,13 @@ class QuestionGetUpdateDelete(Resource):
                           "'{}'".format(question_id), fetch="one")
         if not question:
             return {"Error": "No question found"}, 404
+        # import pdb; pdb.set_trace()
+        answers = db.qry("select  * from answers where question_id ="
+                         " {}".format(question["question_id"]), fetch="all")
+        for answer in answers:
+            answer["answer_date"] = str(answer["answer_date"])
         question["date_posted"] = str(question["date_posted"])
+        question["answers"] = answers
         return question, 200
 
     def delete(self, question_id):
