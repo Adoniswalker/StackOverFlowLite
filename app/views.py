@@ -60,15 +60,12 @@ class LoginUser(Resource):
         query = "select account_id, first_name, last_name, email, password_hash from users where  email = '{}';".format(
             args['email'])
         results = db.qry(query, fetch="one")
-        # import pdb; pdb.set_trace()
         if not results:
             return {"Error": "Email not registered"}, 404
         elif check_password_hash(results['password_hash'], args['password']):
             results.pop("password_hash")
             auth_token = auth.encode_auth_token(str(results["account_id"])).decode()
-            print(results)
             results["auth_token"] = auth_token
-            print(results)
             return results, 200
         else:
             return {"Error": "Wrong password"}, 400

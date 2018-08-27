@@ -120,7 +120,7 @@ class TestQuestions(unittest.TestCase):
                                         data=json.dumps(question),
                                         content_type="application/json", headers={'Authorization': self.token})
         data = json.loads(response.data.decode())
-        self.assertTrue(data['message']['question_subject'] == 'Question subject is required')
+        self.assertTrue(data['message']['question_subject'] == 'Missing required parameter in the JSON body or the post body or the query string')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -173,7 +173,7 @@ class TestQuestions(unittest.TestCase):
         Test to deleting non existing question
         """
         response = self.client_app.delete("/api/v1/questions/10000/", headers={'Authorization': self.token})
-        assert response.status_code == 401  # Todo check if question exists
+        assert response.status_code == 404
 
     def test_delete_question_no_token(self):
         """

@@ -1,7 +1,13 @@
 import datetime
 import jwt
 
-from app import app
+from app import app, db
+
+
+def check_user_in_db(account_id):
+    user_query = "select account_id from users where account_id = {}".format(account_id)
+    if db.qry(user_query, fetch="one"):
+        return True
 
 
 def jwt_required(f):
@@ -15,7 +21,10 @@ def jwt_required(f):
     except Exception as e:
         print(e)
         return "Unauthorized. Please login {}".format(e)
-    return decode_auth_token(auth_header)
+    decode_result = decode_auth_token(auth_header)
+    if not check_user_in_db(decode_result):
+        return "User not found. Kindly register"
+    return decode_result
 
 
 def encode_auth_token(user_id):

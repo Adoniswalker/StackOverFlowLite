@@ -3,10 +3,19 @@ from flask_restful import reqparse, Resource
 from app import db
 from app.auth import jwt_required
 
+
+def valid_question(value, name):
+    value = value.strip()
+    text_len = len(value)
+    if 5 >= text_len <= 2000:
+        raise ValueError(
+            "The parameter '{}' must be between 5 and 2000 characters. Your value len is:{}".format(name, text_len))
+    return value
+
+
 QUESTION_PARSER = reqparse.RequestParser(bundle_errors=True)
-QUESTION_PARSER.add_argument('question_subject', required=True,
-                             help="Question subject is required")
-QUESTION_PARSER.add_argument('question_body', required=True,
+QUESTION_PARSER.add_argument('question_subject', required=True, type=valid_question)
+QUESTION_PARSER.add_argument('question_body', required=True, type=valid_question,
                              help="Question body is required")
 QUESTION_PARSER.add_argument('Authorization', location='headers', required=True,
                              help="Token is required. Please login")
@@ -83,8 +92,11 @@ class QuestionGetUpdateDelete(Resource):
         try:
             user_id = int(user_id)
         except ValueError as e:
-            return {"Error": "You have to be logged in"}
-        if not user_id == check_question_owner(question_id):
+            return {"Error": user_id}
+        check_question = check_question_owner(question_id)
+        if not check_question:
+            return {"Error": "Question not found"}, 404
+        if not user_id == check_question:
             return {"Error": "UnAuthorised"}, 401
         query = "DELETE FROM questions WHERE question_id = {};".format(question_id)
         question = db.qry(query, commit=True)

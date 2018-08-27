@@ -14,6 +14,8 @@ from app import app
 from config import BaseConfig
 
 configs = BaseConfig()
+
+
 def create_all():
     with app.app_context():
         with app.open_resource('../ddl.sql', mode='r') as f:

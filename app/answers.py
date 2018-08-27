@@ -29,14 +29,18 @@ def is_question_owner(question_id, poster, vote, answer_id):
             "on (questions.posted_by = users.account_id) where " \
             "questions.question_id={};".format(question_id)
     results = db.qry(query, fetch="one")
+    # import pdb; pdb.set_trace()
+    if not results:
+        return {"Error": "Question not found"}, 404
     if not poster == results["account_id"]:
-        return {"Error": "Authorised user"}
+        return {"Error": "UnAuthorised user"}, 401
     if not vote == 1:
-        return {"Error": "Vote is required"}
-    update_query = "update answers set answers.accepted = TRUE where answer_id = {}; " \
+        return {"Error": "Vote is required"}, 400
+    params = (answer_id,)
+    update_query = "update answers set accepted = TRUE where answer_id = %s returning " \
                    "answer_id, question_id, answeres_by, answer_date, answer," \
-                   " accepted ".format(answer_id)
-    return db.qry(update_query, commit=True, fetch="one")
+                   " accepted "
+    return db.qry(update_query, params, commit=True, fetch="one"), 200
 
 
 def is_answer_owner(answer_id, poster, answer):
@@ -51,15 +55,18 @@ def is_answer_owner(answer_id, poster, answer):
             "on (answers.answeres_by = users.account_id) where " \
             "answers.answer_id={};".format(answer_id)
     results = db.qry(query, fetch="one")
+    if not results:
+        return {"Error": "Answer not found"}, 404
     if not poster == results["account_id"]:
-        return {"Error": "Authorised user"}
-    if not answer.strip():
-        return {"Error": "Answer is required"}
+        return {"Error": "UnAuthorised user"}, 401
+
+    if not answer:
+        return {"Error": "Answer is required"}, 400
     params = answer.strip(), answer_id
     update_query = "update answers set answer = %s where answer_id = %s returning " \
                    "answer_id, question_id, answeres_by, answer_date, answer," \
                    " accepted "
-    return db.qry(update_query, params, commit=True, fetch="one")
+    return db.qry(update_query, params, commit=True, fetch="one"), 200
 
 
 class UpdateAnswer(Resource):
@@ -79,15 +86,18 @@ class UpdateAnswer(Resource):
         # try:
         question_response = is_question_owner(question_id, user_id, args["vote"],
                                               answer_id)
-        if question_response.get("answer_id"):
-            question_response["answer_date"] = str(question_response["answer_date"])
-            return question_response, 202
+        # import pdb;pdb.set_trace()
+        if question_response[0] is None:
+            return {"Error": "Answer not found"}, 404
+        if question_response[0].get("answer_id"):
+            question_response[0]["answer_date"] = str(question_response[0]["answer_date"])
+            return question_response
         answer_response = is_answer_owner(answer_id, user_id, args["answer"])
-        if answer_response.get("answer_id"):
-            answer_response["answer_date"] = str(answer_response["answer_date"])
-            return answer_response, 201
+        if answer_response[0].get("answer_id"):
+            answer_response[0]["answer_date"] = str(answer_response[0]["answer_date"])
+            return answer_response
         else:
-            return question_response, 400
+            return question_response
 
 
 def is_question_exist(value):
