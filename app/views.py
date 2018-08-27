@@ -15,8 +15,10 @@ b_crypt = Bcrypt(app)
 def email_address(value, name):
     email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     if not re.match(email_regex, value.strip()):
-        raise ValueError("The parameter '{}' is not a valid email. You gave us the value:{}".format(name, value))
-    email_count = db.qry("select email from users where email = '{}'".format(value.strip()), fetch="rowcount")
+        raise ValueError("The parameter '{}' is not a valid email."
+                         " You gave us the value:{}".format(name, value))
+    email_count = db.qry("select email from users where email ="
+                         " '{}'".format(value.strip()), fetch="rowcount")
     if email_count >= 1:
         raise ValueError("'{}' has already been registered".format(value.strip()))
     return value
@@ -26,7 +28,8 @@ def password_valid(value, name):
     password_regex = r"(?=.{8,})"
     if not re.match(password_regex, value.strip()):
         raise ValueError(
-            "The parameter '{}' must be 8 characters or more. You gave us the value:{}".format(name, value))
+            "The parameter '{}' must be 8 characters or more. "
+            "You gave us the value:{}".format(name, value))
     return value
 
 
@@ -57,7 +60,8 @@ LOGIN_PARSER.add_argument('password', required=True)
 class LoginUser(Resource):
     def post(self):
         args = LOGIN_PARSER.parse_args()
-        query = "select account_id, first_name, last_name, email, password_hash from users where  email = '{}';".format(
+        query = "select account_id, first_name, last_name, email, " \
+                "password_hash from users where  email = '{}';".format(
             args['email'])
         results = db.qry(query, fetch="one")
         if not results:
