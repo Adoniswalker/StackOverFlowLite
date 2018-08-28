@@ -15,7 +15,7 @@ from config import BaseConfig
 
 configs = BaseConfig()
 
-
+# def DatabaseConfig:
 def create_all():
     with app.app_context():
         with app.open_resource('../ddl.sql', mode='r') as f:
@@ -44,20 +44,7 @@ def connect_db():
     This will initialise connection
     :return:
     """
-    parse.uses_netloc.append("postgres")
-    if "DATABASE_URL" in os.environ:
-        url = parse.urlparse(os.environ["DATABASE_URL"])
-    else:
-        url = parse.urlparse(configs.DATABASE_URI)
-    conn = psycopg2.connect(
-        database=url.path[1:],
-        user=url.username,
-        password=url.password,
-        host=url.hostname,
-        port=url.port
-    )
-    print("***OPENING CONNECTION***")
-    return conn
+    return psycopg2.connect(configs.DATABASE_URI)
 
 
 @app.teardown_appcontext

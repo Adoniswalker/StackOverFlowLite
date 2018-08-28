@@ -5,9 +5,13 @@ from app import app, db
 
 
 def check_user_in_db(account_id):
-    user_query = "select account_id from users where account_id = {}".format(account_id)
-    if db.qry(user_query, fetch="one"):
-        return True
+    try:
+        account_id = int(account_id)
+        user_query = "select account_id from users where account_id = {}".format(account_id)
+        if db.qry(user_query, fetch="one"):
+            return True
+    except ValueError:
+        return account_id
 
 
 def jwt_required(f):
@@ -15,7 +19,6 @@ def jwt_required(f):
         :param f: function to decorated
         :return: decorated function
     """
-    # import pdb; pdb.set_trace()
     try:
         auth_header = f['Authorization'].split(' ')[-1]
     except Exception as e:

@@ -29,7 +29,6 @@ def is_question_owner(question_id, poster, vote, answer_id):
             "on (questions.posted_by = users.account_id) where " \
             "questions.question_id={};".format(question_id)
     results = db.qry(query, fetch="one")
-    # import pdb; pdb.set_trace()
     if not results:
         return {"Error": "Question not found"}, 404
     if not poster == results["account_id"]:
@@ -76,6 +75,48 @@ class UpdateAnswer(Resource):
         :param question_id:
         :param answer_id:
         :return:
+        ---
+        tags:
+            - Answer
+        consumes:
+            - "application/json"
+        produces:
+            - "application/json"
+        parameters:
+
+            -   in: path
+                name: question_id
+                required: True
+                description: The question id
+
+            -   in: path
+                name: answer_id
+                required: True
+                description: The answer id
+
+            -   in: header
+                name: Authorization
+                type: string
+                required: true
+
+            -   in: body
+                name: body
+                required: True
+                description: The question subject and title
+                schema:
+                    id: Answer
+                    properties:
+                        question_subject:
+                            type: str
+                            required: False
+
+                        question_body:
+                            type: str
+                            required: False
+
+        responses:
+            200:
+                description: Update was succeful
         """
         args = PUT_PARSER_ANSWER.parse_args()
         user_id = jwt_required(args)
@@ -83,10 +124,8 @@ class UpdateAnswer(Resource):
             user_id = int(user_id)
         except ValueError as e:
             return {"Error": user_id}
-        # try:
         question_response = is_question_owner(question_id, user_id, args["vote"],
                                               answer_id)
-        # import pdb;pdb.set_trace()
         if question_response[0] is None:
             return {"Error": "Answer not found"}, 404
         if question_response[0].get("answer_id"):
@@ -118,13 +157,45 @@ class PostAnswer(Resource):
         Used to add an answer
         :param question_id:
         :return:
+        ---
+        tags:
+            - Answer
+        consumes:
+            - "application/json"
+        produces:
+            - "application/json"
+        parameters:
+
+            -   in: path
+                name: question_id
+                required: True
+                description: The id of question to be answered
+
+            -   in: header
+                name: Authorization
+                type: string
+                required: true
+
+            -   in: body
+                name: body
+                required: True
+                description: The question subject and title
+                schema:
+                    id: Answer
+                    properties:
+                        answer:
+                            type: str
+                            required: True
+
+        responses:
+            200:
+                description: Answer successful
         """
         if not is_question_exist(question_id):
             return {"Error": "No question found"}, 400
         args = ANSWER_PARSER.parse_args()
 
         user_id = jwt_required(args)
-        # import pdb; pdb.set_trace()
         try:
             user_id = int(user_id)
         except ValueError as e:

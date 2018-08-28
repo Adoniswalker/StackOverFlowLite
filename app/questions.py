@@ -1,5 +1,6 @@
 from flask_restful import reqparse, Resource
 
+
 from app import db
 from app.auth import jwt_required
 
@@ -28,8 +29,17 @@ TOKEN_PARSER.add_argument('Authorization', location='headers',
 class QuestionsApi(Resource):
     def get(self):
         """
-            This endponint will get all the questions
-            :return:
+        This endponint will get all the questions
+        :return:
+        This endpoint will fetch one question
+        :rtype: jsonify
+        This one will get a single question when id is provided
+        ---
+        tags:
+            - Question
+        responses:
+            200:
+                description: The details for a question
             """
         questions = db.qry("select  * from questions order by date_posted desc", fetch="all")
         for j in questions:
@@ -37,6 +47,46 @@ class QuestionsApi(Resource):
         return questions, 200
 
     def post(self):
+        """
+        This method will post a new answer
+        ---
+        tags:
+            - Question
+        consumes:
+            - "application/json"
+        produces:
+            - "application/json"
+        parameters:
+            -   in: header
+                name: Authorization
+                type: string
+                required: true
+
+            -   in: body
+                name: body
+                required: True
+                description: The question subject and title
+                schema:
+                    id: QuestionPut
+                    properties:
+                        question_subject:
+                            type: string
+                            required: True
+                            description: What is the question about
+
+                        question_body:
+                            type: string
+                            required: True
+                            description: The whole question
+
+        responses:
+            200:
+                description: Question was succefully posted
+            400:
+               description: Missing details for question
+
+        :return:
+        """
         args = QUESTION_PARSER.parse_args()
 
         user_id = jwt_required(args)
@@ -65,14 +115,43 @@ def check_question_owner(question_id):
 class QuestionGetUpdateDelete(Resource):
     def get(self, question_id):
         """
-            This endpoint will fetch one question
-            :rtype: jsonify
+        This endpoint will fetch one question
+        :rtype: jsonify
+        This one will get a single question when id is provided
+        ---
+        tags:
+            - Question Detail
+        parameters:
+            -   in: path
+                name: question_id
+                required: true
+                description: The ID of the question, try 42!
+                type: string
+        responses:
+            200:
+                description: The details fo a question
+                schema:
+                    id: Question
+                    properties:
+                        posted_by:
+                            type: int
+                            description: The user who posted the question
+                        date_posted:
+                            type: string
+                        question_subject:
+                            type: string
+                        question_id:
+                            type: int
+                            description: The question unique id
+                        question_body:
+                            type: string
+                            description: Content of question
             """
+
         question = db.qry("select  * from questions where question_id = "
                           "'{}'".format(question_id), fetch="one")
         if not question:
             return {"Error": "No question found"}, 404
-        # import pdb; pdb.set_trace()
         answers = db.qry("select  * from answers where question_id ="
                          " {}".format(question["question_id"]), fetch="all")
         for answer in answers:
@@ -86,13 +165,37 @@ class QuestionGetUpdateDelete(Resource):
             This function will delete a question
             :param question_id:
             :return:
+        ---
+        tags:
+         -  Question Detail
+
+        produces:
+          - "application/json"
+        parameters:
+            -   name: question_id
+                in: path
+                description: Id of question to be deleted
+                required: true
+                type: "integer"
+                format: "int64"
+            -   in: header
+                name: Authorization
+                type: string
+                required: true
+        responses:
+            204:
+                description: Question deleted successfull
+            400:
+                description: "Invalid ID supplied"
+            404:
+                description: "Question not found"
             """
         args = TOKEN_PARSER.parse_args()
         user_id = jwt_required(args)
         try:
             user_id = int(user_id)
         except ValueError as e:
-            return {"Error": user_id}
+            return {"Error": user_id}, 400
         check_question = check_question_owner(question_id)
         if not check_question:
             return {"Error": "Question not found"}, 404
@@ -107,6 +210,45 @@ class QuestionGetUpdateDelete(Resource):
             This endpont will update subject and body when called
             :param question_id:
             :return:
+
+        ---
+        tags:
+            - Question Detail
+        consumes:
+            - "application/json"
+        produces:
+            - "application/json"
+        parameters:
+
+            -   in: path
+                name: question_id
+                required: True
+                description: The question id
+
+            -   in: header
+                name: Authorization
+                type: string
+                required: true
+
+            -   in: body
+                name: body
+                required: True
+                description: The question subject and title
+                schema:
+                    id: QuestionPut
+                    properties:
+                        question_subject:
+                            type: str
+                            required: True
+                        question_body:
+                            type: str
+                            required: True
+
+        responses:
+            200:
+               description: Question updated successful
+            400:
+               description: Missikng parameters in the questions
             """
         args = QUESTION_PARSER.parse_args()
 
