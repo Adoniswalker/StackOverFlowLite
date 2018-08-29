@@ -5,13 +5,17 @@ from flasgger import Swagger
 from flask_bcrypt import Bcrypt, check_password_hash
 from flask_restful import Api, Resource, reqparse
 
-from app import app, db, auth
+from app import app
+from app.auth import Authentication
+from app.db import DatabaseConfig
 from app.answers import PostAnswer, UpdateAnswer
 from app.questions import QuestionsApi, QuestionGetUpdateDelete
 
+auth = Authentication()
 api = Api(app)
 b_crypt = Bcrypt(app)
 swagger = Swagger(app)
+db_obj = DatabaseConfig()
 
 app.config['SWAGGER'] = {
     'title': 'Stackoverflow-lite RESTful documentation',
@@ -24,7 +28,7 @@ def email_address(value, name):
     if not re.match(email_regex, value.strip()):
         raise ValueError("The parameter '{}' is not a valid email."
                          " You gave us the value:{}".format(name, value))
-    email_count = db.qry("select email from users where email ="
+    email_count = db_obj.qry("select email from users where email ="
                          " '{}'".format(value.strip()), fetch="rowcount")
     if email_count >= 1:
         raise ValueError("'{}' has already been registered".format(value.strip()))
@@ -98,7 +102,7 @@ class RegisterUser(Resource):
         arguments = (
             args['first_name'], args['last_name'], args['email'],
             b_crypt.generate_password_hash(args['password']).decode('utf-8'))
-        results = db.qry(query, arguments, fetch="one", commit=True)
+        results = db_obj.qry(query, arguments, fetch="one", commit=True)
         return results, 201
 
 
@@ -147,7 +151,7 @@ class LoginUser(Resource):
         query = "select account_id, first_name, last_name, email, " \
                 "password_hash from users where  email = '{}';".format(
             args['email'])
-        results = db.qry(query, fetch="one")
+        results = db_obj.qry(query, fetch="one")
         if not results:
             return {"Error": "Email not registered"}, 404
         elif check_password_hash(results['password_hash'], args['password']):

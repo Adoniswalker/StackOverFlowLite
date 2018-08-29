@@ -1,9 +1,11 @@
 """This file is used to manipulate questions"""
 from flask_restful import Resource, reqparse
 
-from app import db
-from app.auth import jwt_required
+from app.db import DatabaseConfig
+from app.auth import Authentication
 
+auth = Authentication()
+db = DatabaseConfig()
 ANSWER_PARSER = reqparse.RequestParser(bundle_errors=True)
 ANSWER_PARSER.add_argument('answer', required=True)
 ANSWER_PARSER.add_argument('Authorization', location='headers',
@@ -119,7 +121,7 @@ class UpdateAnswer(Resource):
                 description: Update was succeful
         """
         args = PUT_PARSER_ANSWER.parse_args()
-        user_id = jwt_required(args)
+        user_id = auth.jwt_required(args)
         try:
             user_id = int(user_id)
         except ValueError as e:
@@ -195,7 +197,7 @@ class PostAnswer(Resource):
             return {"Error": "No question found"}, 400
         args = ANSWER_PARSER.parse_args()
 
-        user_id = jwt_required(args)
+        user_id = auth.jwt_required(args)
         try:
             user_id = int(user_id)
         except ValueError as e:

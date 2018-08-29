@@ -1,8 +1,10 @@
 from flask_restful import reqparse, Resource
 
+from app.db import DatabaseConfig
+from app.auth import Authentication
 
-from app import db
-from app.auth import jwt_required
+db = DatabaseConfig()
+auth = Authentication()
 
 
 def valid_question(value, name):
@@ -89,7 +91,7 @@ class QuestionsApi(Resource):
         """
         args = QUESTION_PARSER.parse_args()
 
-        user_id = jwt_required(args)
+        user_id = auth.jwt_required(args)
         try:
             user_id = int(user_id)
         except ValueError as e:
@@ -191,7 +193,7 @@ class QuestionGetUpdateDelete(Resource):
                 description: "Question not found"
             """
         args = TOKEN_PARSER.parse_args()
-        user_id = jwt_required(args)
+        user_id = auth.jwt_required(args)
         try:
             user_id = int(user_id)
         except ValueError as e:
@@ -252,7 +254,7 @@ class QuestionGetUpdateDelete(Resource):
             """
         args = QUESTION_PARSER.parse_args()
 
-        user_id = jwt_required(args)
+        user_id = auth.jwt_required(args)
         try:
             user_id = int(user_id)
         except ValueError as e:

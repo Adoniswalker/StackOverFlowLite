@@ -1,7 +1,10 @@
 import json
 import unittest
 
-from app import app, db, views
+from app import app, views
+from app.db import DatabaseConfig
+
+db = DatabaseConfig()
 
 
 class TestStackBase(unittest.TestCase):
