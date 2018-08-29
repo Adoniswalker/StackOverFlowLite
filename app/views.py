@@ -1,54 +1,29 @@
 """This file serves the endpoints"""
-import re
-
 from flasgger import Swagger
-from flask_bcrypt import Bcrypt, check_password_hash
+from flask_bcrypt import Bcrypt
 from flask_restful import Api, Resource, reqparse
 
 from app import app
-from app.auth import Authentication
 from app.db import DatabaseConfig
 from app.answers import PostAnswer, UpdateAnswer
+from app.models import Users
 from app.questions import QuestionsApi, QuestionGetUpdateDelete
 
-auth = Authentication()
 api = Api(app)
 b_crypt = Bcrypt(app)
 swagger = Swagger(app)
 db_obj = DatabaseConfig()
-
+user = Users()
 app.config['SWAGGER'] = {
     'title': 'Stackoverflow-lite RESTful documentation',
     'uiversion': 2
 }
 
-
-def email_address(value, name):
-    email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
-    if not re.match(email_regex, value.strip()):
-        raise ValueError("The parameter '{}' is not a valid email."
-                         " You gave us the value:{}".format(name, value))
-    email_count = db_obj.qry("select email from users where email ="
-                         " '{}'".format(value.strip()), fetch="rowcount")
-    if email_count >= 1:
-        raise ValueError("'{}' has already been registered".format(value.strip()))
-    return value
-
-
-def password_valid(value, name):
-    password_regex = r"(?=.{8,})"
-    if not re.match(password_regex, value.strip()):
-        raise ValueError(
-            "The parameter '{}' must be 8 characters or more. "
-            "You gave us the value:{}".format(name, value))
-    return value
-
-
 REGISTER_PARSER = reqparse.RequestParser(bundle_errors=True)
 REGISTER_PARSER.add_argument('first_name')
 REGISTER_PARSER.add_argument('last_name')
-REGISTER_PARSER.add_argument('email', required=True, type=email_address)
-REGISTER_PARSER.add_argument('password', required=True, type=password_valid)
+REGISTER_PARSER.add_argument('email', required=True, type=user.email_address)
+REGISTER_PARSER.add_argument('password', required=True, type=user.password_valid)
 
 
 class RegisterUser(Resource):
@@ -64,10 +39,11 @@ class RegisterUser(Resource):
             - "application/json"
         parameters:
             -   in: body
+                name: body
                 required: True
                 description: User signup details
                 schema:
-                    id: User
+                    id: UserSignUp
                     properties:
                         first_name:
                             required: False
@@ -97,13 +73,7 @@ class RegisterUser(Resource):
                 description: Wrong details provided
         """
         args = REGISTER_PARSER.parse_args()
-        query = "insert into users (first_name, last_name, email, password_hash)" \
-                " values (%s,%s,%s, %s) returning account_id, first_name, last_name,  email"
-        arguments = (
-            args['first_name'], args['last_name'], args['email'],
-            b_crypt.generate_password_hash(args['password']).decode('utf-8'))
-        results = db_obj.qry(query, arguments, fetch="one", commit=True)
-        return results, 201
+        return user.save(args), 201
 
 
 LOGIN_PARSER = reqparse.RequestParser(bundle_errors=True)
@@ -116,17 +86,18 @@ class LoginUser(Resource):
         """Endpoint for user login
         ---
         tags:
-            - User
+            -   User
         consumes:
-            - "application/json"
+            -   "application/json"
         produces:
-            - "application/json"
+            -   "application/json"
         parameters:
             -   in: body
+                name: body
                 required: True
                 description: User login details
                 schema:
-                    id: User
+                    id: UserLogin
                     properties:
                         email:
                             required: True
@@ -148,19 +119,7 @@ class LoginUser(Resource):
                 """
 
         args = LOGIN_PARSER.parse_args()
-        query = "select account_id, first_name, last_name, email, " \
-                "password_hash from users where  email = '{}';".format(
-            args['email'])
-        results = db_obj.qry(query, fetch="one")
-        if not results:
-            return {"Error": "Email not registered"}, 404
-        elif check_password_hash(results['password_hash'], args['password']):
-            results.pop("password_hash")
-            auth_token = auth.encode_auth_token(str(results["account_id"])).decode()
-            results["auth_token"] = auth_token
-            return results, 200
-        else:
-            return {"Error": "Wrong password"}, 400
+        return user.login(args)
 
 
 api.add_resource(QuestionsApi, '/api/v1/questions/')

@@ -16,18 +16,18 @@ class TestQuestions(TestStackBase):
         Tests a user can post a question.
         """
         question = {
-            "question_subject": "What is computer programming?",
-            "question_body": "It is important to note that jobs do not share storage, as each job runs in a "
-                             "fresh VM or"}
+            "question_subject": "Is this a new question subject?",
+            "question_body": "It that jobs do not share storage, as each job runs in a "
+                             "fresh VM or working on anything"}
 
         response = self.client_app.post("/api/v1/questions/",
                                         data=json.dumps(question),
                                         content_type="application/json", headers={'Authorization': self.token})
         data = json.loads(response.data.decode())
-        self.assertTrue(data['question_subject'] == 'What is computer programming?')
+        self.assertTrue(data['question_subject'] == 'Is this a new question subject?')
         self.assertTrue(data[
-                            'question_body'] == 'It is important to note that jobs do not share storage, '
-                                                'as each job runs in a fresh VM or')
+                            'question_body'] == "It that jobs do not share storage, as each job runs in a "
+                                                "fresh VM or working on anything")
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 201)
 
@@ -36,8 +36,8 @@ class TestQuestions(TestStackBase):
         Tests a user can post a question.
         """
         question = {
-            "question_subject": "What is computer programming?",
-            "question_body": "It is important to note that jobs do not share storage, as each job runs in a "
+            "question_subject": "Can i post a  question without a token?",
+            "question_body": "It no you cant that jobs do not share storage, as each job runs in a "
                              "fresh VM or"}
 
         response = self.client_app.post("/api/v1/questions/",
@@ -53,14 +53,15 @@ class TestQuestions(TestStackBase):
         Tests user cannnot ask a question without body content
         """
         question = {
-            "question_subject": "What is computer programming?",
+            "question_subject": "Can i post the subject only?",
         }
 
         response = self.client_app.post("/api/v1/questions/",
                                         data=json.dumps(question),
                                         content_type="application/json", headers={'Authorization': self.token})
         data = json.loads(response.data.decode())
-        self.assertTrue(data['message']['question_body'] == 'Question body is required')
+        # import pdb;pdb.set_trace()
+        self.assertTrue(data['message']['question_body'] == 'Missing required parameter in the JSON body or the post body or the query string')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 400)
 

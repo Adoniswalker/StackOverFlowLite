@@ -2,24 +2,16 @@ from flask_restful import reqparse, Resource
 
 from app.db import DatabaseConfig
 from app.auth import Authentication
+from app.models import Question
 
 db = DatabaseConfig()
 auth = Authentication()
 
-
-def valid_question(value, name):
-    value = value.strip()
-    text_len = len(value)
-    if 5 >= text_len <= 2000:
-        raise ValueError(
-            "The parameter '{}' must be between 5 and 2000 characters. Your value len is:{}".format(name, text_len))
-    return value
-
+quest = Question()
 
 QUESTION_PARSER = reqparse.RequestParser(bundle_errors=True)
-QUESTION_PARSER.add_argument('question_subject', required=True, type=valid_question)
-QUESTION_PARSER.add_argument('question_body', required=True, type=valid_question,
-                             help="Question body is required")
+QUESTION_PARSER.add_argument('question_subject', required=True, type=quest.valid_question)
+QUESTION_PARSER.add_argument('question_body', required=True, type=quest.valid_question)
 QUESTION_PARSER.add_argument('Authorization', location='headers', required=True,
                              help="Token is required. Please login")
 
@@ -43,10 +35,7 @@ class QuestionsApi(Resource):
             200:
                 description: The details for a question
             """
-        questions = db.qry("select  * from questions order by date_posted desc", fetch="all")
-        for j in questions:
-            j["date_posted"] = str(j["date_posted"])
-        return questions, 200
+        return quest.get_all_questions()
 
     def post(self):
         """
@@ -90,28 +79,7 @@ class QuestionsApi(Resource):
         :return:
         """
         args = QUESTION_PARSER.parse_args()
-
-        user_id = auth.jwt_required(args)
-        try:
-            user_id = int(user_id)
-        except ValueError as e:
-            return {"Error": "You have to be logged in"}, 403
-        query = "INSERT into questions (question_subject, question_body, posted_by)" \
-                " VALUES (%s, %s, %s)returning question_id, question_subject, " \
-                "question_body, posted_by, date_posted"
-        arguments = (
-            args['question_subject'], args['question_body'], user_id)
-        results = db.qry(query, arguments, fetch="one", commit=True)
-        results["date_posted"] = str(results["date_posted"])
-        return results, 201
-
-
-def check_question_owner(question_id):
-    query = "select users.account_id from questions inner join users on " \
-            "(account_id=posted_by) where question_id = {}".format(question_id)
-    question_result = db.qry(query, fetch="one")
-    if question_result:
-        return db.qry(query, fetch="one")["account_id"]
+        return quest.save(args)
 
 
 class QuestionGetUpdateDelete(Resource):
@@ -150,17 +118,7 @@ class QuestionGetUpdateDelete(Resource):
                             description: Content of question
             """
 
-        question = db.qry("select  * from questions where question_id = "
-                          "'{}'".format(question_id), fetch="one")
-        if not question:
-            return {"Error": "No question found"}, 404
-        answers = db.qry("select  * from answers where question_id ="
-                         " {}".format(question["question_id"]), fetch="all")
-        for answer in answers:
-            answer["answer_date"] = str(answer["answer_date"])
-        question["date_posted"] = str(question["date_posted"])
-        question["answers"] = answers
-        return question, 200
+        return quest.get_one(question_id)
 
     def delete(self, question_id):
         """
@@ -193,19 +151,7 @@ class QuestionGetUpdateDelete(Resource):
                 description: "Question not found"
             """
         args = TOKEN_PARSER.parse_args()
-        user_id = auth.jwt_required(args)
-        try:
-            user_id = int(user_id)
-        except ValueError as e:
-            return {"Error": user_id}, 400
-        check_question = check_question_owner(question_id)
-        if not check_question:
-            return {"Error": "Question not found"}, 404
-        if not user_id == check_question:
-            return {"Error": "UnAuthorised"}, 401
-        query = "DELETE FROM questions WHERE question_id = {};".format(question_id)
-        question = db.qry(query, commit=True)
-        return question, 204
+        return quest.delete(question_id, args)
 
     def put(self, question_id):
         """
@@ -253,21 +199,4 @@ class QuestionGetUpdateDelete(Resource):
                description: Missikng parameters in the questions
             """
         args = QUESTION_PARSER.parse_args()
-
-        user_id = auth.jwt_required(args)
-        try:
-            user_id = int(user_id)
-        except ValueError as e:
-            return {"Error": "You have to be logged in"}
-        if not user_id == check_question_owner(question_id):
-            return {"Error": "UnAuthorised"}, 401
-        params = args['question_subject'], args['question_body'], question_id
-        query = "UPDATE questions SET question_subject = %s, " \
-                "question_body = %s WHERE question_id = %s " \
-                "RETURNING question_id, question_subject, " \
-                "question_body, posted_by, date_posted;"
-        question = db.qry(query, params, fetch="one")
-        if not question:
-            return {"Error": "No question found"}, 404
-        question["date_posted"] = str(question["date_posted"])
-        return question, 200
+        return quest.update(question_id, args)
