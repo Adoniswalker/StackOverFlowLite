@@ -10,13 +10,13 @@ create table if not exists users
 )
 ;
 
-create table if not exists questions
+create table  if not exists questions
 (
 	question_id serial not null
 		constraint questions_pkey
 			primary key,
-	question_subject varchar(256) not null,
-	question_body varchar(100) not null,
+	question_subject varchar(2000) not null,
+	question_body varchar(2000) not null,
 	date_posted timestamp default now(),
 	posted_by integer
 		constraint questions_users_account_id_fk
@@ -41,3 +41,18 @@ create table if not exists answers
 	answer varchar(1000),
 	accepted boolean default false
 )
+;
+
+create table if not exists blacklisttoken
+(
+	id serial not null
+		constraint blacklisttoken_pkey
+			primary key,
+	token varchar(500) not null,
+	blacklisted_on timestamp default now()
+)
+;
+
+create unique index if not exists blacklisttoken_token_uindex
+	on blacklisttoken (token)
+;

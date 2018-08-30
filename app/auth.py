@@ -30,6 +30,8 @@ class Authentication:
         decode_result = self.decode_auth_token(auth_header)
         if not self.check_user_in_db(decode_result):
             return "User not found. Kindly register"
+        if not self.is_token_blacklisted(auth_header):
+            return "You are logged out, Kindly login again"
         return decode_result
 
     def encode_auth_token(self, user_id):
@@ -64,3 +66,10 @@ class Authentication:
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
+
+    def is_token_blacklisted(self, token):
+        query = "select * from blacklisttoken where token = %s"
+        is_token = db.qry(query, (token,), fetch="rowcount")
+
+        if not is_token > 0:
+            return True

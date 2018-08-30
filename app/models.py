@@ -1,4 +1,5 @@
 """This module manipulates the different models"""
+import psycopg2
 import re
 
 from app import app
@@ -46,6 +47,20 @@ class Users:
         if email_count >= 1:
             raise ValueError("'{}' has already been registered".format(value.strip()))
         return value
+
+    def logout(self, token):
+        query = "insert into blacklisttoken (token)values (%s)"
+        # import pdb; pdb.set_trace()
+        token = token.split(' ')[-1].strip()
+        arguments = (token,)
+        try:
+            db.qry(query, arguments, commit=True)
+        except psycopg2.IntegrityError as e:
+            pass
+        return {
+                   'status': 'success',
+                   'message': 'Successfully logged out.'
+               }, 200
 
     def password_valid(self, value, name):
         """
