@@ -18,7 +18,7 @@ class DatabaseConfig:
 
     def drop_all(self):
         with app.app_context():
-            self.qry("drop TABLE answers; drop TABLE questions; drop TABLE users; ", commit=True)
+            self.qry("drop TABLE answers; drop TABLE questions; drop TABLE users; drop TABLE blacklisttoken", commit=True)
 
     def connect_db(self):
         """

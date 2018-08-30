@@ -12,7 +12,6 @@ class TestStackBase(unittest.TestCase):
     This class is used to test questions
     """
 
-
     def setUp(self):
         """
         Used in setting up before doing the testcases
@@ -45,8 +44,8 @@ class TestStackBase(unittest.TestCase):
                              "fresh VM or"}
 
         response = self.client_app.post("/api/v1/questions/",
-                                       data=json.dumps(question),
-                                       content_type="application/json", headers={'Authorization': self.token})
+                                        data=json.dumps(question),
+                                        content_type="application/json", headers={'Authorization': self.token})
         self.question_id = json.loads(response.data.decode())["question_id"]
 
     def tearDown(self):

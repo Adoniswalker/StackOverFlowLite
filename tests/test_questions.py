@@ -61,7 +61,8 @@ class TestQuestions(TestStackBase):
                                         content_type="application/json", headers={'Authorization': self.token})
         data = json.loads(response.data.decode())
         # import pdb;pdb.set_trace()
-        self.assertTrue(data['message']['question_body'] == 'Missing required parameter in the JSON body or the post body or the query string')
+        self.assertTrue(data['message'][
+                            'question_body'] == 'Missing required parameter in the JSON body or the post body or the query string')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -99,32 +100,6 @@ class TestQuestions(TestStackBase):
         self.assertTrue(response.content_type == 'application/json')
         assert response_msg["Error"] == "No question found"
         assert response.status_code == 404
-
-    def test_post_answer(self):
-        """
-        Test when posting an answer
-        """
-        response = self.client_app.post("/api/v1/questions/{}/answers/".format(self.question_id),
-                                        data=json.dumps(dict(answer="I prefer with ram")),
-                                        content_type="application/json",
-                                        headers={'Authorization': self.token})
-        response_msg = json.loads(response.data.decode("UTF-8"))
-        self.assertTrue(response_msg['answer'] == 'I prefer with ram')
-        assert response.status_code == 201
-
-    def test_post_no_answer(self):
-        """
-        Testing a question without an answer
-        """
-        response = self.client_app.post("/api/v1/questions/{}/answers/".format(self.question_id),
-                                        data=json.dumps(dict()),
-                                        content_type="application/json",
-                                        headers={'Authorization': self.token})
-        response_msg = json.loads(response.data.decode("UTF-8"))
-        self.assertTrue(response_msg['message']['answer'] ==
-                        'Missing required parameter in the JSON '
-                        'body or the post body or the query string')
-        assert response.status_code == 400
 
     def test_delete_question_no_id(self):
         """

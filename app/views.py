@@ -9,7 +9,7 @@ from app.auth import Authentication
 from app.db import DatabaseConfig
 from app.answers import PostAnswer, UpdateAnswer
 from app.models import Users
-from app.questions import QuestionsApi, QuestionGetUpdateDelete
+from app.questions import QuestionsApi, QuestionGetUpdateDelete, UserQuestions
 
 api = Api(app)
 b_crypt = Bcrypt(app)
@@ -106,7 +106,7 @@ class RegisterUser(Resource):
 
 
 LOGIN_PARSER = reqparse.RequestParser(bundle_errors=True)
-LOGIN_PARSER.add_argument('email', required=True)
+LOGIN_PARSER.add_argument('email',  required=True, type=user.is_email_valid)
 LOGIN_PARSER.add_argument('password', required=True)
 
 
@@ -198,6 +198,7 @@ api.add_resource(QuestionGetUpdateDelete, '/api/v1/questions/<int:question_id>/'
 api.add_resource(RegisterUser, '/api/v1/auth/signup/')
 api.add_resource(LoginUser, '/api/v1/auth/login/')
 api.add_resource(LogOut, '/api/v1/auth/logout/')
+api.add_resource(UserQuestions, '/api/v1/questions/user/')
 api.add_resource(PostAnswer, '/api/v1/questions/<int:question_id>/answers/')
 api.add_resource(UpdateAnswer, '/api/v1/questions/<int:question_id>/answers/<answer_id>/')
 if __name__ == '__main__':

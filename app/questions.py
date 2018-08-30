@@ -200,3 +200,59 @@ class QuestionGetUpdateDelete(Resource):
             """
         args = QUESTION_PARSER.parse_args()
         return quest.update(question_id, args)
+
+
+class UserQuestions(Resource):
+    def get(self):
+        """Endporint for user registration
+        This is using docstrings for specifications.
+        ---
+        tags:
+            - User
+        consumes:
+            - "application/json"
+        produces:
+            - "application/json"
+        parameters:
+            -   in: body
+                name: body
+                required: True
+                description: User signup details
+                schema:
+                    id: UserSignUp
+                    properties:
+                        first_name:
+                            required: False
+                            description: The name of user
+                            type: string
+                            default: dennis
+
+                        last_name:
+                            required: False
+                            description: The last name of user
+                            type: string
+                            default: jemo
+
+                        email:
+                            required: True
+                            type: string
+                            description: The email of user
+
+                        password:
+                            required: True
+                            description: User provided answer
+                            type: string
+        responses:
+            202:
+                description: Successful registration
+            400:
+                description: Wrong details provided
+        """
+        args = TOKEN_PARSER.parse_args()
+        user_id = auth.jwt_required(args)
+        try:
+            user_id = int(user_id)
+        except ValueError as e:
+            return {"Error": user_id}
+        return quest.get_user_question(user_id), 200
+

@@ -38,15 +38,21 @@ class Users:
         :param name:
         :return:
         """
-        email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
-        if not re.match(email_regex, value.strip()):
-            raise ValueError("The parameter '{}' is not a valid email."
-                             " You gave us the value:{}".format(name, value))
+        is_mail = self.is_email_valid(value, name)
+        if not is_mail == value:
+            return is_mail
         email_count = db.qry("select email from users where email ="
                              " '{}'".format(value.strip()), fetch="rowcount")
         if email_count >= 1:
             raise ValueError("'{}' has already been registered".format(value.strip()))
         return value
+
+    def is_email_valid(self, email, name):
+        email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        if not re.match(email_regex, email.strip()):
+            raise ValueError("The parameter '{}' is not a valid email."
+                             " You gave us the value:{}".format(name, email))
+        return email
 
     def logout(self, token):
         query = "insert into blacklisttoken (token)values (%s)"
@@ -170,7 +176,7 @@ class Question:
             return {"Error": "UnAuthorised"}, 401
         query = "DELETE FROM questions WHERE question_id = {};".format(question_id)
         question = db.qry(query, commit=True)
-        return question, 204
+        return {"message": "Succefully deleted the question"}, 200
 
     def check_question_owner(self, question_id):
         """
@@ -183,6 +189,14 @@ class Question:
         question_result = db.qry(query, fetch="one")
         if question_result:
             return db.qry(query, fetch="one")["account_id"]
+
+    def check_valid_paragraph(self, text):
+        regex = '^(?!.*([A-Za-z0-9@])\1{2})(?=.*[a-z])(?=.*\d)[A-Za-z0-9\s@.]+$'
+        if not re.match(regex, text):
+            raise ValueError(
+                "Question must contain aleast one alphabet, not more that "
+                "two characters in a row, and only @. ")
+        return text
 
     def check_question_posted(self, value):
         """
@@ -236,6 +250,18 @@ class Question:
         if asked:
             raise ValueError("'{}' has already been asked here {}".format(value, asked))
         return value
+
+    def get_user_question(self, user_id):
+        """
+                Get one question with details
+                :param question_id:
+                :return:
+                """
+        questions = db.qry("select  * from questions where posted_by = "
+                          "'{}' order by date_posted desc".format(user_id), fetch="all")
+        for question in questions:
+            question["date_posted"] = str(question["date_posted"])
+        return questions
 
 
 class Answer:

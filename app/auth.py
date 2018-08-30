@@ -59,6 +59,7 @@ class Authentication:
         :param auth_token:
         :return: integer|string
         """
+        # import pdb;pdb.set_trace()
         try:
             payload = jwt.decode(auth_token, app.config['SECRET_KEY'])
             return payload['sub']
