@@ -46,7 +46,13 @@ class TestStackBase(unittest.TestCase):
         response = self.client_app.post("/api/v1/questions/",
                                         data=json.dumps(question),
                                         content_type="application/json", headers={'Authorization': self.token})
+        # import pdb; pdb.set_trace()
         self.question_id = json.loads(response.data.decode())["question_id"]
+        self.question = {
+            "question_subject": "Is this a new question subject?",
+            "question_body": "It that jobs do not share storage, as each job runs in a "
+                             "fresh VM or working on anything"}
+        self.question_json = json.dumps(self.question)
 
     def tearDown(self):
         """

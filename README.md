@@ -5,6 +5,8 @@ StackOverflow-lite is a platform where people can ask questions and provide answ
 [![Build Status](https://travis-ci.org/Adoniswalker/StackOverFlowLite.svg?branch=Chore-add-travis-badge-159859927)](https://travis-ci.org/Adoniswalker/StackOverFlowLite)
 
 [![Coverage Status](https://coveralls.io/repos/github/Adoniswalker/StackOverFlowLite/badge.svg?branch=feature)](https://coveralls.io/github/Adoniswalker/StackOverFlowLite?branch=faeture)
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/d07ddb81fb71a109b9ed/maintainability)](https://codeclimate.com/github/Adoniswalker/StackOverFlowLite/maintainability)
 ### Features
 1. Users can post questions.
 2. Users can post answers.

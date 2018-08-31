@@ -175,7 +175,7 @@ class Question:
         if not user_id == check_question:
             return {"Error": "UnAuthorised"}, 401
         query = "DELETE FROM questions WHERE question_id = {};".format(question_id)
-        question = db.qry(query, commit=True)
+        db.qry(query, commit=True)
         return {"message": "Succefully deleted the question"}, 200
 
     def check_question_owner(self, question_id):
@@ -190,13 +190,13 @@ class Question:
         if question_result:
             return db.qry(query, fetch="one")["account_id"]
 
-    def check_valid_paragraph(self, text):
-        regex = '^(?!.*([A-Za-z0-9@])\1{2})(?=.*[a-z])(?=.*\d)[A-Za-z0-9\s@.]+$'
-        if not re.match(regex, text):
-            raise ValueError(
-                "Question must contain aleast one alphabet, not more that "
-                "two characters in a row, and only @. ")
-        return text
+    # def check_valid_paragraph(self, text):
+    #     # regex = '^(?!.*([A-Za-z0-9@])\1{2})(?=.*[a-zA-Z])(?=.*\d)[A-Za-z0-9\s@.]+$'
+    #     if not re.match("^[a-zA-Z0-9/.\s?_"']{5,2000}$") , text):
+    #         raise ValueError(
+    #             "Question must contain aleast one alphabet, not more that "
+    #             "two characters in a row, and only @. ")
+    #     return text
 
     def check_question_posted(self, value):
         """
@@ -242,9 +242,10 @@ class Question:
         """
         value = value.strip()
         text_len = len(value)
-        if 5 >= text_len <= 2000:
+        if 5 > text_len < 2000:
             raise ValueError(
                 "The parameter '{}' must be between 5 and 2000 characters. "
+                "and contain only alphabets, numeric, /, .,?,_ "
                 "Your value len is:{}".format(name, text_len))
         asked = self.check_question_posted(value)
         if asked:
@@ -258,7 +259,7 @@ class Question:
                 :return:
                 """
         questions = db.qry("select  * from questions where posted_by = "
-                          "'{}' order by date_posted desc".format(user_id), fetch="all")
+                           "'{}' order by date_posted desc".format(user_id), fetch="all")
         for question in questions:
             question["date_posted"] = str(question["date_posted"])
         return questions

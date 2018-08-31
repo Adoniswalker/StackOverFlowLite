@@ -5,6 +5,7 @@ from tests import TestStackBase
 
 
 class TestQuestions(TestStackBase):
+    """This class test the question test class"""
 
     def test_get_questions(self):
         """Start with a blank database."""
@@ -15,19 +16,15 @@ class TestQuestions(TestStackBase):
         """
         Tests a user can post a question.
         """
-        question = {
-            "question_subject": "Is this a new question subject?",
-            "question_body": "It that jobs do not share storage, as each job runs in a "
-                             "fresh VM or working on anything"}
-
         response = self.client_app.post("/api/v1/questions/",
-                                        data=json.dumps(question),
-                                        content_type="application/json", headers={'Authorization': self.token})
+                                        data=json.dumps(self.question),
+                                        content_type="application/json",
+                                        headers={'Authorization': self.token})
         data = json.loads(response.data.decode())
         self.assertTrue(data['question_subject'] == 'Is this a new question subject?')
-        self.assertTrue(data[
-                            'question_body'] == "It that jobs do not share storage, as each job runs in a "
-                                                "fresh VM or working on anything")
+        self.assertTrue(data['question_body'] == "It that jobs do not share storage, "
+                                                 "as each job runs in a "
+                                                 "fresh VM or working on anything")
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 201)
 
@@ -35,13 +32,9 @@ class TestQuestions(TestStackBase):
         """
         Tests a user can post a question.
         """
-        question = {
-            "question_subject": "Can i post a  question without a token?",
-            "question_body": "It no you cant that jobs do not share storage, as each job runs in a "
-                             "fresh VM or"}
 
         response = self.client_app.post("/api/v1/questions/",
-                                        data=json.dumps(question),
+                                        data=json.dumps(self.question),
                                         content_type="application/json")
         data = json.loads(response.data.decode())
         self.assertTrue(data['message']['Authorization'] == 'Token is required. Please login')
@@ -58,11 +51,13 @@ class TestQuestions(TestStackBase):
 
         response = self.client_app.post("/api/v1/questions/",
                                         data=json.dumps(question),
-                                        content_type="application/json", headers={'Authorization': self.token})
+                                        content_type="application/json",
+                                        headers={'Authorization': self.token})
         data = json.loads(response.data.decode())
         # import pdb;pdb.set_trace()
-        self.assertTrue(data['message'][
-                            'question_body'] == 'Missing required parameter in the JSON body or the post body or the query string')
+        self.assertTrue(data['message']['question_body'] == 'Missing required parameter '
+                                                            'in the JSON body or the post'
+                                                            ' body or the query string')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -71,15 +66,18 @@ class TestQuestions(TestStackBase):
         Check if question can be added without function
         """
         question = {
-            "question_body": "It is important to note that jobs do not share storage, as each job runs in a "
+            "question_body": "It is important to note that jobs do not share"
+                             " storage, as each job runs in a "
                              "fresh VM or"}
 
         response = self.client_app.post("/api/v1/questions/",
                                         data=json.dumps(question),
-                                        content_type="application/json", headers={'Authorization': self.token})
+                                        content_type="application/json",
+                                        headers={'Authorization': self.token})
         data = json.loads(response.data.decode())
-        self.assertTrue(data['message'][
-                            'question_subject'] == 'Missing required parameter in the JSON body or the post body or the query string')
+        self.assertTrue(data['message']['question_subject'] == 'Missing required parameter'
+                                                               ' in the JSON body or the post'
+                                                               ' body or the query string')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -105,7 +103,8 @@ class TestQuestions(TestStackBase):
         """
         Test to deleting non existing question
         """
-        response = self.client_app.delete("/api/v1/questions/10000/", headers={'Authorization': self.token})
+        response = self.client_app.delete("/api/v1/questions/10000/",
+                                          headers={'Authorization': self.token})
         assert response.status_code == 404
 
     def test_delete_question_no_token(self):
@@ -124,13 +123,12 @@ class TestQuestions(TestStackBase):
         This will test question update
         """
         response = self.client_app.put("/api/v1/questions/{}/".format(self.question_id),
-                                       data=json.dumps(dict(question_subject="I prefer RAM",
-                                                            question_body="This is question body")),
-                                       content_type="application/json",
+                                       data=self.question_json, content_type="application/json",
                                        headers={'Authorization': self.token})
         response_data = json.loads(response.data.decode("UTF-8"))
-        assert response_data["question_subject"] == "I prefer RAM"
-        assert response_data["question_body"] == "This is question body"
+        assert response_data["question_subject"] == "Is this a new question subject?"
+        assert response_data["question_body"] == "It that jobs do not share storage, as each job " \
+                                                 "runs in a fresh VM or working on anything"
         assert response.status_code == 200
 
     def test_update_question_no_id(self):
@@ -138,8 +136,7 @@ class TestQuestions(TestStackBase):
         This will test update of non existing question
         """
         response = self.client_app.put("/api/v1/questions/1000/",
-                                       data=json.dumps(dict(question_subject="I prefer RAM",
-                                                            question_body="This is question body")),
+                                       data=self.question_json,
                                        content_type="application/json",
                                        headers={'Authorization': self.token})
         response_data = json.loads(response.data.decode("UTF-8"))
