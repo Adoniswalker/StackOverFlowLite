@@ -1,52 +1,10 @@
 """This file is used for testcases"""
 import json
-import unittest
 
-from app import views, app, db
+from tests import TestStackBase
 
 
-class TestQuestions(unittest.TestCase):
-    """
-    This class is used to test questions
-    """
-
-    @classmethod
-    def setUpClass(cls):
-        """
-        Used in setting up before doing the testcases
-        """
-        with app.app_context():
-            db.create_all()
-        cls.client_app = views.app.test_client()
-        with cls.client_app:
-            cls.client_app.post(
-                '/api/v1/auth/signup/',
-                data=json.dumps(dict(
-                    last_name='james',
-                    email='joe4@gmail.com',
-                    password='123456sddfdf'
-                )),
-                content_type='application/json'
-            )
-            response = cls.client_app.post(
-                '/api/v1/auth/login/',
-                data=json.dumps(dict(
-                    email='joe4@gmail.com',
-                    password='123456sddfdf',
-                )),
-                content_type='application/json'
-            )
-
-        cls.token = json.loads(response.data.decode())["auth_token"]
-        question = {
-            "question_subject": "What is computer programming?",
-            "question_body": "It is important to note that jobs do not share storage, as each job runs in a "
-                             "fresh VM or"}
-
-        response = cls.client_app.post("/api/v1/questions/",
-                                       data=json.dumps(question),
-                                       content_type="application/json", headers={'Authorization': cls.token})
-        cls.question_id = json.loads(response.data.decode())["question_id"]
+class TestQuestions(TestStackBase):
 
     def test_get_questions(self):
         """Start with a blank database."""
@@ -58,18 +16,18 @@ class TestQuestions(unittest.TestCase):
         Tests a user can post a question.
         """
         question = {
-            "question_subject": "What is computer programming?",
-            "question_body": "It is important to note that jobs do not share storage, as each job runs in a "
-                             "fresh VM or"}
+            "question_subject": "Is this a new question subject?",
+            "question_body": "It that jobs do not share storage, as each job runs in a "
+                             "fresh VM or working on anything"}
 
         response = self.client_app.post("/api/v1/questions/",
                                         data=json.dumps(question),
                                         content_type="application/json", headers={'Authorization': self.token})
         data = json.loads(response.data.decode())
-        self.assertTrue(data['question_subject'] == 'What is computer programming?')
+        self.assertTrue(data['question_subject'] == 'Is this a new question subject?')
         self.assertTrue(data[
-                            'question_body'] == 'It is important to note that jobs do not share storage, '
-                                                'as each job runs in a fresh VM or')
+                            'question_body'] == "It that jobs do not share storage, as each job runs in a "
+                                                "fresh VM or working on anything")
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 201)
 
@@ -78,15 +36,14 @@ class TestQuestions(unittest.TestCase):
         Tests a user can post a question.
         """
         question = {
-            "question_subject": "What is computer programming?",
-            "question_body": "It is important to note that jobs do not share storage, as each job runs in a "
+            "question_subject": "Can i post a  question without a token?",
+            "question_body": "It no you cant that jobs do not share storage, as each job runs in a "
                              "fresh VM or"}
 
         response = self.client_app.post("/api/v1/questions/",
                                         data=json.dumps(question),
                                         content_type="application/json")
         data = json.loads(response.data.decode())
-        # import pdb; pdb.set_trace()
         self.assertTrue(data['message']['Authorization'] == 'Token is required. Please login')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 400)
@@ -96,15 +53,15 @@ class TestQuestions(unittest.TestCase):
         Tests user cannnot ask a question without body content
         """
         question = {
-            "question_subject": "What is computer programming?",
+            "question_subject": "Can i post the subject only?",
         }
 
         response = self.client_app.post("/api/v1/questions/",
                                         data=json.dumps(question),
                                         content_type="application/json", headers={'Authorization': self.token})
-        # import pdb; pdb.set_trace()
         data = json.loads(response.data.decode())
-        self.assertTrue(data['message']['question_body'] == 'Question body is required')
+        # import pdb;pdb.set_trace()
+        self.assertTrue(data['message']['question_body'] == 'Missing required parameter in the JSON body or the post body or the query string')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -120,7 +77,8 @@ class TestQuestions(unittest.TestCase):
                                         data=json.dumps(question),
                                         content_type="application/json", headers={'Authorization': self.token})
         data = json.loads(response.data.decode())
-        self.assertTrue(data['message']['question_subject'] == 'Missing required parameter in the JSON body or the post body or the query string')
+        self.assertTrue(data['message'][
+                            'question_subject'] == 'Missing required parameter in the JSON body or the post body or the query string')
         self.assertTrue(response.content_type == 'application/json')
         self.assertEqual(response.status_code, 400)
 
@@ -181,7 +139,6 @@ class TestQuestions(unittest.TestCase):
         """
         response = self.client_app.delete("/api/v1/questions/1/")
         response_data = json.loads(response.data.decode("UTF-8"))
-        # import pdb; pdb.set_trace()
         assert response.content_type == 'application/json'
 
         assert response_data["message"]["Authorization"] == 'Token is required. Please login'
@@ -196,7 +153,6 @@ class TestQuestions(unittest.TestCase):
                                                             question_body="This is question body")),
                                        content_type="application/json",
                                        headers={'Authorization': self.token})
-        # import pdb; pdb.set_trace()
         response_data = json.loads(response.data.decode("UTF-8"))
         assert response_data["question_subject"] == "I prefer RAM"
         assert response_data["question_body"] == "This is question body"
@@ -212,18 +168,5 @@ class TestQuestions(unittest.TestCase):
                                        content_type="application/json",
                                        headers={'Authorization': self.token})
         response_data = json.loads(response.data.decode("UTF-8"))
-        # import pdb; pdb.set_trace()
         assert response_data["Error"] == "UnAuthorised"
         assert response.status_code == 401
-
-    @classmethod
-    def tearDownClass(cls):
-        """
-        Used to reset or delete the database
-        """
-        with app.app_context():
-            db.drop_all()
-
-
-if __name__ == "__main__":
-    unittest.main()
