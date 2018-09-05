@@ -1,3 +1,4 @@
+"""This file is used to initialise this package and create app,also running the server"""
 from flask import Flask
 
 
