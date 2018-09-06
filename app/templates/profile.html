@@ -1,83 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Profile</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/index_style.css">
-    <link rel="stylesheet" href="css/profile_styles.css">
-</head>
-<body class="body">
-<header>
-    <a href="#" id="logo">StackOverflowLite</a>
-    <nav>
-        <a href="#" id="menu-icon"></a>
-        <ul>
-            <li><a href={{ url_for('home') }}>Home</a></li>
-            <li><a href={{ url_for('profile') }}>Profile</a></li>
-            <li><a href={{ url_for('signup') }} class="current">Sign up</a></li>
-            <li><a href={{ url_for('login') }}>Login</a></li>
-        </ul>
-    </nav>
-</header>
-<div class="container">
-    <div class="left_nav">
-        <div>
-            <p>Question asked</p>
-            <p>50</p>
-        </div>
-        <div>
-            <p>Answers given</p>
-            <p>120</p>
-        </div>
-    </div>
-    <div class="content-nav">
-        <div class="question_most">
-            <h3>Question you asked with most answers</h3>
-            <div class="question_list">
-                <div class="question_item">
-                    <h4>What are the tags used in html?</h4>
-                    <p>This is meant to be a guide to formulating your user stories on pivotal tracker. It is important
-                        to
-                        note
-                        that
-                        not all user stories would have all the elements listed e.g **DESIGN Notes**.
-                        The structure and an example of a user story are below.</p>
-                </div>
-            </div>
-        </div>
-        <div class="question_recent">
-            <h3>Recent questions you asked</h3>
-            <div class="question_list">
-                <div class="question_item">
-                    <h4>What are the tags used in html?</h4>
-                    <p>This is meant to be a guide to formulating your user stories on pivotal tracker. It is important
-                        to
-                        note
-                        that
-                        not all user stories would have all the elements listed e.g **DESIGN Notes**.
-                        The structure and an example of a user story are below.</p>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-<footer id="footer">
-    <div class="footer-top">
-        <div class="container">
-
-        </div>
-    </div>
-
+{% extends "layout.html" %}
+{% block title %}
+    {{ super() }} | profile
+{% endblock %}
+{% block content %}
     <div class="container">
-        <div class="copyright">
-            &copy; Copyright <strong>Dennis</strong>. All Rights Reserved
+        <div class="left_nav">
+            <div>
+                <p>Question asked</p>
+                <p>50</p>
+            </div>
+            <div>
+                <p>Answers given</p>
+                <p>120</p>
+            </div>
         </div>
-        <div class="credits">
-            Stackoverflow lite by <a href="#">Technology</a>
+        <div class="content-nav">
+            <div class="question_most">
+                <h3>Question you asked with most answers</h3>
+                <div class="question_list">
+                    <div class="question_item">
+                        <h4>What are the tags used in html?</h4>
+                        <p>This is meant to be a guide to formulating your user stories on pivotal tracker. It is
+                            important
+                            to
+                            note
+                            that
+                            not all user stories would have all the elements listed e.g **DESIGN Notes**.
+                            The structure and an example of a user story are below.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="question_recent">
+                <h3>Recent questions you asked</h3>
+                <div class="question_list">
+                    <div class="question_item">
+                        <h4>What are the tags used in html?</h4>
+                        <p>This is meant to be a guide to formulating your user stories on pivotal tracker. It is
+                            important
+                            to
+                            note
+                            that
+                            not all user stories would have all the elements listed e.g **DESIGN Notes**.
+                            The structure and an example of a user story are below.</p>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
-</footer>
-</body>
-</html>
+    <div class="clear"></div>
+{% endblock %}

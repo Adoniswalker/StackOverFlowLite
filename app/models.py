@@ -79,7 +79,7 @@ class Users:
         if not re.match(password_regex, value.strip()):
             raise ValueError(
                 "The parameter '{}' must be 8 characters or more. "
-                "You gave us the value:{}".format(name, value))
+                "Your password length is:{}".format(name, len(value)))
         return value
 
     def login(self, args):
@@ -114,6 +114,8 @@ class Question:
         :return:
         """
         questions = db.qry("select  * from questions order by date_posted desc", fetch="all")
+        if not questions:
+            return questions, 404
         for j in questions:
             j["date_posted"] = str(j["date_posted"])
         return questions

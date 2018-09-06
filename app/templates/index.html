@@ -1,27 +1,14 @@
 {% extends 'layout.html' %}
+{% block title %}
+    {{ super() }} | Home
+{% endblock %}
 {% block content %}
-
     <div class="question">
         <div class="question_list" id="question_list_id">
-            <a href="UI/question_detail.html" class="question_link">
-                <div class="question_item">
-                    <h4>What is programming language?</h4>
-                    <span class="question_vote">5</span><span class="votes">Votes</span><span
-                        class="question_vote">5</span><span
-                        class="votes">Answers</span>
-                    <p>This is meant to be a guide to formulating your user stories on pivotal tracker. It is important
-                        to
-                        note
-                        that
-                        not all user stories would have all the elements listed e.g **DESIGN Notes**.
-                        The structure and an example of a user story are below.</p>
-                    <span class="question_tip">Asked 3 min ago Loki</span>
-                </div>
-            </a>
         </div>
-
         <div class="post_question">
             <h2>Post a question</h2>
+{#            <form method="POST" class="form" onsubmit="event.preventDefault();return addQuestion()"#}
             <form method="POST" class="form" onsubmit="event.preventDefault();return addQuestion()"
                   name="post_question">
                 <div>
@@ -38,4 +25,5 @@
             </form>
         </div>
     </div>
+    <div class="clear"></div>
 {% endblock %}

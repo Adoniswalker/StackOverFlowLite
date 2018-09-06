@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
-{% block content %}
     {% block title %}
         super() | Login
     {% endblock %}
+{% block content %}
 <div class="form_div">
     <h1>Login</h1>
     <form method="POST" class="form" id="login" onsubmit="event.preventDefault();">
@@ -14,7 +14,7 @@
             </div>
             <div>
                 <label for="password">Password</label>
-                <input type="password" id='password' name="password" required>
+                <input type="password" suggested ="current-password" id='password' name="password" required>
                 <span id = "wrong_error" class="alert-danger"></span>
             </div>
             <button class="button">Login</button>

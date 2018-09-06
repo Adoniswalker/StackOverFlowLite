@@ -201,6 +201,3 @@ api.add_resource(LogOut, '/api/v1/auth/logout/')
 api.add_resource(UserQuestions, '/api/v1/questions/user/')
 api.add_resource(PostAnswer, '/api/v1/questions/<int:question_id>/answers/')
 api.add_resource(UpdateAnswer, '/api/v1/questions/<int:question_id>/answers/<answer_id>/')
-
-# if __name__ == '__main__':
-#     app.run(debug=True)

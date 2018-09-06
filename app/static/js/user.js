@@ -47,13 +47,16 @@ function loginUser() {
             res.json().then((data) => {
                 if (res.status === 200) {
                          console.log(data);
-               window.location.replace("/")
+                         window.localStorage.setItem('user', data);
+                         window.location.replace("/");
                 }
                 else if(res.status === 404){
                     console.log(data);
                     changeHtml(data["Error"], "login_mail_error");
                 }else if(res.status===400){
                     changeHtml(data["Error"], "wrong_error");
+                    console.log(data);
+                    // changeHtml(data["message"]["email"], "login_mail_error");
                 }
             });
         })
@@ -63,7 +66,7 @@ function loginUser() {
 }
 function changeHtml(text, parentId) {
     parentElem = document.getElementById(parentId);
-    if (typeof text != 'undefined'){
+    if (typeof text !== 'undefined'){
         parentElem.innerText = text
     }else {
         parentElem.innerText = ''
