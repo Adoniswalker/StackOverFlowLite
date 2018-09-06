@@ -2,8 +2,10 @@
 "use strict"; //enable strict mode for debugging
 
 document.addEventListener('DOMContentLoaded', get_all_questions(), true);
-var question_list_Div = document.getElementById("question_list_id");
-
+const question_list_Div = document.getElementById("question_list_id");
+if (form) {
+    form.addEventListener("submit", create_user);
+}
 function get_all_questions() {
     fetch("/api/v1/questions/", {
         method: "GET",
@@ -33,4 +35,33 @@ function get_all_questions() {
     }).catch((err) => {
         console.log("Error", err);
     });
+}
+function addQuestion() {
+    //To allow manipulations of this tags
+    let question_subject_tag = document.forms["post_question"]["subject"];
+    let question_body_tag = document.forms["post_question"]["content_question"];
+
+    let question_subject = trimfield(question_subject_tag.value);
+    let question_body = trimfield(question_body_tag.value);
+    console.log(question_subject.length);
+    if (! (question_subject.length<=2000 && question_subject.length>=5)) {
+        changeHtml("Kindly provide a subject between 5 and 2000 characters!", "subject_error");
+        question_subject_tag.focus();
+        return false;
+    }
+    if (! (question_body.length<=2000 && question_body.length>=5)) {
+        changeHtml("Kindly provide a body between 5 and 2000 characters!", "body_error");
+        question_body_tag.focus();
+        return false;
+    } else {
+        let content = (" <a href=\"UI/question_detail.html\" class=\"question_link\">\n" +
+            "\n" +
+            "            <div class=\"question_item\">\n" +
+            "                <h4>" + row_question.value + "</h4>\n" +
+            "                <p>" + row_message.value + "</p>\n" +
+            "            </div>\n" +
+            "        </a>");
+        question_list_Div.insertAdjacentHTML('beforeend', content)
+    }
+
 }

@@ -8,18 +8,19 @@
         </div>
         <div class="post_question">
             <h2>Post a question</h2>
-{#            <form method="POST" class="form" onsubmit="event.preventDefault();return addQuestion()"#}
             <form method="POST" class="form" onsubmit="event.preventDefault();return addQuestion()"
                   name="post_question">
                 <div>
                     <label for="subject">Subject</label>
                     <input type="text" id="subject" name="subject" required>
+                    <span id = "subject_error" class="alert-danger"></span>
                 </div>
                 <div>
                     <label for="content_question">Question content</label>
                     <textarea id="content_question" name="content_question" required>
+                    </textarea>
+                    <span id = "body_error" class="alert-danger"></span>
 
-                        </textarea>
                 </div>
                 <input type="submit" value="Submit">
             </form>
