@@ -130,7 +130,7 @@ class Question:
         try:
             user_id = int(user_id)
         except ValueError as e:
-            return {"Error": user_id}, 403
+            return {"message": {"Authorization": user_id}}, 403
         query = "INSERT into questions (question_subject, question_body, posted_by)" \
                 " VALUES (%s, %s, %s)returning question_id, question_subject, " \
                 "question_body, posted_by, date_posted"

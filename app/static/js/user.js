@@ -47,7 +47,7 @@ function loginUser() {
             res.json().then((data) => {
                 if (res.status === 200) {
                          console.log(data);
-                         window.localStorage.setItem('user', data);
+                         window.localStorage.setItem('token', data["auth_token"]);
                          window.location.replace("/");
                 }
                 else if(res.status === 404){
@@ -66,19 +66,10 @@ function loginUser() {
 }
 function changeHtml(text, parentId) {
     parentElem = document.getElementById(parentId);
-    if (typeof text !== 'undefined'){
+    if ((typeof text !== 'undefined') && text){
         parentElem.innerText = text
     }else {
         parentElem.innerText = ''
     }
 
-}
-
-function makeElement(id, name, parentId, elementType, template) {
-    elem = document.createElement(elementType);
-    elem.innerHTML = `id: ${id} <br /> repo-name: ${name} <br /> <br />`
-    elem.setAttribute('data-id', id);
-    parentElem = document.getElementById(parentId);
-    console.log(parent);
-    parentElem.append(elem);
 }

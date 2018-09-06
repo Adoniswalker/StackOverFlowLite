@@ -6,6 +6,7 @@ const question_list_Div = document.getElementById("question_list_id");
 if (form) {
     form.addEventListener("submit", create_user);
 }
+
 function get_all_questions() {
     fetch("/api/v1/questions/", {
         method: "GET",
@@ -13,18 +14,8 @@ function get_all_questions() {
     }).then((res) => {
         res.json().then((data) => {
             if (res.status === 200) {
-                console.log(data);
                 for (var i = 0; i < data.length; i++) {
-                    let content = (" <a href=\"UI/question_detail.html\" class=\"question_link\">\n" +
-                        "\n" +
-                        "            <div class=\"question_item\" data-id=" + data[i]["question_id"] + ">\n" +
-                        "                <h4>" + data[i]["question_subject"] + "</h4>\n" +
-                        "<span class=\"question_vote\">5</span><span class=\"votes\">Answers</span>" +
-                        "                <p>" + data[i]["question_body"] + "</p>\n" +
-                        "<span class=\"question_tip\">Asked at " + data[i]["date_posted"] + " by "+ data[i]["posted_by"] + " </span>" +
-                        "            </div>\n" +
-                        "        </a>");
-                    question_list_Div.insertAdjacentHTML('afterbegin', content)
+                    insert_question_list(data[i]);
                 }
 
             } else if (res.status === 404) {
@@ -36,6 +27,7 @@ function get_all_questions() {
         console.log("Error", err);
     });
 }
+
 function addQuestion() {
     //To allow manipulations of this tags
     let question_subject_tag = document.forms["post_question"]["subject"];
@@ -44,24 +36,62 @@ function addQuestion() {
     let question_subject = trimfield(question_subject_tag.value);
     let question_body = trimfield(question_body_tag.value);
     console.log(question_subject.length);
-    if (! (question_subject.length<=2000 && question_subject.length>=5)) {
+    if (!(question_subject.length <= 2000 && question_subject.length >= 5)) {
         changeHtml("Kindly provide a subject between 5 and 2000 characters!", "subject_error");
         question_subject_tag.focus();
         return false;
     }
-    if (! (question_body.length<=2000 && question_body.length>=5)) {
+    if (!(question_body.length <= 2000 && question_body.length >= 5)) {
         changeHtml("Kindly provide a body between 5 and 2000 characters!", "body_error");
         question_body_tag.focus();
         return false;
     } else {
-        let content = (" <a href=\"UI/question_detail.html\" class=\"question_link\">\n" +
-            "\n" +
-            "            <div class=\"question_item\">\n" +
-            "                <h4>" + row_question.value + "</h4>\n" +
-            "                <p>" + row_message.value + "</p>\n" +
-            "            </div>\n" +
-            "        </a>");
-        question_list_Div.insertAdjacentHTML('beforeend', content)
+        //Clear errors on form if any
+        changeHtml(false, "subject_error");
+        changeHtml(false, "body_error");
+        let data = {
+            "question_subject": question_subject,
+            "question_body": question_body
+        };
+        fetch("/api/v1/questions/", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "Authorization": "Bearer " + localStorage.getItem('token')
+            },
+            body: JSON.stringify(data)
+        }).then((res) => {
+            res.json().then((data) => {
+                if (res.status === 201) {
+                    insert_question_list(data);
+                }
+                else if (res.status === 400) {
+                    changeHtml(data["message"]["Authorization"], "login_error");
+                    changeHtml(data["message"]["question_subject"], "subject_error");
+                    changeHtml(data["message"]["question_body"], "body_error");
+                } else {
+                    changeHtml(data["message"]["Authorization"], "login_error");
+                }
+            });
+        }).catch((err) => {
+            console.log("Eror", err);
+        });
     }
 
+}
+
+function insert_question_list(data) {
+    console.log(data);
+    // This function will inset posted questions to a list
+    let content = (" <a href=\"UI/question_detail.html\" class=\"question_link\">\n" +
+        "\n" +
+        "            <div class=\"question_item\" data-id=" + data["question_id"] + ">\n" +
+        "                <h4>" + data["question_subject"] + "</h4>\n" +
+        "<span class=\"question_vote\">5</span><span class=\"votes\">Answers</span>" +
+        "                <p>" + data["question_body"] + "</p>\n" +
+        "<span class=\"question_tip\">Asked at " + data["date_posted"] + " by " + data["posted_by"] + " </span>" +
+        "            </div>\n" +
+        "        </a>");
+    question_list_Div.insertAdjacentHTML('afterbegin', content)
 }
