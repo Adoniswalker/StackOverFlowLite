@@ -5,7 +5,7 @@
 {% block content %}
     <div class="container">
         <div class="question_container">
-            <div class="question_detail" id="question">
+            <div class="question_detail" id="question" data-id="{{ question_id }}">
 
             </div>
             <div class="answers" id="answers_id">
@@ -15,8 +15,9 @@
 
                 <h3>Post an answer</h3>
                 <textarea id="answer_area" name="answer">This should be an aswer</textarea>
-                <span id="answer_error"></span>
+                <span id="answer_error" class="alert-danger"></span>
                 <button class="button">Answer</button>
+                <span id="login_err" class="alert-danger"></span>
             </form>
         </div>
     </div>

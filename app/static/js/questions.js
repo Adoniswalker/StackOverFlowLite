@@ -35,7 +35,6 @@ function addQuestion() {
 
     let question_subject = trimfield(question_subject_tag.value);
     let question_body = trimfield(question_body_tag.value);
-    console.log(question_subject.length);
     if (!(question_subject.length <= 2000 && question_subject.length >= 5)) {
         changeHtml("Kindly provide a subject between 5 and 2000 characters!", "subject_error");
         question_subject_tag.focus();
@@ -83,7 +82,7 @@ function addQuestion() {
 
 function insert_question_list(data) {
     // This function will inset posted questions to a list
-    let content = (" <a href=\"UI/question_detail.html\" class=\"question_link\">\n" +
+    let content = (" <a href=\"question\\"+data["question_id"]+"\" class=\"question_link\">\n" +
         "\n" +
         "            <div class=\"question_item\" data-id=" + data["question_id"] + ">\n" +
         "                <h4>" + data["question_subject"] + "</h4>\n" +
