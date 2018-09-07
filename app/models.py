@@ -281,12 +281,12 @@ class Answer:
         :return:
         """
         if not self.is_question_exist(question_id):
-            return {"Error": "No question found"}, 400
+            return {"message": {"question": "No question found"}}, 404
         user_id = auth.jwt_required(args)
         try:
             user_id = int(user_id)
         except ValueError as e:
-            return {"Error": user_id}
+            return {"message": {"Authorization": user_id}}, 403
         query = "INSERT into answers (question_id, answeres_by, answer)" \
                 " VALUES (%s, %s, %s) returning answer_id, question_id, " \
                 "answeres_by, answer_date, answer, accepted "
@@ -358,6 +358,25 @@ class Answer:
                        " accepted "
         return db.qry(update_query, params, commit=True, fetch="one"), 200
 
+    def valid_answer(self, value, name):
+        """
+        Validate the question
+        :param value:
+        :param name:
+        :return:
+        """
+        value = value.strip()
+        text_len = len(value)
+        if 5 > text_len < 2000:
+            raise ValueError(
+                "The parameter '{}' must be between 5 and 2000 characters. "
+                "and contain only alphabets, numeric, /, .,?,_ "
+                "Your value len is:{}".format(name, text_len))
+        asked = self.check_answer_posted(value)
+        if asked:
+            raise ValueError("'{}' has already been asked here {}".format(value, asked))
+        return value
+
     def is_answer_owner(self, answer_id, poster, answer):
         """
         used to check if user is owner of answer and change the answer
@@ -382,3 +401,12 @@ class Answer:
                        "answer_id, question_id, answeres_by, answer_date, answer," \
                        " accepted "
         return db.qry(update_query, params, commit=True, fetch="one"), 200
+
+    def check_answer_posted(self, value):
+        """
+                Check if the answer has been provided before
+                :param value:
+                :return:
+                """
+        query = "select answer_id from answers where answer ='{0}'".format(value)
+        return db.qry(query, fetch="all")

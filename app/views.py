@@ -43,11 +43,9 @@ def profile():
     return render_template("profile.html")
 
 
-@app.route('/question')
-def question():
-    return render_template("question_detail.html")
-
-
+@app.route('/question/<int:question_id>')
+def question(question_id):
+    return render_template("question_detail.html", question_id=question_id)
 
 
 REGISTER_PARSER = reqparse.RequestParser(bundle_errors=True)
