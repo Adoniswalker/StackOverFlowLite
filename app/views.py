@@ -48,6 +48,8 @@ def question():
     return render_template("question_detail.html")
 
 
+
+
 REGISTER_PARSER = reqparse.RequestParser(bundle_errors=True)
 REGISTER_PARSER.add_argument('first_name')
 REGISTER_PARSER.add_argument('last_name')

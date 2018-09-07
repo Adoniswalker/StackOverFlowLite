@@ -1,103 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Question</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/index_style.css">
-    <link rel="stylesheet" href="css/profile_styles.css">
-</head>
-<body class="body">
-<header>
-    <a href="#" id="logo">StackOverflowLite</a>
-    <nav>
-        <a href="#" id="menu-icon"></a>
-        <ul>
-            <li><a href={{ url_for('home') }} >Home</a> </li>
-            <li><a href={{ url_for('profile') }} >Profile</a> </li>
-            <li><a href={{ url_for('signup') }} class="current">Sign up</a> </li>
-            <li><a href={{ url_for('login') }} >Login</a> </li>
-        </ul>
-    </nav>
-</header>
-<div class="container">
-    <div class="question_container">
-        <div class="question_detail">
-            <h3>How can I delete a pre-installed language in Ubuntu 18.04?</h3>
-            <p>
-                screenshot of Language Support
-
-                I have reinstalled my computer system with the Ubuntu 18.04 last night, and while I install the system I
-                chose the system language is English but there is Chinese language package installed without my
-                agreement
-                now. (What happened exactly?)
-
-                I try to remove this language in the Install/Remove Languages... button, but when I open the language
-                setting, the system warns me there is some recommended package not installed and want to install it for
-                me.
-                (I do not need it at all.)
-
-                So, is there any ways to remove this language showing in the screenshot?</p>
-        </div>
-        <div class="answers" id="answers_id">
-            <div class="answer">
-
-                1
-                down vote
-                Thanks for Mr.Hjalmarsson's help.
-
-                Follow this Steps:
-
-                First, make sure that language which you want to make it disappear in this page is not set as the
-                "regional
-                formats" setting.
-
-                Then check the folder which in /usr/share/locale-langpack and using command ls like this:
-
-
-            </div>
-            <div class="answer">
-                We can see there has a language folder which you want to remove like zh, this zh folder was created by
-                the
-                installer since you (apparently) selected a Chinese time zone location, so we removed it now.
-
-                sudo rmdir /usr/share/locale-langpack/zh
-                At last, we use the command gnome-language-selector to remove the Chinese language packages again and
-                re-open the gnome-language-selector, the "汉语(中国)" will never appear.
-
-                If you can't see the "汉语(中国)", we should do some clean work after remove, so, just remove all of the
-                folders
-                which have the characters zh in the folders name.
-            </div>
-        </div>
-        <!--<form class="form">-->
-        <form class="form" onsubmit="event.preventDefault(); return addAnswer()" name="post_answer">
-
-            <h3>Post an answer</h3>
-            <textarea id ="answer_area" name="answer">This should be an aswer</textarea>
-            <span id = "answer_error"></span>
-            <button class="button">Answer</button>
-        </form>
-    </div>
-</div>
-
-
-<footer id="footer">
-    <div class="footer-top">
-        <div class="container">
-
-        </div>
-    </div>
-
+{% extends "layout.html" %}
+{% block title %}
+    {{ super() }} | question
+{% endblock %}
+{% block content %}
     <div class="container">
-        <div class="copyright">
-            &copy; Copyright <strong>Dennis</strong>. All Rights Reserved
-        </div>
-        <div class="credits">
-            Stackoverflow lite by <a href="#">Technology</a>
+        <div class="question_container">
+            <div class="question_detail" id="question">
+
+            </div>
+            <div class="answers" id="answers_id">
+            </div>
+            <!--<form class="form">-->
+            <form class="form" onsubmit="event.preventDefault(); return addAnswer()" name="post_answer">
+
+                <h3>Post an answer</h3>
+                <textarea id="answer_area" name="answer">This should be an aswer</textarea>
+                <span id="answer_error"></span>
+                <button class="button">Answer</button>
+            </form>
         </div>
     </div>
-</footer>
-<script src="js/main.js"></script>
-</body>
-</html>
+    <script src="../static/js/question_detail.js"></script>
+
+{% endblock %}

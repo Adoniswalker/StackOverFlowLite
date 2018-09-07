@@ -82,7 +82,6 @@ function addQuestion() {
 }
 
 function insert_question_list(data) {
-    console.log(data);
     // This function will inset posted questions to a list
     let content = (" <a href=\"UI/question_detail.html\" class=\"question_link\">\n" +
         "\n" +
@@ -95,3 +94,4 @@ function insert_question_list(data) {
         "        </a>");
     question_list_Div.insertAdjacentHTML('afterbegin', content)
 }
+
