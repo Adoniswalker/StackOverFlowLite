@@ -11,8 +11,8 @@ class Authentication:
     def check_user_in_db(self, account_id):
         try:
             account_id = int(account_id)
-            user_query = "select account_id from users where account_id = {}".format(account_id)
-            if db.qry(user_query, fetch="one"):
+            user_query = "select account_id from users where account_id = %s"
+            if db.qry(user_query, (account_id,), fetch="one"):
                 return True
         except ValueError:
             return account_id

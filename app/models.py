@@ -41,8 +41,8 @@ class Users:
         is_mail = self.is_email_valid(value, name)
         if not is_mail == value:
             return is_mail
-        email_count = db.qry("select email from users where email ="
-                             " '{}'".format(value.strip()), fetch="rowcount")
+        email_count = db.qry("select email from users where email =%s",
+                             (value.strip(),), fetch="rowcount")
         if email_count >= 1:
             raise ValueError("'{}' has already been registered".format(value.strip()))
         return value
@@ -56,7 +56,6 @@ class Users:
 
     def logout(self, token):
         query = "insert into blacklisttoken (token)values (%s)"
-        # import pdb; pdb.set_trace()
         token = token.split(' ')[-1].strip()
         arguments = (token,)
         try:
@@ -89,8 +88,8 @@ class Users:
         :return:
         """
         query = "select account_id, first_name, last_name, email, " \
-                "password_hash from users where  email = '{}';".format(args['email'])
-        results = db.qry(query, fetch="one")
+                "password_hash from users where  email = %s;"
+        results = db.qry(query, (args['email'],), fetch="one")
         if not results:
             return {"Error": "Email not registered"}, 404
         elif check_password_hash(results['password_hash'], args['password']):
@@ -136,7 +135,6 @@ class Question:
                 "question_body, posted_by, date_posted"
         arguments = (
             args['question_subject'], args['question_body'], user_id)
-        # import pdb; pdb.set_trace()
         results = db.qry(query, arguments, fetch="one", commit=True)
         results["date_posted"] = str(results["date_posted"])
         return results, 201
@@ -151,8 +149,8 @@ class Question:
                           "'{}'".format(question_id), fetch="one")
         if not question:
             return {"Error": "No question found"}, 404
-        answers = db.qry("select  * from answers where question_id ="
-                         " {}".format(question["question_id"]), fetch="all")
+        answers = db.qry("select  * from answers where question_id =%s",
+                         (question["question_id"],), fetch="all")
         for answer in answers:
             answer["answer_date"] = str(answer["answer_date"])
         question["date_posted"] = str(question["date_posted"])
@@ -176,8 +174,8 @@ class Question:
             return {"Error": "Question not found"}, 404
         if not user_id == check_question:
             return {"Error": "UnAuthorised"}, 401
-        query = "DELETE FROM questions WHERE question_id = {};".format(question_id)
-        db.qry(query, commit=True)
+        query = "DELETE FROM questions WHERE question_id = %s;"
+        db.qry(query, (question_id,), commit=True)
         return {"message": "Succefully deleted the question"}, 200
 
     def check_question_owner(self, question_id):
@@ -187,10 +185,10 @@ class Question:
         :return:
         """
         query = "select users.account_id from questions inner join users on " \
-                "(account_id=posted_by) where question_id = {}".format(question_id)
-        question_result = db.qry(query, fetch="one")
+                "(account_id=posted_by) where question_id = %s"
+        question_result = db.qry(query, (question_id,), fetch="one")
         if question_result:
-            return db.qry(query, fetch="one")["account_id"]
+            return question_result["account_id"]
 
     # def check_valid_paragraph(self, text):
     #     # regex = '^(?!.*([A-Za-z0-9@])\1{2})(?=.*[a-zA-Z])(?=.*\d)[A-Za-z0-9\s@.]+$'
@@ -206,9 +204,9 @@ class Question:
         :param value:
         :return:
         """
-        query = "select question_id from questions where question_subject ='{0}' " \
-                "or question_body='{0}';".format(value)
-        return db.qry(query, fetch="all")
+        query = "select question_id from questions where question_subject =%s " \
+                "or question_body=%s;"
+        return db.qry(query, (value, value), fetch="all")
 
     def update(self, question_id, args):
         """
@@ -260,8 +258,8 @@ class Question:
                 :param question_id:
                 :return:
                 """
-        questions = db.qry("select  * from questions where posted_by = "
-                           "'{}' order by date_posted desc".format(user_id), fetch="all")
+        questions = db.qry("select  * from questions where posted_by = %s "
+                           "order by date_posted desc", (user_id,), fetch="all")
         for question in questions:
             question["date_posted"] = str(question["date_posted"])
         return questions
@@ -329,7 +327,7 @@ class Answer:
         :return:
         """
         question_count = db.qry("select question_id from questions where "
-                                "question_id = '{}'".format(value), fetch="rowcount")
+                                "question_id = %s", (value,), fetch="rowcount")
         if question_count >= 1:
             return True
 
@@ -344,8 +342,8 @@ class Answer:
         """
         query = "select users.account_id from questions inner join users " \
                 "on (questions.posted_by = users.account_id) where " \
-                "questions.question_id={};".format(question_id)
-        results = db.qry(query, fetch="one")
+                "questions.question_id=%s;"
+        results = db.qry(query, (question_id,), fetch="one")
         if not results:
             return {"Error": "Question not found"}, 404
         if not poster == results["account_id"]:
@@ -408,5 +406,5 @@ class Answer:
                 :param value:
                 :return:
                 """
-        query = "select answer_id from answers where answer ='{0}'".format(value)
-        return db.qry(query, fetch="all")
+        query = "select answer_id from answers where answer =%s"
+        return db.qry(query, (value,), fetch="all")
