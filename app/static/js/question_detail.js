@@ -54,7 +54,7 @@ function addAnswer() {
             mode: "cors",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
-                "Authorization": "Bearer " + localStorage.getItem('token')
+                "Authorization": "Bearer " + read_cookie("token")
             },
             body: JSON.stringify(data)
         }).then((res) => {

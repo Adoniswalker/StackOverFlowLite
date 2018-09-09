@@ -5,8 +5,6 @@ if (form) {
 }
 
 function create_user() {
-    "use strict";
-    event.preventDefault();
     fetch("/api/v1/auth/signup/", {
         method: "POST",
         mode: "cors",
@@ -37,7 +35,6 @@ if (login_form) {
 
 function loginUser() {
     "use strict";
-    event.preventDefault();
     fetch("/api/v1/auth/login/", {
         method: "POST",
         mode: "cors",
@@ -46,16 +43,17 @@ function loginUser() {
         .then((res) => {
             res.json().then((data) => {
                 if (res.status === 200) {
-                         console.log(data);
-                         window.localStorage.setItem('token', data["auth_token"]);
-                         window.location.replace("/");
+                    console.log(data);
+                    console.log(typeof data);
+                    createCookie("token", data["auth_token"], 3);
+                    delete data["auth_token"];
+                    window.localStorage.setItem('user', JSON.stringify(data));
+                    window.location.replace("/");
                 }
-                else if(res.status === 404){
-                    console.log(data);
+                else if (res.status === 404) {
                     changeHtml(data["Error"], "login_mail_error");
-                }else if(res.status===400){
+                } else if (res.status === 400) {
                     changeHtml(data["Error"], "wrong_error");
-                    console.log(data);
                     // changeHtml(data["message"]["email"], "login_mail_error");
                 }
             });
@@ -63,13 +61,4 @@ function loginUser() {
         .catch((err) => {
             console.log("Eror", err);
         });
-}
-function changeHtml(text, parentId) {
-    parentElem = document.getElementById(parentId);
-    if ((typeof text !== 'undefined') && text){
-        parentElem.innerText = text
-    }else {
-        parentElem.innerText = ''
-    }
-
 }

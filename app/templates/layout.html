@@ -16,8 +16,9 @@
         <ul>
             <li><a href={{ url_for('home') }}>Home</a></li>
             <li><a href={{ url_for('profile') }}>Profile</a></li>
-            <li><a href={{ url_for('signup') }} class="current">Sign up</a></li>
-            <li><a href={{ url_for('login') }}>Login</a></li>
+            <li id="signup_link"><a href={{ url_for('signup') }} class="current">Sign up</a></li>
+            <li id="login_link"><a href={{ url_for('login') }}>Login</a></li>
+            <li id="logout_link"><a href="#">Logout</a></li>
         </ul>
     </nav>
 </header>
@@ -25,6 +26,11 @@
 {% block content %}
 
 {% endblock %}
+
+<div id='message' style="display: none;">
+    <span>Hey, This is my Message.</span>
+    <a href="#" class="close-notify">X</a>
+</div>
 <footer id="footer">
     <div class="container">
         <div class="copyright">
@@ -35,7 +41,10 @@
         </div>
     </div>
 </footer>
+<script src="../static/js/jquery/jquery.min.js"></script>
+<script src="../static/js/jquery/jquery-migrate.min.js"></script>
 <script src="../static/js/main.js"></script>
-<script src="../static/js/user.js"></script>
+{% block js %}
+{% endblock %}
 </body>
 </html>

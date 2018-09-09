@@ -166,3 +166,59 @@ input[type=text]:focus {
     background-color: #d4edda;
     border-color: #c3e6cb;
 }
+
+/*Display notification to user*/
+#message {
+    font-family:Arial,Helvetica,sans-serif;
+    position:fixed;
+    top:0px;
+    left:0px;
+    width:100%;
+    z-index:105;
+    text-align:center;
+    font-weight:bold;
+    font-size:100%;
+    color:white;
+    padding:10px 0px 10px 0px;
+    background-color:#8E1609;
+}
+
+#message span {
+    text-align: center;
+    width: 95%;
+    float:left;
+}
+
+.close-notify {
+    white-space: nowrap;
+    float:right;
+    margin-right:10px;
+    color:#fff;
+    text-decoration:none;
+    border:2px #fff solid;
+    padding-left:3px;
+    padding-right:3px
+}
+
+.close-notify a {
+    color: #fff;
+}
+/*for popup*/
+.error-notification {
+    background-color:#AE0000;
+    color:white;
+    cursor:pointer;
+    display: none;
+    padding:15px;
+    padding-top: 0;
+    position:absolute;
+    z-index:1;
+    font-size: 100%;
+}
+
+.error-notification h2 {
+    font-family:Trebuchet MS,Helvetica,sans-serif;
+    font-size:140%;
+    font-weight:bold;
+    margin-bottom:7px;
+}

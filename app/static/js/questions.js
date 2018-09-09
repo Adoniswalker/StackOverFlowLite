@@ -3,18 +3,15 @@
 
 document.addEventListener('DOMContentLoaded', get_all_questions(), true);
 const question_list_Div = document.getElementById("question_list_id");
-if (form) {
-    form.addEventListener("submit", create_user);
-}
 
 function get_all_questions() {
     fetch("/api/v1/questions/", {
         method: "GET",
         mode: "cors",
-    }).then((res) => {
+    }).then(handleErrors).then((res) => {
         res.json().then((data) => {
             if (res.status === 200) {
-                for (var i = 0; i < data.length; i++) {
+                for (let i = 0; i < data.length; i++) {
                     insert_question_list(data[i]);
                 }
 
@@ -24,7 +21,8 @@ function get_all_questions() {
 
         });
     }).catch((err) => {
-        console.log("Error", err);
+        show_notification();
+        console.log("No questions found!!")
     });
 }
 
@@ -57,7 +55,7 @@ function addQuestion() {
             mode: "cors",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
-                "Authorization": "Bearer " + localStorage.getItem('token')
+                "Authorization": "Bearer " + read_cookie("token")
             },
             body: JSON.stringify(data)
         }).then((res) => {
@@ -70,7 +68,7 @@ function addQuestion() {
                     changeHtml(data["message"]["question_subject"], "subject_error");
                     changeHtml(data["message"]["question_body"], "body_error");
                 } else {
-                    changeHtml(data["message"]["Authorization"], "login_error");
+                    popup("#login_error", data["message"]["Authorization"]);
                 }
             });
         }).catch((err) => {
@@ -82,7 +80,7 @@ function addQuestion() {
 
 function insert_question_list(data) {
     // This function will inset posted questions to a list
-    let content = (" <a href=\"question\\"+data["question_id"]+"\" class=\"question_link\">\n" +
+    let content = (" <a href=\"question\\" + data["question_id"] + "\" class=\"question_link\">\n" +
         "\n" +
         "            <div class=\"question_item\" data-id=" + data["question_id"] + ">\n" +
         "                <h4>" + data["question_subject"] + "</h4>\n" +
@@ -94,3 +92,9 @@ function insert_question_list(data) {
     question_list_Div.insertAdjacentHTML('afterbegin', content)
 }
 
+function handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}

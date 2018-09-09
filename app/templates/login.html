@@ -1,24 +1,27 @@
 {% extends "layout.html" %}
-    {% block title %}
-        super() | Login
-    {% endblock %}
+{% block title %}
+    super() | Login
+{% endblock %}
 {% block content %}
-<div class="form_div">
-    <h1>Login</h1>
-    <form method="POST" class="form" id="login" onsubmit="event.preventDefault();">
-        <fieldset>
-            <div>
-                <label for="username">User name</label>
-                <input type="email" id="username" name="email" required>
-                <span id = "login_mail_error" class="alert-danger"></span>
-            </div>
-            <div>
-                <label for="password">Password</label>
-                <input type="password" suggested ="current-password" id='password' name="password" required>
-                <span id = "wrong_error" class="alert-danger"></span>
-            </div>
-            <button class="button">Login</button>
-        </fieldset>
-    </form>
-</div>
+    <div class="form_div">
+        <h1>Login</h1>
+        <form method="POST" class="form" id="login" onsubmit="event.preventDefault()">
+            <fieldset>
+                <div>
+                    <label for="username">User name</label>
+                    <input type="email" id="username" name="email" required>
+                    <span id="login_mail_error" class="alert-danger"></span>
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input type="password" id='password' name="password" required>
+                    <span id="wrong_error" class="alert-danger"></span>
+                </div>
+                <button class="button">Login</button>
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="../static/js/user.js"></script>
 {% endblock %}
