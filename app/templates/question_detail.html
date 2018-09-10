@@ -8,10 +8,28 @@
             <div class="question_detail" id="question" data-id="{{ question_id }}">
 
             </div>
+            <template id="question_detail_template" >
+                {% raw %}
+                <div class="question_detail" >
+                    <h3> {{ question_subject }}</h3>
+                    <span class="question_vote">5</span><span class="votes">Answers</span>
+                    <p> {{ question_body }}</p>
+                    <span class="question_tip">Asked at {{ date_posted }} by {{ posted_by }}</span>
+                </div>
+                {% endraw %}
+            </template>
             <div class="answers" id="answers_id">
             </div>
+            <template id="answers_template">
+                {% raw %}
+                <div class="answer" data-id="{{answer_id}}">
+                    <p>{{answer}}</p>
+                    <span class="question_tip">Answered at {{answer_date}} by {{answeres_by}}</span>
+                    <p class="success">{{ accepted }}</p>
+                </div>
+                {% endraw %}
+            </template>
             <form class="form" onsubmit="event.preventDefault(); return addAnswer()" name="post_answer">
-
                 <h3>Post an answer</h3>
                 <textarea id="answer_area" name="answer"></textarea>
                 <span id="answer_error" class="alert-danger"></span>

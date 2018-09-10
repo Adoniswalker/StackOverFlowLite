@@ -3,6 +3,22 @@
 
 document.addEventListener('DOMContentLoaded', get_all_questions(), true);
 const question_list_Div = document.getElementById("question_list_id");
+// HTMLElement.prototype.select_event = function(event, selector, handler) {
+//     this.addEventListener(event, function(e) {
+//         let target = e.target;
+//         if (typeof(selector) === 'string') {
+//             while (!target.matches(selector) && target !== this) {
+//                 target = target.parentElement;
+//             }
+//
+//             if (target.matches(selector))
+//                 handler.call(target, e);
+//         } else {
+//                 selector.call(this, e);
+//         }
+//     });
+// };
+// question_list_Div.select_event("click", ".delete",delete_question);
 
 function get_all_questions() {
     fetch("/api/v1/questions/", {
@@ -71,7 +87,7 @@ function addQuestion() {
                 }
             });
         }).catch((err) => {
-            console.log("Eror", err);
+            show_notification("Error: " + err);
         });
     }
 
@@ -79,16 +95,16 @@ function addQuestion() {
 
 function insert_question_list(data) {
     // This function will inset posted questions to a list
-    let content = (" <a href=\"question\\" + data["question_id"] + "\" class=\"question_link\">\n" +
-        "\n" +
-        "            <div class=\"question_item\" data-id=" + data["question_id"] + ">\n" +
-        "                <h4>" + data["question_subject"] + "</h4>\n" +
-        "<span class=\"question_vote\">5</span><span class=\"votes\">Answers</span>" +
-        "                <p>" + data["question_body"] + "</p>\n" +
-        "<span class=\"question_tip\">Asked at " + data["date_posted"] + " by " + data["posted_by"] + " </span>" +
-        "            </div>\n" +
-        "        </a>");
-    question_list_Div.insertAdjacentHTML('afterbegin', content)
+    let user = get_user();
+    if (user){
+        if(user.account_id == data.posted_by){
+            data["delete_span"] = "edit";
+        }
+    }
+    console.log(data);
+    let temp = document.getElementById("questions_template");
+    let content = Mustache.render(temp.innerHTML, data);
+    question_list_Div.insertAdjacentHTML('afterbegin', content);
 }
 
 function handleErrors(response) {
@@ -97,3 +113,7 @@ function handleErrors(response) {
     }
     return response;
 }
+// function delete_question() {
+//     console.log("Calling"+this.getAttribute("data-id"));
+//     // this.attribute("data-id");
+// }

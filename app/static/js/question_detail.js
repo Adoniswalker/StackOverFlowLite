@@ -13,14 +13,8 @@ function get_question_detail() {
     }).then((res) => {
         res.json().then((data) => {
             if (res.status === 200) {
-                console.log(data);
-                let question = "<div class=\"question_detail\">" +
-                    "<h3>" + data["question_subject"] + "</h3>" +
-                    "<span class=\"question_vote\">5</span><span class=\"votes\">Answers</span>" +
-                    "<p> " + data["question_body"] + "</p>" +
-                    "<span class=\"question_tip\">Asked at " + data["date_posted"] + " by " +
-                    data["posted_by"] + " </span>" +
-                    "</div>";
+                let temp = document.getElementById("question_detail_template");
+                let question = Mustache.render(temp.innerHTML, data);
                 question_body.insertAdjacentHTML('afterbegin', question);
                 if ((data["answers"] !== "undefined") && data["answers"].length) {
                     for (let i = 0; i < data["answers"].length; i++) {
@@ -40,7 +34,6 @@ function get_question_detail() {
 }
 
 function addAnswer() {
-    let answersDiv = document.getElementById("answers_id");
     let answer_tag = document.forms["post_answer"]["answer"];
     let answer = trimfield(answer_tag.value);
     if (!(answer.length <= 2000 && answer.length >= 5)) {
@@ -48,6 +41,8 @@ function addAnswer() {
         answer_tag.focus();
         return false;
     } else {
+        //clear any previous errors
+        changeHtml(false, "answer_error");
         let data = {"answer": answer};
         fetch("/api/v1/questions/" + question_id + "/answers/", {
             method: "POST",
@@ -63,10 +58,14 @@ function addAnswer() {
                     insert_answer(data);
                 }
                 else if (res.status === 400) {
-                    changeHtml(data["message"]["Authorization"], "login_err");
+                    // changeHtml(data["message"]["Authorization"], "login_err");
+                    popup("#login_err", data["message"]["Authorization"]);
                     changeHtml(data["message"]["answer"], "answer_error");
                 } else if (res.status === 404) {
                     changeHtml(data["message"]["question"], "login_err");
+                }
+                else  if (res.status === 403){
+                    popup("#login_err", data["message"]["Authorization"]);
                 }
             });
         }).catch((err) => {
@@ -77,11 +76,8 @@ function addAnswer() {
 }
 
 function insert_answer(answer) {
-    let accepted = answer["accepted"] ? "Accepted" : '';
-    let content = "<div class=\"answer\" data-id=" + answer["answer_id"] + ">" +
-        answer["answer"] +
-        "<span class=\"question_tip\">Answered at " + answer["answer_date"] + " by " + answer["answeres_by"] + " </span>" +
-        "<p class=\"success\">" + accepted + "</p>" +
-        "</div>";
+    answer["accepted"] = answer["accepted"] ? "Accepted" : '';
+    let temp = document.getElementById("answers_template");
+    let content= Mustache.render(temp.innerHTML, answer);
     answer_body.insertAdjacentHTML('afterbegin', content)
 }

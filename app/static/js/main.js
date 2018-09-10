@@ -91,7 +91,8 @@ function createCookie(name, value, days) {
         var expires = "; expires=" + date.toGMTString();
     }
     else var expires = "";
-    document.cookie = name + "=" + value + expires + "; path=/";
+    // document.cookie = name + "=" + value + expires + "; path=/";
+    document.cookie = name + "=" + value + expires + ";";
 }
 
 set_unset_user();
@@ -108,12 +109,14 @@ function show_notification(text) {
 function popup(parent, message) {
     // It gives a small popup showing a message, parent is the tag to be displayed below
     //and message is the message to be passes
-    $('.error-notification').remove();
-    let $err = $('<div>').addClass('error-notification')
-        .html('<h2>' + message + '</h2>(click on this box to close)')
-        .css('left', $(parent).position().left);
-    $(parent).after($err);
-    $err.fadeIn('fast');
+    if ((typeof message !== 'undefined') && message) {
+        $('.error-notification').remove();
+        let $err = $('<div>').addClass('error-notification')
+            .html('<h2>' + message + '</h2>(click on this box to close)')
+            .css('left', $(parent).position().left);
+        $(parent).after($err);
+        $err.fadeIn('fast');
+    }
 }
 
 $(document).on('click', ".error-notification", function () {
