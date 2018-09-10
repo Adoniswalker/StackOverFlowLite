@@ -24,7 +24,7 @@ function get_all_questions() {
     fetch("/api/v1/questions/", {
         method: "GET",
         mode: "cors",
-    }).then(handleErrors).then((res) => {
+    }).then((res) => {
         res.json().then((data) => {
             if (res.status === 200) {
                 for (let i = 0; i < data.length; i++) {
@@ -107,12 +107,12 @@ function insert_question_list(data) {
     question_list_Div.insertAdjacentHTML('afterbegin', content);
 }
 
-function handleErrors(response) {
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
-    return response;
-}
+// function handleErrors(response) {
+//     if (!response.ok) {
+//         throw Error(response.statusText);
+//     }
+//     return response;
+// }
 // function delete_question() {
 //     console.log("Calling"+this.getAttribute("data-id"));
 //     // this.attribute("data-id");
