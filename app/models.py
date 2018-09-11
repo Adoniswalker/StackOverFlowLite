@@ -168,15 +168,15 @@ class Question:
         try:
             user_id = int(user_id)
         except ValueError as e:
-            return {"Error": user_id}, 400
+            return {"message": {"Authorization": user_id}}, 403
         check_question = self.check_question_owner(question_id)
         if not check_question:
-            return {"Error": "Question not found"}, 404
+            return {"message": {"question": "Question not found"}}, 404
         if not user_id == check_question:
-            return {"Error": "UnAuthorised"}, 401
+            return {"message": {"Authorization": "You are not allowed to delete"}}, 401
         query = "DELETE FROM questions WHERE question_id = %s;"
         db.qry(query, (question_id,), commit=True)
-        return {"message": "Succefully deleted the question"}, 200
+        return {"message": {"question": "Successfully deleted the question"}}, 200
 
     def check_question_owner(self, question_id):
         """

@@ -4,6 +4,15 @@ function trimfield(str) {
     return str.replace(/^\s+|\s+$/g, '');
 }
 
+function show_notification(text) {
+    $("#message span").text(text);
+    $("#message").fadeIn("slow");
+    $("#message a.close-notify").click(function () {
+        $("#message").fadeOut("slow");
+        return false;
+    });
+}
+
 function read_cookie(name) {
     let nameEQ = name + "=";
     let ca = document.cookie.split(';');
@@ -74,7 +83,8 @@ function logout_user(event) {
                 window.location.replace("/");
             } else if (res.status === 400) {
                 window.localStorage.removeItem("user");
-                changeHtml(data["Error"], "wrong_error");
+                show_notification(data["Error"])
+                // changeHtml(data["Error"], "wrong_error");
                 // changeHtml(data["message"]["email"], "login_mail_error");
             }
         });
@@ -97,14 +107,7 @@ function createCookie(name, value, days) {
 
 set_unset_user();
 
-function show_notification(text) {
-    $("#message span").text(text);
-    $("#message").fadeIn("slow");
-    $("#message a.close-notify").click(function () {
-        $("#message").fadeOut("slow");
-        return false;
-    });
-}
+
 
 function popup(parent, message) {
     // It gives a small popup showing a message, parent is the tag to be displayed below

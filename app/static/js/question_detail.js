@@ -6,6 +6,18 @@ const question_body = document.getElementById("question");
 const answer_body = document.getElementById("answers_id");
 let question_id = question_body.getAttribute("data-id");
 
+
+function set_user_function(data) {
+    var delete_btn = question_body.querySelector(".delete-question");
+    delete_btn.addEventListener("click", delete_question);
+    let user = get_user();
+    if (user) {
+        if (user.account_id === data.posted_by) {
+            question_body.classList.add("auth-priv");
+        }
+    }
+}
+
 function get_question_detail() {
     fetch("/api/v1/questions/" + question_id + "/", {
         method: "GET",
@@ -16,6 +28,7 @@ function get_question_detail() {
                 let temp = document.getElementById("question_detail_template");
                 let question = Mustache.render(temp.innerHTML, data);
                 question_body.insertAdjacentHTML('afterbegin', question);
+                set_user_function(data);
                 if ((data["answers"] !== "undefined") && data["answers"].length) {
                     for (let i = 0; i < data["answers"].length; i++) {
                         insert_answer(data["answers"][i]);
@@ -64,7 +77,7 @@ function addAnswer() {
                 } else if (res.status === 404) {
                     changeHtml(data["message"]["question"], "login_err");
                 }
-                else  if (res.status === 403){
+                else if (res.status === 403) {
                     popup("#login_err", data["message"]["Authorization"]);
                 }
             });
@@ -78,6 +91,36 @@ function addAnswer() {
 function insert_answer(answer) {
     answer["accepted"] = answer["accepted"] ? "Accepted" : '';
     let temp = document.getElementById("answers_template");
-    let content= Mustache.render(temp.innerHTML, answer);
+    let content = Mustache.render(temp.innerHTML, answer);
     answer_body.insertAdjacentHTML('afterbegin', content)
 }
+
+function delete_question() {
+    fetch("/api/v1/questions/" + this.getAttribute("data-id") + "/", {
+        method: "DELETE",
+        mode: "cors",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": "Bearer " + read_cookie("token")
+        },
+    }).then((res) => {
+        res.json().then((data) => {
+            if (res.status === 200) {
+                show_notification("Error" + "Question successfully deleted");
+                window.location.replace("/");
+            }
+            else if (res.status === 401) {
+                // changeHtml(data["message"]["Authorization"], "login_err");
+                popup("#question_error", data["message"]["Authorization"]);
+            } else if (res.status === 403) {
+                popup("#question_error", data["message"]["Authorization"]);
+            }
+            else if (res.status === 404) {
+                popup("#question_error", data["message"]["question"] + question_id);
+            }
+        });
+    }).catch((err) => {
+        show_notification("Error" + err);
+    });
+}
+

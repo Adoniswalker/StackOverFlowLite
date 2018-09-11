@@ -5,8 +5,9 @@
     margin: 0 auto;
 }
 .question_detail{
-    padding: 10px 40px;
+    padding: 10px 26px 28px 20px;
     background-color: #ffffff;
+    margin-top: 65px;
 }
 .answers{
     margin-left: 70px;
@@ -103,3 +104,17 @@ textarea {
 .clear{
     clear: both;
 }
+/**********************edit****************/
+div .auth{
+    display: none;
+    color: red;
+    float: right;
+    cursor: pointer;
+    padding: 5px;
+    margin: 2px;
+}
+div.auth-priv .auth{
+    display: initial;
+
+}
+
