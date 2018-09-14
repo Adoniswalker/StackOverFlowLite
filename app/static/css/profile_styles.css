@@ -1,7 +1,8 @@
-.container{
+.container {
     margin-top: 50px;
 }
-.left_nav{
+
+.left_nav {
     float: left;
     background: #cccccc;
     height: 600px;
@@ -11,16 +12,28 @@
     /*flex-shrink: 0;*/
     z-index: 0;
     position: relative;
-    box-shadow: 0 0 0 rgba(12,13,14,0.05);
-    transition: box-shadow ease-in-out .1s,transform ease-in-out .1s;
-}
-.content-nav{
-    float: left;
-    width: 80%;
+    box-shadow: 0 0 0 rgba(12, 13, 14, 0.05);
+    transition: box-shadow ease-in-out .1s, transform ease-in-out .1s;
 }
 
+.content-nav {
+    float: left;
+    width: 80%;
+    margin: 0 auto;
+}
+
+/*.question_most {*/
+    /*padding: auto;*/
+
+/*}*/
+
+/*.question_recent {*/
+    /*padding: auto;*/
+
+/*}*/
+
 /* styling h1, p, h3 */
-.content-nav h3{
+.content-nav h3 {
     text-align: center;
     font-size: 180%;
     line-height: 120%;
@@ -28,5 +41,40 @@
 }
 
 
+/*<div class="frame ctooltip">
+  
+    <div style="background: #08447F"></div>
+  
+    <div style="background: #5CAEFF"></div>
+  
+    <div style="background: #1088FF"></div>
+  
+    <div style="background: #2E577F"></div>
+  
+    <div style="background: #0D6DCC"></div>
+  
+</div>
+*/
+@media only screen and (max-width: 928px) {
+    .left_nav {
+        height: 600px;
+        width: 20%;
+    }
 
+    .content-nav {
+        float: left;
+        width: 75%;
+    }
 
+}
+@media only screen and (max-width: 476px) {
+    .left_nav {
+        height: 60px;
+        width: 100%;
+    }
+
+    .content-nav {
+        float: none;
+        width: 95%;
+    }
+}

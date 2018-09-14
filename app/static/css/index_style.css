@@ -2,7 +2,7 @@
 /* question details */
 .question_container{
     width: 70%;
-    margin: 0 auto;
+    margin: 60px auto;
 }
 .question_detail{
     padding: 10px 26px 28px 20px;
@@ -14,9 +14,8 @@
 
 }
 .answer{
-    margin: 10px;
-    padding: 4px 40px;
-    padding-bottom: 22px;
+    margin-bottom: 10px;
+    padding: 10px 40px 22px;
     background: #fbfbfb;
 }
 .question_container .form{
@@ -25,9 +24,7 @@
 .content-nav .question_list{
     width: 100%;
 }
-.content-nav {
-    width: 100%;
-}
+
 .question {
     margin: 0 1%;
 }
@@ -38,9 +35,9 @@
     margin: 55px 20px 50px 10px;
 }
 .question_item {
-    background-color: #ffffff;
-    padding: 6px 16px 23px 16px;
-    margin-bottom: 25px;
+    background-color: #f8f8f8;
+    padding: 5px 10px 25px 10px;
+    margin-bottom: 20px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
 }
 .question_item:hover {
@@ -53,10 +50,10 @@
     color:black;
 }
 .question_item h4 a:hover{
-    color:rgba(72, 81, 86, 0.56);;
+    color:#2E577F;;
 }
 .question_item p a:hover{
-    color: rgba(72, 81, 86, 0.56);
+    color: #0D6DCC;
 }
 
 .post_question {
@@ -98,11 +95,16 @@ textarea {
 .question_tip{
     color: grey;
     font-size: 90%;
+    font-style: italic;
     float: right;
     padding-top:5px;
 }
 .clear{
     clear: both;
+}
+.score{
+    float:left;
+    padding: 0 10px;
 }
 
 /**********************answer***accepted*********/
@@ -127,7 +129,7 @@ div.auth-priv .auth{
     display: initial;
 }
 /**********************edit**********************/
-.question_detail .edit{
+.question_item .edit{
     display: none;
 }
 .main-edit .edit{
@@ -166,8 +168,30 @@ div.auth-answer .auth{
 /************************voting************************/
 .accept-checkbox{
     display: none;
+    width: 20px;
+    margin: 0px;
 }
 
 .question_owner .accept-checkbox{
     display: initial;
+}
+
+/**********mobile*****/
+@media only screen and (max-width: 764px){
+    .question_list {
+        width: 90%;
+        float: none;
+        margin:55px auto auto;
+    }
+
+    .post_question {
+        width: 90%;
+        margin: 0 auto;
+        float: none;
+        padding-bottom: 0px;
+    }
+    .question_container {
+        width: 90%;
+    }
+
 }

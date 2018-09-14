@@ -3,63 +3,61 @@
     {{ super() }} | question
 {% endblock %}
 {% block content %}
-    <div class="container">
-        <div class="question_container">
-            <div class="question_detail" id="question" data-id="{{ question_id }}">
+    <div class="question_container">
+        <div class="question_item" id="question" data-id="{{ question_id }}">
 
-            </div>
-            <template id="question_detail_template">
-                {% raw %}
-                <div class="noedit">
-                    <h3> {{ question_subject }}</h3>
-                    <button class="delete-question auth" title="Delete question" data-id="{{ question_id }}">X</button>
-                    <button class="edit-question auth" title="Edit question">edit</button>
-                    <span class="question_vote">5</span><span class="votes">Answers</span>
-                    <p> {{ question_body }}</p>
-                    <span class="question_tip">Asked at {{ date_posted }} by {{ posted_by }}</span>
-                </div>
-                <div class="edit">
-                    <label for="question_subject_edit">Subject</label>
-                    <input type="text" name="subject_body" id="question_subject_edit">
-                    <label>Body</label>
-                    <textarea name="question_subject" id="question_body_edit"></textarea>
-                    <input type="submit" name="save" id="update_edit" value="save"/>
-                    <input type="button" name="cancel" id="cancel_edit" value="cancel"/>
-                </div>
-                <span class="auth alert-danger" id="question_error"></span>
-                {% endraw %}
-            </template>
-            <div class="answers" id="answers_id">
-            </div>
-            <template id="answers_template">
-                {% raw %}
-                <div data-id="{{ answer_id }}" >
-                    <div class="answer noedit">
-                        <p>{{answer}}</p>
-                        <button class="click-edit-answer auth">Edit</button>
-                        <span class="question_tip">Answered at {{answer_date}} by {{answeres_by}}</span>
-                        <input type="checkbox" class="accept-checkbox">
-                        <p><img src="../static/images/icons/tick.png" class="accepted"
-                                title="Accepted by who asked"></p>
-                    </div>
-                    <div class="edit answer">
-                        <label for="answer_edit">Update answer</label>
-                        <input type="text" name="name" class="answer-edit">
-                        <span class="alert-danger" id="answer_edit_error"></span>
-                        <input type="submit" name="update" class="answer_edit" value="save"/>
-                        <input type="button" name="cancel" class="cancel_answer_edit" value="cancel"/>
-                    </div>
-                </div>
-                {% endraw %}
-            </template>
-            <form class="form" onsubmit="event.preventDefault(); return addAnswer()" name="post_answer">
-                <h3>Post an answer</h3>
-                <textarea id="answer_area" name="answer"></textarea>
-                <span id="answer_error" class="alert-danger"></span>
-                <button class="button">Answer</button>
-                <span id="login_err" class="alert-danger"></span>
-            </form>
         </div>
+        <template id="question_detail_template">
+            {% raw %}
+            <div class="noedit">
+                <h3> {{ question_subject }}</h3>
+                <button class="delete-question auth" title="Delete question" data-id="{{ question_id }}">X</button>
+                <button class="edit-question auth" title="Edit question">edit</button>
+                <span class="question_vote">5</span><span class="votes">Answers</span>
+                <p> {{ question_body }}</p>
+                <span class="question_tip">Asked at <b>{{ date_posted }}</b> by <b>{{ posted_by }}</b></span>
+            </div>
+            <div class="edit">
+                <label for="question_subject_edit">Subject</label>
+                <input type="text" name="subject_body" id="question_subject_edit">
+                <label>Body</label>
+                <textarea name="question_subject" id="question_body_edit"></textarea>
+                <input type="submit" name="save" id="update_edit" value="save"/>
+                <input type="button" name="cancel" id="cancel_edit" value="cancel"/>
+            </div>
+            <span class="auth alert-danger" id="question_error"></span>
+            {% endraw %}
+        </template>
+        <div class="answers" id="answers_id">
+        </div>
+        <template id="answers_template">
+            {% raw %}
+            <div class="answer" data-id="{{ answer_id }}" >
+                <div class="noedit">
+                    <p>{{answer}}</p>
+                    <button class="click-edit-answer auth">Edit</button>
+                    <p class="question_tip">Answered at <b>{{answer_date}}</b> by <b>{{answeres_by}}</b></p>
+                    <input type="checkbox" class="accept-checkbox">
+                    <p><img src="../static/images/icons/tick.png" class="accepted"
+                            title="Accepted by who asked"></p>
+                </div>
+                <div class="edit answer">
+                    <label for="answer_edit">Update answer</label>
+                    <textarea class="answer-edit"></textarea>
+                    <span class="alert-danger" id="answer_edit_error"></span>
+                    <button class="answer_edit">save</button>
+                    <button class="cancel_answer_edit">cancel</button>  
+                </div>
+            </div>
+            {% endraw %}
+        </template>
+        <form class="form" onsubmit="event.preventDefault(); return addAnswer()" name="post_answer">
+            <h3>Post an answer</h3>
+            <textarea id="answer_area" name="answer"></textarea>
+            <span id="answer_error" class="alert-danger"></span>
+            <button class="button">Answer</button>
+            <span id="login_err" class="alert-danger"></span>
+        </form>
     </div>
 
 {% endblock %}
