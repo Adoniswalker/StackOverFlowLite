@@ -62,3 +62,48 @@ function loginUser() {
             console.log("Eror", err);
         });
 }
+
+let user_question_list_Div = document.getElementById("question_questions_list");
+
+function get_all_user_questions() {
+    fetch("/api/v1/questions/user/", {
+        method: "GET",
+        mode: "cors",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Authorization": "Bearer " + read_cookie("token")
+        },
+    }).then((res) => {
+        res.json().then((data) => {
+            if (res.status === 200) {
+                for (let i = 0; i < data.length; i++) {
+                    insert_question_list(data[i]);
+                }
+
+            } else if (res.status === 400) {
+                show_notification(data["message"]["Authorization"]);
+            } else if (res.status === 404) {
+                show_notification("No questions found");
+            }
+
+        });
+    }).catch((err) => {
+        show_notification("Unable to load questions, try again later");
+    });
+}
+
+function insert_question_list(data) {
+    // This function will inset posted questions to a list
+    let user = get_user();
+    if (user) {
+        if (user.account_id === data.posted_by) {
+            data["delete_span"] = "edit";
+        }
+    }
+    console.log(data);
+    let temp = document.getElementById("user_questions_template");
+    let content = Mustache.render(temp.innerHTML, data);
+    user_question_list_Div.insertAdjacentHTML('afterbegin', content);
+}
+
+document.addEventListener('DOMContentLoaded', get_all_user_questions, true);

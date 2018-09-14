@@ -257,6 +257,8 @@ class Question:
                 """
         questions = db.qry("select  * from questions where posted_by = %s "
                            "order by date_posted desc", (user_id,), fetch="all")
+        if not questions:
+            return {"message": {"questins": "You dont have any questions"}}, 404
         for question in questions:
             question["date_posted"] = str(question["date_posted"])
         return questions

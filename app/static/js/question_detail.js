@@ -1,10 +1,6 @@
 //This file will be used to manipulate questions
 "use strict"; //enable strict mode for debugging
 
-// const question_body = document.getElementById("question");
-// const answer_body = document.getElementById("answers_id");
-// let question_id = question_body.getAttribute("data-id");
-
 
 class Questions {
     constructor() {
@@ -208,7 +204,7 @@ class Answers extends Questions {
         }).then((res) => {
             res.json().then((data) => {
                 if (res.status === 200) {
-                    show_notification("Question successfully edited");
+                    show_notification("Answer successfully edited");
                     this.cancelAnswerEdit(answer);
                     answer.querySelector("p").innerText = data["answer"];
                 }
