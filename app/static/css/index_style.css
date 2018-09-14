@@ -163,4 +163,11 @@ div.auth-answer .auth{
     display: none;
 }
 
-/************************endanswer************************/
+/************************voting************************/
+.accept-checkbox{
+    display: none;
+}
+
+.question_owner .accept-checkbox{
+    display: initial;
+}

@@ -27,7 +27,7 @@ class Questions {
                     this.set_delete_function(data);
                     if ((data["answers"] !== "undefined") && data["answers"].length) {
                         for (let i = 0; i < data["answers"].length; i++) {
-                            self.insert_answer(data["answers"][i], this.answer_body);
+                            self.insert_answer(data["answers"][i], this.answer_body, data["posted_by"]);
                         }
                     } else {
                         popup(".question_detail", "No answers found");
@@ -144,6 +144,7 @@ class Questions {
     }
 
     addAnswer() {
+        self = this;
         let answer_tag = document.forms["post_answer"]["answer"];
         let answer = trimfield(answer_tag.value);
         if (!(answer.length <= 2000 && answer.length >= 5)) {
@@ -165,7 +166,7 @@ class Questions {
             }).then((res) => {
                 res.json().then((data) => {
                     if (res.status === 201) {
-                        insert_answer(data, this.answer_body);
+                        self.insert_answer(data, this.answer_body);
                         answer_tag.value = ''
                     }
                     else if (res.status === 400) {
@@ -207,10 +208,9 @@ class Answers extends Questions {
         }).then((res) => {
             res.json().then((data) => {
                 if (res.status === 200) {
-                    show_notification("Successfully" + "Question successfully deleted");
+                    show_notification("Question successfully edited");
                     this.cancelAnswerEdit(answer);
-                    answer.querySelector("p").innerText = answer.querySelector(".answer-edi" +
-                        "t").value;
+                    answer.querySelector("p").innerText = data["answer"];
                 }
                 else if (res.status === 401) {
                     // changeHtml(data["message"]["Authorization"], "login_err");
@@ -227,17 +227,15 @@ class Answers extends Questions {
         });
     }
 
-    insert_answer(answer, answer_body) {
+    insert_answer(answer, answer_body, question_ownwer) {
         self = this;
         let answer_id = answer["answer_id"];
-        answer = Answers.set_edit_btn_answer(answer);
         let temp = document.getElementById("answers_template");
         let content = Mustache.render(temp.innerHTML, answer);
         answer_body.insertAdjacentHTML('afterbegin', content);
         let d = answer_body.querySelector(`[data-id='${answer_id}'`);
-        if (answer["accepted"]){
-            d.classList.add("accepted-display");
-        }
+
+        this.set_edit_btn_answer(answer, d, question_ownwer);
         if (d) {
             d.querySelector(".click-edit-answer").addEventListener('click', function () {
                 d.classList.add("answer-edit");
@@ -252,15 +250,63 @@ class Answers extends Questions {
         }
     }
 
+    set_preferred(answer, answer_body, answer_checkbox) {
+        fetch(`/api/v1/questions/${answer["question_id"]}/answers/${answer["answer_id"]}/`, {
+            method: "PUT",
+            mode: "cors",
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "Authorization": "Bearer " + read_cookie("token"),
+            },
+            body: JSON.stringify({"vote": answer_checkbox.checked}),
+        }).then((res) => {
+            res.json().then((data) => {
+                if (res.status === 200) {
+                    if (data["accepted"]) {
+                        answer_body.classList.add("accepted-display");
+                        show_notification("Answer successfully accepted");
+                    } else {
+                        answer_body.classList.remove("accepted-display");
+                        show_notification("Answer successfully unaccepted");
+                    }
 
-    static set_edit_btn_answer(answer, answer_body) {
+                }
+                else if (res.status === 401) {
+                    // changeHtml(data["message"]["Authorization"], "login_err");
+                    popup("#answer_edit_error", data["message"]["Authorization"]);
+                } else if (res.status === 403) {
+                    popup("#answer_edit_error", data["message"]["Authorization"]);
+                }
+                else if (res.status === 404) {
+                    popup("#answer_edit_error", data["message"]["question"]);
+                }
+            });
+        }).catch((err) => {
+            show_notification("Error" + err);
+        });
+    }
+
+    set_edit_btn_answer(answer, answer_body, question_owner) {
+        let self = this;
         let user = get_user();
+        if (answer["accepted"]) {
+            answer_body.classList.add("accepted-display");
+        }
         if (user && (user["account_id"] === answer.answeres_by)) {
-            answer["class_name"] = "auth-answer";
-            return answer
+            answer_body.classList.add("auth-answer");
 
         }
-        if(user && (user["account_id"]))
+        if (user && (user))
+            if (user && (user["account_id"] === question_owner)) {
+                let answer_checkbox = answer_body.querySelector(".accept-checkbox");
+                answer_body.classList.add("question_owner");
+                answer_checkbox.addEventListener("change", function () {
+                    self.set_preferred(answer, answer_body, answer_checkbox)
+                });
+                if (answer["accepted"]) {
+                    answer_checkbox.checked = true;
+                }
+            }
         return answer
     }
 

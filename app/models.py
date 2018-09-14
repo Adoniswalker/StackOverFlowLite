@@ -290,29 +290,28 @@ class Answer:
         results["answer_date"] = str(results["answer_date"])
         return results, 201
 
-    def update(self, question_id, answer_id, args):
+    def update(self, question_id, answer_id, answer_args):
         """
         Update an answer
         :param question_id:
         :param answer_id:
-        :param args:
+        :param answer_args:
         :return:
         """
-        user_id = auth.jwt_required(args)
+        user_id = auth.jwt_required(answer_args)
         try:
             user_id = int(user_id)
         except ValueError as e:
             return {"message": {"Authorization": user_id}}, 403
-        vote = args["vote"]
-        answer = args["answer"]
-        if vote and answer:
-            return {"message": {"vote": "Kindly provide one parameter to be filled"}}, 403
-        if vote:
-            return self.is_question_owner(question_id, user_id, args["vote"], answer_id)
+        answer = answer_args["answer"]
+        if answer_args["vote"] and answer:
+            return {"message": {"vote": "Kindly provide one parameter to be filled"}}, 400
+        if answer_args["vote"] is not None:
+            return self.is_question_owner(question_id, user_id, answer_args["vote"], answer_id)
         if answer:
-            return self.is_answer_owner(answer_id, user_id, args["answer"])
+            return self.is_answer_owner(answer_id, user_id, answer_args["answer"])
         else:
-            return {"message", {"vote": "Provide atleast one of this parameters 'vote' or 'answer' "}}
+            return {"message": {"vote": "Provide atleast one of this parameters 'vote' or 'answer' "}}, 400
 
     def is_question_exist(self, value):
         """
@@ -342,14 +341,16 @@ class Answer:
             return {"Error": "Question not found"}, 404
         if not poster == results["account_id"]:
             return {"Error": "UnAuthorised user"}, 401
-        if not vote == 1:
-            return {"Error": "Vote is required"}, 400
-        params = (answer_id,)
-        update_query = "update answers set accepted = TRUE where answer_id = %s returning " \
+        if vote:
+            vote = True
+        else:
+            vote = False
+        params = (vote, answer_id,)
+        update_query = "update answers set accepted = %s where answer_id = %s returning " \
                        "answer_id, question_id, answeres_by, answer_date, answer," \
                        " accepted "
         question_response = db.qry(update_query, params, commit=True, fetch="one")
-        question_response["answer_date"] = str(question_response[0]["answer_date"])
+        question_response["answer_date"] = str(question_response["answer_date"])
         return question_response
 
     def valid_answer(self, value, name):
@@ -381,8 +382,8 @@ class Answer:
         """
         query = "select users.account_id from answers inner join users " \
                 "on (answers.answeres_by = users.account_id) where " \
-                "answers.answer_id={};".format(answer_id)
-        results = db.qry(query, fetch="one")
+                "answers.answer_id=%s;"
+        results = db.qry(query, (answer_id,), fetch="one")
         if not results:
             return {"Error": "Answer not found"}, 404
         if not poster == results["account_id"]:

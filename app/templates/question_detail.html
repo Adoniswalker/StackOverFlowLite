@@ -19,7 +19,7 @@
                     <span class="question_tip">Asked at {{ date_posted }} by {{ posted_by }}</span>
                 </div>
                 <div class="edit">
-                    <label for="question_body_edit">Subject</label>
+                    <label for="question_subject_edit">Subject</label>
                     <input type="text" name="subject_body" id="question_subject_edit">
                     <label>Body</label>
                     <textarea name="question_subject" id="question_body_edit"></textarea>
@@ -33,11 +33,12 @@
             </div>
             <template id="answers_template">
                 {% raw %}
-                <div class="{{ class_name }}" data-id="{{ answer_id }}" >
+                <div data-id="{{ answer_id }}" >
                     <div class="answer noedit">
                         <p>{{answer}}</p>
                         <button class="click-edit-answer auth">Edit</button>
                         <span class="question_tip">Answered at {{answer_date}} by {{answeres_by}}</span>
+                        <input type="checkbox" class="accept-checkbox">
                         <p><img src="../static/images/icons/tick.png" class="accepted"
                                 title="Accepted by who asked"></p>
                     </div>
