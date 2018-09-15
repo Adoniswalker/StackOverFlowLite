@@ -43,8 +43,6 @@ function loginUser() {
         .then((res) => {
             res.json().then((data) => {
                 if (res.status === 200) {
-                    console.log(data);
-                    console.log(typeof data);
                     createCookie("token", data["auth_token"], 3);
                     delete data["auth_token"];
                     window.localStorage.setItem('user', JSON.stringify(data));

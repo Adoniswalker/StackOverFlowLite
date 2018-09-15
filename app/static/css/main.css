@@ -46,7 +46,12 @@ a:hover, a:active {
     display: none;
     width: 40px;
     height: 40px;
-    background:url(../images/icons/down_arror.png) center;
+    /*background:url(../images/icons/menu-icon.png) center;*/
+}
+#menu-icon img{
+    width: 40px;
+    height: 40px;
+    border-radius: 16px;
 }
 a:hover#menu-icon{
     border-radius: 4px 4px 0 0;
@@ -189,16 +194,16 @@ input[type=text]:focus {
 #message {
     font-family: Arial, Helvetica, sans-serif;
     position: fixed;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: 100%;
     z-index: 105;
     text-align: center;
     font-weight: bold;
     font-size: 100%;
     color: white;
-    padding: 10px 0px 10px 0px;
-    background-color: #8E1609;
+    padding: 10px 0 10px 0;
+    background-color: #8d8e61;
 }
 
 #message span {

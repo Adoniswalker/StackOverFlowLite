@@ -4,7 +4,10 @@ function trimfield(str) {
     return str.replace(/^\s+|\s+$/g, '');
 }
 
-function show_notification(text) {
+function show_notification(text, success) {
+    if (success) {
+        $("#message span").css("background-color", "green");
+    }
     $("#message span").text(text);
     $("#message").fadeIn("slow");
     $("#message a.close-notify").click(function () {
@@ -50,12 +53,6 @@ function set_unset_user() {
     }
 }
 
-function check_user_loggedin() {
-    if (read_cookie("token")) {
-        return true;
-    }
-}
-
 function logout_user(event) {
     //used to logout user
     // should be here to ensure user can logout anywhere
@@ -71,11 +68,11 @@ function logout_user(event) {
             if (res.status === 200) {
                 console.log(data);
 
-                //delete the token by setting letter date
+                //delete the token by setting past date
                 let now = new Date();
                 now.setMonth(now.getMonth() - 1);
-                document.cookie = "token=" + read_cookie("token");
-                document.cookie = "expires = " + now.toUTCString() + ";";
+                let token = "token=" + read_cookie("token");
+                document.cookie = token + ";expires=" + now.toUTCString() + ";";
 
                 // delete user details from local storage
                 window.localStorage.removeItem("user");
@@ -83,7 +80,8 @@ function logout_user(event) {
                 window.location.replace("/");
             } else if (res.status === 400) {
                 window.localStorage.removeItem("user");
-                show_notification(data["Error"])
+                show_notification(data["message"]["Authorization"]);
+                window.location.replace("/");
                 // changeHtml(data["Error"], "wrong_error");
                 // changeHtml(data["message"]["email"], "login_mail_error");
             }
@@ -102,11 +100,12 @@ function createCookie(name, value, days) {
     }
     else var expires = "";
     // document.cookie = name + "=" + value + expires + "; path=/";
-    document.cookie = name + "=" + value + expires + ";";
+    let cookie = name + "=" + value + expires;
+    document.cookie = cookie;
+    console.log(cookie)
 }
 
 set_unset_user();
-
 
 
 function popup(parent, message) {
