@@ -3,22 +3,6 @@
 
 document.addEventListener('DOMContentLoaded', get_all_questions(), true);
 const question_list_Div = document.getElementById("question_list_id");
-// HTMLElement.prototype.select_event = function(event, selector, handler) {
-//     this.addEventListener(event, function(e) {
-//         let target = e.target;
-//         if (typeof(selector) === 'string') {
-//             while (!target.matches(selector) && target !== this) {
-//                 target = target.parentElement;
-//             }
-//
-//             if (target.matches(selector))
-//                 handler.call(target, e);
-//         } else {
-//                 selector.call(this, e);
-//         }
-//     });
-// };
-// question_list_Div.select_event("click", ".delete",delete_question);
 
 function get_all_questions() {
     fetch("/api/v1/questions/", {
@@ -103,7 +87,7 @@ function insert_question_list(data) {
             data["delete_span"] = "edit";
         }
     }
-    console.log(data);
+    data["human_date"] = prettyDate(data["date_posted"]) || data["date_posted"];
     let temp = document.getElementById("questions_template");
     let content = Mustache.render(temp.innerHTML, data);
     question_list_Div.insertAdjacentHTML('afterbegin', content);

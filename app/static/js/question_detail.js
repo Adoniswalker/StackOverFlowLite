@@ -18,6 +18,7 @@ class Questions {
             res.json().then((data) => {
                 if (res.status === 200) {
                     let temp = document.getElementById("question_detail_template");
+                    data["human_date"] = prettyDate(data["date_posted"]) || data["date_posted"];
                     let question = Mustache.render(temp.innerHTML, data);
                     this.question_body.insertAdjacentHTML('afterbegin', question);
                     this.set_delete_function(data);
@@ -227,6 +228,7 @@ class Answers extends Questions {
         self = this;
         let answer_id = answer["answer_id"];
         let temp = document.getElementById("answers_template");
+        answer["human_date"] = prettyDate(answer["answer_date"]) || answer["answer_date"];
         let content = Mustache.render(temp.innerHTML, answer);
         answer_body.insertAdjacentHTML('afterbegin', content);
         let d = answer_body.querySelector(`[data-id='${answer_id}'`);

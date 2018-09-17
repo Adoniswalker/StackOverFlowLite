@@ -15,7 +15,9 @@
                 <button class="edit-question auth" title="Edit question">edit</button>
                 <span class="question_vote">5</span><span class="votes">Answers</span>
                 <p> {{ question_body }}</p>
-                <span class="question_tip">Asked at <b>{{ date_posted }}</b> by <b>{{ posted_by }}</b></span>
+                <span class="question_tip">Asked <span class="emphatic-value"
+                                                       title="{{ date_posted }}">{{ human_date }}</span> by
+                    <span class="emphatic-value">{{ posted_by }}</span></span>
             </div>
             <div class="edit">
                 <label for="question_subject_edit">Subject</label>
@@ -32,11 +34,13 @@
         </div>
         <template id="answers_template">
             {% raw %}
-            <div class="answer" data-id="{{ answer_id }}" >
+            <div class="answer" data-id="{{ answer_id }}">
                 <div class="noedit">
                     <p>{{answer}}</p>
                     <button class="click-edit-answer auth">Edit</button>
-                    <p class="question_tip">Answered at <b>{{answer_date}}</b> by <b>{{answeres_by}}</b></p>
+                    <p class="question_tip">Answered <span class="emphatic-value" title="{{ answer_date }}">{{ human_date }}</span>
+                        by
+                        <span class="emphatic-value">{{ posted_by }}</span></p>
                     <input type="checkbox" class="accept-checkbox">
                     <p><img src="../static/images/icons/tick.png" class="accepted"
                             title="Accepted by who asked"></p>
@@ -46,7 +50,7 @@
                     <textarea class="answer-edit"></textarea>
                     <span class="alert-danger" id="answer_edit_error"></span>
                     <button class="answer_edit">save</button>
-                    <button class="cancel_answer_edit">cancel</button>  
+                    <button class="cancel_answer_edit">cancel</button>
                 </div>
             </div>
             {% endraw %}

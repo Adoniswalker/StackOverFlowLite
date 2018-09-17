@@ -97,7 +97,7 @@ nav ul li {
     color: green;
     text-decoration: underline;
 }
-b{
+.emphatic-value{
     color: #2E577F;
 }
 
@@ -203,7 +203,7 @@ input[type=text]:focus {
     font-size: 100%;
     color: white;
     padding: 10px 0 10px 0;
-    background-color: #8d8e61;
+    background-color: #ff0000;
 }
 
 #message span {

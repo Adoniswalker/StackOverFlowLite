@@ -98,7 +98,7 @@ function insert_question_list(data) {
             data["delete_span"] = "edit";
         }
     }
-    console.log(data);
+    data["human_date"] = prettyDate(data["date_posted"]) || data["date_posted"];
     let temp = document.getElementById("user_questions_template");
     let content = Mustache.render(temp.innerHTML, data);
     user_question_list_Div.insertAdjacentHTML('afterbegin', content);
