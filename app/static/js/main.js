@@ -5,7 +5,6 @@ function trimfield(str) {
 }
 
 function show_notification(text, success) {
-    let message = $("message");
     if (success) {
         $("#message").css("background-color", "green");
     } else {
@@ -24,14 +23,14 @@ function read_cookie(name) {
     let ca = document.cookie.split(';');
     for (let i = 0; i < ca.length; i++) {
         let c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
     }
     return null;
 }
 
 function changeHtml(text, parentId) {
-    parentElem = document.getElementById(parentId);
+    let parentElem = document.getElementById(parentId);
     if ((typeof text !== 'undefined') && text) {
         parentElem.innerText = text
     } else {
@@ -96,16 +95,18 @@ function logout_user(event) {
 }
 
 function createCookie(name, value, days) {
+    let expires;
     if (days) {
-        var date = new Date();
+        const date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        var expires = "; expires=" + date.toGMTString();
+        expires = "; expires=" + date.toGMTString();
     }
-    else var expires = "";
-    // document.cookie = name + "=" + value + expires + "; path=/";
+    else {
+        expires = "";
+    }
     let cookie = name + "=" + value + expires;
     document.cookie = cookie;
-    console.log(cookie)
+    return cookie;
 }
 
 set_unset_user();
@@ -130,9 +131,9 @@ $(document).on('click', ".error-notification", function () {
     });
 });
 
-function prettyDate(time) {
+function prettyDate(time, now = new Date()) {
     let date = new Date(time || ""),
-        diff = ((new Date().getTime() - date.getTime()) / 1000),
+        diff = ((new Date(now).getTime() - date.getTime()) / 1000),
         day_diff = Math.floor(diff / 86400);
 
     if (isNaN(day_diff) || day_diff < 0) {
@@ -142,13 +143,14 @@ function prettyDate(time) {
     return day_diff === 0 && (diff < 60 && "just now" ||
         diff < 120 && "1 minute ago" ||
         diff < 3600 && Math.floor(diff / 60) + " minutes ago" ||
-        diff < 7200 && "1 hour ago" ||
+        diff < 7200 && "an hour ago" ||
         diff < 86400 && Math.floor(diff / 3600) + " hours ago") ||
         day_diff === 1 && "Yesterday" ||
         day_diff < 7 && day_diff + " days ago" ||
+        day_diff < 14 && "last week" ||
         day_diff < 31 && Math.ceil(day_diff / 7) + " weeks ago" ||
-        day_diff < 32 && "1 month ago" ||
-        day_diff < 366 && Math.ceil(day_diff / 210) + " months ago" ||
-        day_diff < 731 && "a year ago" ||
+        day_diff < 32 && "last month" ||
+        day_diff < 366 && Math.ceil(day_diff / 30) + " months ago" ||
+        day_diff < 731 && "last year" ||
         day_diff > 731 && Math.ceil(day_diff / 365) + " years ago";
 }

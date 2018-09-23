@@ -20,7 +20,7 @@ function get_all_questions() {
             }
 
         });
-    }).catch((err) => {
+    }).catch(() => {
         show_notification("Unable to load questions, try again later");
     });
 }
@@ -63,6 +63,7 @@ function addQuestion() {
                     insert_question_list(data);
                     question_subject_tag.value = '';
                     question_body_tag.value = '';
+                    show_notification("You successfully posted the question", true);
                 }
                 else if (res.status === 400) {
                     changeHtml(data["message"]["Authorization"], "login_error");
@@ -72,8 +73,8 @@ function addQuestion() {
                     popup("#login_error", data["message"]["Authorization"]);
                 }
             });
-        }).catch((err) => {
-            show_notification("Error: " + err);
+        }).catch(() => {
+            show_notification("Unable to connect to the internet");
         });
     }
 
@@ -83,7 +84,7 @@ function insert_question_list(data) {
     // This function will inset posted questions to a list
     let user = get_user();
     if (user) {
-        if (user.account_id === data.posted_by) {
+        if (user["account_id"] === data["posted_by"]) {
             data["delete_span"] = "edit";
         }
     }

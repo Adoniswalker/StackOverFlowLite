@@ -27,7 +27,7 @@ class Questions {
                             self.insert_answer(data["answers"][i], this.answer_body, data["posted_by"]);
                         }
                     } else {
-                        popup(".question_detail", "No answers found");
+                        popup(".question_item", "No answers found");
                     }
                 } else if (res.status === 404) {
                     show_notification("No questions found!!");
@@ -57,7 +57,7 @@ class Questions {
         });
         let user = get_user();
         if (user) {
-            if (user.account_id === data.posted_by) {
+            if (user["account_id"] === data["posted_by"]) {
                 this.question_body.classList.add("auth-priv");
             }
         }
@@ -187,7 +187,7 @@ class Questions {
 
 class Answers extends Questions {
 
-    cancelAnswerEdit(answer) {
+    static cancelAnswerEdit(answer) {
         answer.classList.remove("answer-edit");
     }
 
@@ -206,7 +206,7 @@ class Answers extends Questions {
             res.json().then((data) => {
                 if (res.status === 200) {
                     show_notification("Answer successfully edited");
-                    this.cancelAnswerEdit(answer);
+                    Answers.cancelAnswerEdit(answer);
                     answer.querySelector("p").innerText = data["answer"];
                 }
                 else if (res.status === 401) {
@@ -242,7 +242,7 @@ class Answers extends Questions {
                     self.submitEdit(d);
                 });
                 d.querySelector(".cancel_answer_edit").addEventListener("click", function () {
-                    self.cancelAnswerEdit(d);
+                    Answers.cancelAnswerEdit(d);
                 })
             })
         }
@@ -290,7 +290,7 @@ class Answers extends Questions {
         if (answer["accepted"]) {
             answer_body.classList.add("accepted-display");
         }
-        if (user && (user["account_id"] === answer.answeres_by)) {
+        if (user && (user["account_id"] === answer["answeres_by"])) {
             answer_body.classList.add("auth-answer");
 
         }
