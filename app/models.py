@@ -2,6 +2,8 @@
 import psycopg2
 import re
 
+from flask import request
+
 from app import app
 from app.auth import Authentication
 from app.db import DatabaseConfig
@@ -10,6 +12,13 @@ from flask_bcrypt import Bcrypt, check_password_hash
 db = DatabaseConfig()
 b_crypt = Bcrypt(app)
 auth = Authentication()
+
+
+def get_username(first_name, last_name, email):
+    if last_name or first_name:
+        return first_name + " " + last_name
+    else:
+        return email.split("@")[0]
 
 
 class Users:
@@ -100,6 +109,16 @@ class Users:
         else:
             return {"Error": "Wrong password"}, 400
 
+    def get_user(self, user_id):
+        question = db.qry("select u.account_id, u.first_name, u.last_name,u.email, "
+                          "(select count(q.posted_by) from questions q where"
+                          " q.posted_by = %s) as questions_counts,"
+                          "(select count(a.answeres_by) from answers a where "
+                          "a.answeres_by = %s) as answers_counts"
+                          " from users u where u.account_id = %s;",
+                          (user_id, user_id, user_id,), fetch="one")
+        return question, 200
+
 
 class Question:
     """This class manipulates the question"""
@@ -109,11 +128,19 @@ class Question:
         Get all questions
         :return:
         """
-        questions = db.qry("select  * from questions order by date_posted desc", fetch="all")
+        questions = db.qry("select q.*, u.first_name, u.last_name, u.email, "
+                           "(select count(a.question_id) from answers a "
+                           "where q.question_id= a.question_id) as answers"
+                           " from questions q inner join users u on(q.posted_by ="
+                           " u.account_id) order by q.date_posted asc",
+                           fetch="all")
         if not questions:
             return questions, 404
-        for j in questions:
-            j["date_posted"] = str(j["date_posted"])
+        for question in questions:
+            question["date_posted"] = str(question["date_posted"])
+            question["url"] = request.host_url+"api/v1/questions/"+str(question["question_id"])+"/"
+            question["username"] = get_username(question["first_name"], question["last_name"], question["email"])
+            del question["email"]
         return questions
 
     def save(self, args):
@@ -134,6 +161,7 @@ class Question:
             args['question_subject'], args['question_body'], user_id)
         results = db.qry(query, arguments, fetch="one", commit=True)
         results["date_posted"] = str(results["date_posted"])
+        results["answers"] = 0
         return results, 201
 
     def get_one(self, question_id):
@@ -142,14 +170,25 @@ class Question:
         :param question_id:
         :return:
         """
-        question = db.qry("select  * from questions where question_id = "
-                          "'{}'".format(question_id), fetch="one")
+        question = db.qry("select al.*, u.first_name, u.last_name, u.email from "
+                          "(select qs.*, count(ars.question_id) as answers_no "
+                          "from questions qs left join answers ars using "
+                          "(question_id) where qs.question_id = %s group by qs.question_id order by "
+                          "date_posted desc) al inner join users u "
+                          "on(al.posted_by = u.account_id);", (question_id,),  fetch="one")
+        
         if not question:
             return {"Error": "No question found"}, 404
-        answers = db.qry("select  * from answers where question_id =%s",
+        question["username"] = get_username(question["first_name"], question["last_name"], question["email"])
+        del question["email"]
+        answers = db.qry("select  ars.*, u.first_name, u.last_name, u.email"
+                         " from answers ars inner join users u "
+                         "on(ars.answeres_by=u.account_id) where ars.question_id =%s",
                          (question["question_id"],), fetch="all")
         for answer in answers:
             answer["answer_date"] = str(answer["answer_date"])
+            answer["username"] = get_username(answer["first_name"], answer["last_name"], answer["email"])
+            del answer["email"]
         question["date_posted"] = str(question["date_posted"])
         question["answers"] = answers
         return question, 200
@@ -255,12 +294,17 @@ class Question:
                 :param question_id:
                 :return:
                 """
-        questions = db.qry("select  * from questions where posted_by = %s "
-                           "order by date_posted desc", (user_id,), fetch="all")
+        questions = db.qry("select al.*, u.first_name, u.last_name, u.email "
+                           "from (select qs.*, count(ars.question_id) as answers "
+                           "from questions qs left join answers ars using "
+                           "(question_id) group by qs.question_id order by "
+                           "date_posted desc) al inner join users u on(al.posted_by = u.account_id) "
+                           "where u.account_id = %s;", (user_id,), fetch="all")
         if not questions:
-            return {"message": {"questins": "You dont have any questions"}}, 404
+            return {"message": {"questions": "You don't have any questions"}}, 404
         for question in questions:
             question["date_posted"] = str(question["date_posted"])
+            question["username"] = get_username(question["first_name"], question["last_name"], question["email"])
         return questions
 
 

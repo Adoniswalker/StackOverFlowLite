@@ -5,15 +5,16 @@
 {%  block content %}
 <div class="form_div">
     <h1>Signup</h1>
+    <p style="color: red;">Fields with * are required</p>
     <form method="POST" class="form" onsubmit="event.preventDefault()" id="signup">
         <label for="first_name">First name</label>
         <input type="text" id="first_name" name="first_name">
         <label for="last_name">Last Name</label>
         <input type="text" id="last_name" name="last_name">
-        <label for="mail">Email</label>
+        <label for="mail">Email  <span class="require">*</span></label>
         <input type="email" id='mail' name="email" required>
         <span id = "email_error" class="alert-danger"></span>
-        <label for="password1">Password</label>
+        <label for="password1">Password  <span class="require">*</span></label>
         <input type="password" id="password1" name="password" required>
         <span id = "password_error" class="alert-danger"></span>
         <button class="button">Sign up</button>

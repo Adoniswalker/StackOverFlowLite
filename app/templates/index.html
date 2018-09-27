@@ -6,17 +6,16 @@
     <div class="question">
         <div class="question_list" id="question_list_id">
         </div>
-
         <template id="questions_template">
             {% raw %}
                 <div class="question_item" data-id="{{ question_id }}">
                     <h4><a href="/question/{{ question_id }}">{{ question_subject }}</a></h4>
                     <span data-id="{{ question_id }}" class='delete' title='You own this question!!
 You can edit or delete' >{{ delete_span }}</span>
-                    <span class="question_vote">5</span><span class="votes">Answers</span>
+                    <span class="question_vote">{{ answers }}</span><span class="votes">Answers</span>
                     <p><a href="/question/{{ question_id }}">{{ question_body }}</a></p>
                     <span class="question_tip">Asked <span class="emphatic-value" title="{{ date_posted }}">{{ human_date }}</span>
-                        by  <span class="emphatic-value">{{ posted_by }}</span>   </span>
+                        by  <span class="emphatic-value">{{ username}} </span>   </span>
                 </div>
             {% endraw %}
         </template>
@@ -24,18 +23,12 @@ You can edit or delete' >{{ delete_span }}</span>
             <h2>Post a question</h2>
             <form method="POST" class="form" onsubmit="event.preventDefault();return addQuestion()"
                   name="post_question">
-                <div>
                     <label for="subject">Subject</label>
                     <input type="text" id="subject" name="subject" required>
                     <span id="subject_error" class="alert-danger"></span>
-                </div>
-                <div>
                     <label for="content_question">Question content</label>
-                    <textarea id="content_question" name="content_question" required>
-                    </textarea>
+                    <textarea id="content_question" name="content_question"></textarea>
                     <span id="body_error" class="alert-danger"></span>
-
-                </div>
                 <input id="login_error" type="submit" value="Submit">
             </form>
         </div>

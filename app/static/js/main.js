@@ -42,10 +42,11 @@ function changeHtml(text, parentId) {
 function get_user() {
     return JSON.parse(localStorage.getItem('user'));
 }
-function is_user_logged_in(){
-    if(read_cookie("token")){
+
+function is_user_logged_in() {
+    if (read_cookie("token")) {
         return true
-    }else {
+    } else {
         localStorage.removeItem("user");
         return false;
     }
@@ -161,4 +162,18 @@ function prettyDate(time, now = new Date()) {
         day_diff < 366 && Math.ceil(day_diff / 30) + " months ago" ||
         day_diff < 731 && "last year" ||
         day_diff > 731 && Math.ceil(day_diff / 365) + " years ago";
+}
+
+function insert_question_list(data) {
+    let user_question_list_Div = document.getElementById("question_questions_list");
+    let user = get_user();
+    if (is_user_logged_in()) {
+        if (user["account_id"] === data["posted_by"]) {
+            data["delete_span"] = "edit";
+        }
+    }
+    data["human_date"] = prettyDate(data["date_posted"]) || data["date_posted"];
+    let temp = document.getElementById("user_questions_template");
+    let content = Mustache.render(temp.innerHTML, data);
+    user_question_list_Div.insertAdjacentHTML('afterbegin', content);
 }

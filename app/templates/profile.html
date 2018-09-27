@@ -7,11 +7,11 @@
         <div class="left_nav">
             <div class="score">
                 <p>Question asked</p>
-                <p>50</p>
+                <p id="question_count"></p>
             </div>
             <div class="score">
                 <p>Answers given</p>
-                <p>120</p>
+                <p id="answer_count"></p>
             </div>
         </div>
         <div class="content-nav">
@@ -27,11 +27,11 @@
                             <h4><a href="/question/{{ question_id }}">{{ question_subject }}</a></h4>
                             <span data-id="{{ question_id }}" class='delete' title='You own this question!!
 You can edit or delete'>{{ delete_span }}</span>
-                            <span class="question_vote">5</span><span class="votes">Answers</span>
+                            <span class="question_vote">{{ answers }}</span><span class="votes">Answers</span>
                             <p><a href="/question/{{ question_id }}">{{ question_body }}</a></p>
                             <span class="question_tip">Asked <span class="emphatic-value"
                                                                    title="{{ date_posted }}">{{ human_date }}</span>
-                                by  <span class="emphatic-value">{{ posted_by }}</span>   </span>
+                                by  <span class="emphatic-value">{{ username }}</span>   </span>
                         </div>
                         {% endraw %}
                     </template>
@@ -58,5 +58,5 @@ You can edit or delete'>{{ delete_span }}</span>
     <div class="clear"></div>
 {% endblock %}
 {% block js %}
-    <script src="../static/js/user.js"></script>
+    <script src="../static/js/profile.js"></script>
 {% endblock %}

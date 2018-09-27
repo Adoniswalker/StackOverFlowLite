@@ -15,6 +15,10 @@ QUESTION_PARSER.add_argument('question_body', required=True, type=quest.valid_qu
 QUESTION_PARSER.add_argument('Authorization', location='headers', required=True,
                              help="Token is required. Please login")
 
+QUESTION_PARSER_PUT = QUESTION_PARSER.copy()
+QUESTION_PARSER_PUT.replace_argument('question_subject', required=True)
+QUESTION_PARSER_PUT.replace_argument('question_body', required=True)
+
 TOKEN_PARSER = reqparse.RequestParser(bundle_errors=True)
 TOKEN_PARSER.add_argument('Authorization', location='headers',
                           required=True, help="Token is required. Please login")
@@ -198,7 +202,7 @@ class QuestionGetUpdateDelete(Resource):
             400:
                description: Missikng parameters in the questions
             """
-        args = QUESTION_PARSER.parse_args()
+        args = QUESTION_PARSER_PUT.parse_args()
         return quest.update(question_id, args)
 
 

@@ -20,6 +20,10 @@
 }
 .question_container .form{
     margin-bottom: 100px;
+    margin-left: 70px;
+}
+.question_container .form textarea{
+
 }
 .content-nav .question_list{
     width: 100%;
@@ -30,12 +34,12 @@
 }
 
 .question_list{
-    width: 68%;
+    width: 62%;
     float: left;
-    margin: 55px 20px 50px 10px;
+    margin: 85px 40px 50px 40px;
 }
 .question_item {
-    background-color: #f8f8f8;
+    background-color: #ffffff;
     padding: 5px 10px 25px 10px;
     margin-bottom: 20px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
@@ -60,8 +64,8 @@
     width: 28%;
     /*background-color: #1c7430;*/
     float: left;
-    margin-top: 55px;
-    padding: 5px;
+    margin-top: 85px;
+    /*padding: 5px;*/
 }
 .question_item h4{
     padding-bottom: 5px;
@@ -81,15 +85,18 @@ textarea {
     color: darkblue !important;
 }
 .question_vote{
+    font-style: italic;
+    font-size: 90%;
     color: black;
     margin: 8px;
     padding: 2px 7px;
     background: #cccccc;
-    clear: both;
+    /*clear: both;*/
 }
 .votes{
     color: #00001e;
-    font-size: 120%;
+    font-size: 90%;
+    font-style: italic;
 }
 
 .question_tip{
@@ -169,7 +176,7 @@ div.auth-answer .auth{
 .accept-checkbox{
     display: none;
     width: 20px;
-    margin: 0px;
+    margin: 0;
 }
 
 .question_owner .accept-checkbox{

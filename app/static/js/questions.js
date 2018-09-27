@@ -89,8 +89,13 @@ function insert_question_list(data) {
             data["delete_span"] = "edit";
         }
     }
-    data["human_date"] = prettyDate(data["date_posted"]) || data["date_posted"];
+    data["human_date"] = prettyDate(data["date_posted"]) || readable_date(data["date_posted"]);
+    data["date_posted"] = readable_date(data["date_posted"])
     let temp = document.getElementById("questions_template");
     let content = Mustache.render(temp.innerHTML, data);
     question_list_Div.insertAdjacentHTML('afterbegin', content);
+}
+function readable_date(comp_date){
+    let date = new Date(comp_date || "");
+    return date.toLocaleString();
 }

@@ -9,7 +9,7 @@ from app.auth import Authentication
 from app.db import DatabaseConfig
 from app.answers import PostAnswer, UpdateAnswer
 from app.models import Users
-from app.questions import QuestionsApi, QuestionGetUpdateDelete, UserQuestions
+from app.questions import QuestionsApi, QuestionGetUpdateDelete, UserQuestions, TOKEN_PARSER
 
 api = Api(app)
 b_crypt = Bcrypt(app)
@@ -61,6 +61,15 @@ REGISTER_PARSER.add_argument('password', required=True, type=user.password_valid
 
 
 class RegisterUser(Resource):
+    def get(self):
+        args = TOKEN_PARSER.parse_args()
+        user_id = auth.jwt_required(args)
+        try:
+            user_id = int(user_id)
+        except ValueError as e:
+            return {"message": {"Authorization": user_id}}, 403
+        return user.get_user(user_id)
+
     def post(self):
         """Endporint for user registration
         This is using docstrings for specifications.

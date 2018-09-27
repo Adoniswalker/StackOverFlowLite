@@ -69,7 +69,7 @@ header {
 }
 
 #logo {
-    margin: 20px;
+    margin: 10px;
     float: left;
     width: 200px;
     font-size: 150%;
@@ -295,6 +295,9 @@ span.delete {
         display:block ;
     }
 
+}
+.require{
+    color: red;
 }
 @media only screen and (max-width: 893px) {
     .form_div {
