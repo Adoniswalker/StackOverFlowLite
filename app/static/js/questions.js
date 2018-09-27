@@ -83,7 +83,8 @@ function addQuestion() {
 function insert_question_list(data) {
     // This function will inset posted questions to a list
     let user = get_user();
-    if (user) {
+    let is_user_logged = is_user_logged_in();
+    if (is_user_logged) {
         if (user["account_id"] === data["posted_by"]) {
             data["delete_span"] = "edit";
         }

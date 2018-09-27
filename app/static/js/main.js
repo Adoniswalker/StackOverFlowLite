@@ -42,9 +42,17 @@ function changeHtml(text, parentId) {
 function get_user() {
     return JSON.parse(localStorage.getItem('user'));
 }
+function is_user_logged_in(){
+    if(read_cookie("token")){
+        return true
+    }else {
+        localStorage.removeItem("user");
+        return false;
+    }
+}
 
 function set_unset_user() {
-    if (get_user()) {
+    if (is_user_logged_in()) {
         $("#logout_link").show().click(logout_user);
         $("#signup_link").hide();
         $("#login_link").hide();

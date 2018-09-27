@@ -48,6 +48,11 @@ def question(question_id):
     return render_template("question_detail.html", question_id=question_id)
 
 
+@app.route('/testui/')
+def test_ui():
+    return render_template("jasmine-test.html")
+
+
 REGISTER_PARSER = reqparse.RequestParser(bundle_errors=True)
 REGISTER_PARSER.add_argument('first_name')
 REGISTER_PARSER.add_argument('last_name')

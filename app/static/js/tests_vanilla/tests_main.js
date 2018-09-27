@@ -70,3 +70,8 @@ describe("Working with sinon", ()=>{
 
     });
 });
+describe("Login", ()=>{
+    it("Test user login function", ()=>{
+        expect(loginUser({"email":"dennisngeno7@gmail.com", "password":"testpassword"})).toBe(undefined);
+    })
+});
