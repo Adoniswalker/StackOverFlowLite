@@ -69,6 +69,7 @@ header {
 }
 
 #logo {
+    font-family: "Comic Sans MS", cursive, sans-serif;
     margin: 10px;
     float: left;
     width: 200px;
@@ -91,6 +92,7 @@ nav ul li {
     display: inline-block;
     float: left;
     padding: 10px;
+    font-family: Impact, Charcoal, sans-serif;
 }
 
 .current {
@@ -294,6 +296,9 @@ span.delete {
     nav:hover ul{
         display:block ;
     }
+
+}
+.answer-show {
 
 }
 .require{

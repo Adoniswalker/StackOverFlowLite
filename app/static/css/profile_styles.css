@@ -5,15 +5,18 @@
 .left_nav {
     float: left;
     background: #cccccc;
-    height: 600px;
-    width: 10%;
+    height: 100%;
+    width: 16%;
     padding: 10px 0 0 10px;
     border-right: 1px solid #d6d9dc;
-    /*flex-shrink: 0;*/
+    flex-shrink: 0;
     z-index: 0;
-    position: relative;
+    /*position: relative;*/
     box-shadow: 0 0 0 rgba(12, 13, 14, 0.05);
     transition: box-shadow ease-in-out .1s, transform ease-in-out .1s;
+    bottom: 0;
+    right: 0;
+    position: fixed;
 }
 
 .content-nav {
@@ -21,16 +24,6 @@
     width: 80%;
     margin: 0 auto;
 }
-
-/*.question_most {*/
-    /*padding: auto;*/
-
-/*}*/
-
-/*.question_recent {*/
-    /*padding: auto;*/
-
-/*}*/
 
 /* styling h1, p, h3 */
 .content-nav h3 {

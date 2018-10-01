@@ -15,7 +15,8 @@ function show_notification(text, success) {
     $("#message a.close-notify").click(function () {
         $("#message").fadeOut("slow");
         return false;
-    });
+    }
+    );
 }
 
 function read_cookie(name) {
