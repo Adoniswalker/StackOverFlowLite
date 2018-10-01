@@ -10,7 +10,7 @@ auth = Authentication()
 db = DatabaseConfig()
 
 ANSWER_PARSER = reqparse.RequestParser(bundle_errors=True)
-ANSWER_PARSER.add_argument('answer', required=True)
+ANSWER_PARSER.add_argument('answer', required=True, type=answer.valid_answer)
 ANSWER_PARSER.add_argument('Authorization', location='headers',
                            required=True, help="You have to be looged in")
 

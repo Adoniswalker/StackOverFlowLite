@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Stack Lite{% endblock %}</title>
+    <meta name="viewport" content="width-device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/index_style.css">
     <link rel="stylesheet" href="../static/css/main.css">
     <link rel="stylesheet" href="../static/css/profile_styles.css">
+    <link rel="Shortcut Icon" type="image/png" href="../static/images/icons/favicon.jpeg" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body class="body">
 <header>
-    <a href="#" id="logo">StackOverflowLite</a>
+    <a href={{ url_for('home') }} id="logo">StackOverflowLite</a>
     <nav>
-        <a href="#" id="menu-icon"></a>
+        <a href="#" id="menu-icon"><img src="../static/images/icons/menu-icon.png" ></a>
         <ul>
             <li><a href={{ url_for('home') }}>Home</a></li>
             <li><a href={{ url_for('profile') }}>Profile</a></li>
-            <li><a href={{ url_for('signup') }} class="current">Sign up</a></li>
-            <li><a href={{ url_for('login') }}>Login</a></li>
+            <li id="signup_link"><a href={{ url_for('signup') }} class="current">Sign up</a></li>
+            <li id="login_link"><a href={{ url_for('login') }}>Login</a></li>
+            <li id="logout_link"><a href="#">Logout</a></li>
         </ul>
     </nav>
 </header>
@@ -25,6 +28,11 @@
 {% block content %}
 
 {% endblock %}
+
+<div id='message' style="display: none;">
+    <span>Hey, This is my Message.</span>
+    <a href="#" class="close-notify">X</a>
+</div>
 <footer id="footer">
     <div class="container">
         <div class="copyright">
@@ -35,7 +43,12 @@
         </div>
     </div>
 </footer>
+<script src="../static/js/jquery/jquery.min.js"></script>
+<script src="../static/js/jquery/jquery-migrate.min.js"></script>
+<script src="../static/js/jquery/mustache.js"></script>
+<script src="../static/js/jquery/moment.js"></script>
 <script src="../static/js/main.js"></script>
-<script src="../static/js/user.js"></script>
+{% block js %}
+{% endblock %}
 </body>
 </html>

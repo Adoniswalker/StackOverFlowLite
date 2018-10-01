@@ -7,11 +7,11 @@ function addQuestion() {
     let question_list_Div = document.getElementById("question_list_id");
     let row_question = document.forms["post_question"]["subject"];
     let row_message = document.forms["post_question"]["content_question"];
-    if (trimfield(row_question.value) == '') {
+    if (trimfield(row_question.value) === '') {
         alert("Please Provide the subject of the question!");
         row_question.focus();
         return false;
-    } else if (trimfield(row_message.value) == '') {
+    } else if (trimfield(row_message.value) === '') {
         alert("Please Provide an an explanation for your question!");
         row_message.focus();
         return false;
@@ -31,7 +31,7 @@ function addQuestion() {
 function addAnswer() {
     let answersDiv = document.getElementById("answers_id");
     let row_answer = document.forms["post_answer"]["answer"];
-    if (trimfield(row_answer.value) == '') {
+    if (trimfield(row_answer.value) === '') {
         alert("Please Provide an answer!");
         row_answer.focus();
         return false;

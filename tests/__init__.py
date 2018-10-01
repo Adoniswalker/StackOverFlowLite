@@ -46,7 +46,6 @@ class TestStackBase(unittest.TestCase):
         response = self.client_app.post("/api/v1/questions/",
                                         data=json.dumps(question),
                                         content_type="application/json", headers={'Authorization': self.token})
-        # import pdb; pdb.set_trace()
         self.question_id = json.loads(response.data.decode())["question_id"]
         self.question = {
             "question_subject": "Is this a new question subject?",

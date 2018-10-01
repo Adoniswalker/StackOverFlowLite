@@ -140,5 +140,5 @@ class TestQuestions(TestStackBase):
                                        content_type="application/json",
                                        headers={'Authorization': self.token})
         response_data = json.loads(response.data.decode("UTF-8"))
-        assert response_data["Error"] == "UnAuthorised"
+        assert response_data["message"]["Authorization"] == "You are not allowed to edit this question"
         assert response.status_code == 401

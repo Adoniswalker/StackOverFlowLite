@@ -1,103 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Question</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/index_style.css">
-    <link rel="stylesheet" href="css/profile_styles.css">
-</head>
-<body class="body">
-<header>
-    <a href="#" id="logo">StackOverflowLite</a>
-    <nav>
-        <a href="#" id="menu-icon"></a>
-        <ul>
-            <li><a href={{ url_for('home') }} >Home</a> </li>
-            <li><a href={{ url_for('profile') }} >Profile</a> </li>
-            <li><a href={{ url_for('signup') }} class="current">Sign up</a> </li>
-            <li><a href={{ url_for('login') }} >Login</a> </li>
-        </ul>
-    </nav>
-</header>
-<div class="container">
+{% extends "layout.html" %}
+{% block title %}
+    {{ super() }} | question
+{% endblock %}
+{% block content %}
     <div class="question_container">
-        <div class="question_detail">
-            <h3>How can I delete a pre-installed language in Ubuntu 18.04?</h3>
-            <p>
-                screenshot of Language Support
+        <div class="question_item" id="question" data-id="{{ question_id }}">
 
-                I have reinstalled my computer system with the Ubuntu 18.04 last night, and while I install the system I
-                chose the system language is English but there is Chinese language package installed without my
-                agreement
-                now. (What happened exactly?)
-
-                I try to remove this language in the Install/Remove Languages... button, but when I open the language
-                setting, the system warns me there is some recommended package not installed and want to install it for
-                me.
-                (I do not need it at all.)
-
-                So, is there any ways to remove this language showing in the screenshot?</p>
         </div>
+        <template id="question_detail_template">
+            {% raw %}
+            <div class="noedit">
+                <h3> {{ question_subject }}</h3>
+                <button class="delete-question auth" title="Delete question" data-id="{{ question_id }}">X</button>
+                <button class="edit-question auth" title="Edit question">edit</button>
+                <span class="question_vote">{{ answers_no }}</span><span class="votes">Answers</span>
+                <p> {{ question_body }}</p>
+                <span class="question_tip">Asked <span class="emphatic-value"
+                                                       title="{{ date_posted }}">{{ human_date }}</span> by
+                    <span class="emphatic-value">{{ username }}</span></span>
+            </div>
+            <div class="edit">
+                <label for="question_subject_edit">Subject</label>
+                <input type="text" name="subject_body" id="question_subject_edit">
+                <label>Body</label>
+                <textarea name="question_subject" id="question_body_edit"></textarea>
+                <input type="submit" name="save" id="update_edit" value="save"/>
+                <input type="button" name="cancel" id="cancel_edit" value="cancel"/>
+            </div>
+            <span class="auth alert-danger" id="question_error"></span>
+            {% endraw %}
+        </template>
         <div class="answers" id="answers_id">
-            <div class="answer">
-
-                1
-                down vote
-                Thanks for Mr.Hjalmarsson's help.
-
-                Follow this Steps:
-
-                First, make sure that language which you want to make it disappear in this page is not set as the
-                "regional
-                formats" setting.
-
-                Then check the folder which in /usr/share/locale-langpack and using command ls like this:
-
-
-            </div>
-            <div class="answer">
-                We can see there has a language folder which you want to remove like zh, this zh folder was created by
-                the
-                installer since you (apparently) selected a Chinese time zone location, so we removed it now.
-
-                sudo rmdir /usr/share/locale-langpack/zh
-                At last, we use the command gnome-language-selector to remove the Chinese language packages again and
-                re-open the gnome-language-selector, the "汉语(中国)" will never appear.
-
-                If you can't see the "汉语(中国)", we should do some clean work after remove, so, just remove all of the
-                folders
-                which have the characters zh in the folders name.
-            </div>
         </div>
-        <!--<form class="form">-->
+        <template id="answers_template">
+            {% raw %}
+            <div class="answer" data-id="{{ answer_id }}">
+                <div class="noedit">
+                    <p>{{answer}}</p>
+                    <button class="click-edit-answer auth">Edit</button>
+                    <p class="question_tip">Answered <span class="emphatic-value" title="{{ answer_date }}">{{ human_date }}</span>
+                        by
+                        <span class="emphatic-value">{{ username }}</span></p>
+                    <input type="checkbox" class="accept-checkbox">
+                    <p><img src="../static/images/icons/tick.png" class="accepted"
+                            title="Accepted by who asked"></p>
+                </div>
+                <div class="edit answer">
+                    <label for="answer_edit">Update answer</label>
+                    <textarea class="answer-edit"></textarea>
+                    <span class="alert-danger" id="answer_edit_error"></span>
+                    <button class="answer_edit">save</button>
+                    <button class="cancel_answer_edit">cancel</button>
+                </div>
+            </div>
+            {% endraw %}
+        </template>
         <form class="form" onsubmit="event.preventDefault(); return addAnswer()" name="post_answer">
-
             <h3>Post an answer</h3>
-            <textarea id ="answer_area" name="answer">This should be an aswer</textarea>
-            <span id = "answer_error"></span>
+            <textarea id="answer_area" name="answer"></textarea>
+            <span id="answer_error" class="alert-danger"></span>
             <button class="button">Answer</button>
+            <span id="login_err" class="alert-danger"></span>
         </form>
     </div>
-</div>
 
+{% endblock %}
+{% block js %}
+    <script src="../static/js/question_detail.js"></script>
 
-<footer id="footer">
-    <div class="footer-top">
-        <div class="container">
-
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="copyright">
-            &copy; Copyright <strong>Dennis</strong>. All Rights Reserved
-        </div>
-        <div class="credits">
-            Stackoverflow lite by <a href="#">Technology</a>
-        </div>
-    </div>
-</footer>
-<script src="js/main.js"></script>
-</body>
-</html>
+{% endblock %}

@@ -1,29 +1,71 @@
 /* for dividing the web page */
+/* question details */
+.question_container{
+    width: 70%;
+    margin: 60px auto;
+}
+.question_detail{
+    padding: 10px 26px 28px 20px;
+    background-color: #ffffff;
+    margin-top: 65px;
+}
+.answers{
+    margin-left: 70px;
+
+}
+.answer{
+    margin-bottom: 10px;
+    padding: 10px 40px 22px;
+    background: #fbfbfb;
+}
+.question_container .form{
+    margin-bottom: 100px;
+    margin-left: 70px;
+}
+.content-nav .question_list{
+    width: 70%;
+    margin: 70px 70px;
+}
+
 .question {
     margin: 0 1%;
 }
 
 .question_list{
-    width: 68%;
+    width: 62%;
     float: left;
-    margin: 55px 20px 50px 10px;
+    margin: 85px 40px 50px 40px;
 }
 .question_item {
-    background-color: #f1f1f1;
-    padding: 6px 16px 23px 16px;
-    margin-bottom: 25px;
+    background-color: #ffffff;
+    padding: 5px 10px 25px 10px;
+    margin-bottom: 20px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
 }
 .question_item:hover {
     box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19) !important;
 }
+.question_item h4 a{
+    color:black;
+}
+.question_item p a{
+    color:black;
+}
+.question_item h4 a:hover{
+    color:#2E577F;;
+}
+.question_item p a:hover{
+    color: #0D6DCC;
+}
 
 .post_question {
+    position: fixed;
     width: 28%;
+    right: 0;
     /*background-color: #1c7430;*/
     float: left;
-    margin-top: 55px;
-    padding: 5px;
+    margin: 85px 30px;
+    /*padding: 5px;*/
 }
 .question_item h4{
     padding-bottom: 5px;
@@ -32,24 +74,122 @@
 textarea {
     width: 100%;
     height: 150px;
-    padding: 12px 22px;
+    padding: 12px 20px;
     box-sizing: border-box;
-    border: 2px solid #ccc;
+    border: 1px solid grey;
     border-radius: 4px;
-    background-color: #f8f8f8;
+    /*background-color: #f8f8f8;*/
     resize: none;
 }
 .question_link{
     color: darkblue !important;
 }
-.question_vote{
-    color: black;
-    margin: 8px;
-    padding: 2px 7px;
-    background: #cccccc;
-    clear: both;
-}
 .votes{
     color: #00001e;
-    font-size: 120%;
+    font-size: 90%;
+    font-style: italic;
+}
+
+.question_tip{
+    color: grey;
+    font-size: 90%;
+    font-style: italic;
+    float: right;
+    padding-top:5px;
+}
+.clear{
+    clear: both;
+}
+.score{
+    float:left;
+    padding: 0 10px;
+}
+
+/**********************answer***accepted*********/
+.accepted{
+    display: none;
+    height: 20px;
+    width:20px;
+}
+.accepted-display .accepted{
+    display: initial;
+}
+/**********************edit auth****************/
+div .auth{
+    display: none;
+    color: red;
+    float: right;
+    cursor: pointer;
+    padding: 5px;
+    margin: 2px;
+}
+div.auth-priv .auth{
+    display: initial;
+}
+/**********************edit**********************/
+.question_item .edit{
+    display: none;
+}
+.main-edit .edit{
+    display: initial;
+}
+.main-edit .noedit{
+    display: none;
+}
+
+
+/*************************endEdit***************/
+
+/****************************editanswer*********/
+div .auth{
+    display: none;
+    color: red;
+    float: right;
+    cursor: pointer;
+    padding: 5px;
+    margin: 2px;
+}
+div.auth-answer .auth{
+    display: initial;
+}
+
+.answers .edit{
+    display: none;
+}
+.answer-edit .edit{
+    display: initial;
+}
+.answer-edit .noedit{
+    display: none;
+}
+
+/************************voting************************/
+.accept-checkbox{
+    display: none;
+    width: 20px;
+    margin: 0;
+}
+
+.question_owner .accept-checkbox{
+    display: initial;
+}
+
+/**********mobile*****/
+@media only screen and (max-width: 764px){
+    .question_list {
+        width: 90%;
+        float: none;
+        margin:55px auto auto;
+    }
+
+    .post_question {
+        width: 90%;
+        margin: 0 auto;
+        float: none;
+        padding-bottom: 0px;
+    }
+    .question_container {
+        width: 90%;
+    }
+
 }

@@ -9,7 +9,7 @@ from app.auth import Authentication
 from app.db import DatabaseConfig
 from app.answers import PostAnswer, UpdateAnswer
 from app.models import Users
-from app.questions import QuestionsApi, QuestionGetUpdateDelete, UserQuestions
+from app.questions import QuestionsApi, QuestionGetUpdateDelete, UserQuestions, TOKEN_PARSER
 
 api = Api(app)
 b_crypt = Bcrypt(app)
@@ -43,9 +43,14 @@ def profile():
     return render_template("profile.html")
 
 
-@app.route('/question')
-def question():
-    return render_template("question_detail.html")
+@app.route('/question/<int:question_id>')
+def question(question_id):
+    return render_template("question_detail.html", question_id=question_id)
+
+
+@app.route('/testui/')
+def test_ui():
+    return render_template("jasmine-test.html")
 
 
 REGISTER_PARSER = reqparse.RequestParser(bundle_errors=True)
@@ -56,6 +61,15 @@ REGISTER_PARSER.add_argument('password', required=True, type=user.password_valid
 
 
 class RegisterUser(Resource):
+    def get(self):
+        args = TOKEN_PARSER.parse_args()
+        user_id = auth.jwt_required(args)
+        try:
+            user_id = int(user_id)
+        except ValueError as e:
+            return {"message": {"Authorization": user_id}}, 403
+        return user.get_user(user_id)
+
     def post(self):
         """Endporint for user registration
         This is using docstrings for specifications.
@@ -201,6 +215,3 @@ api.add_resource(LogOut, '/api/v1/auth/logout/')
 api.add_resource(UserQuestions, '/api/v1/questions/user/')
 api.add_resource(PostAnswer, '/api/v1/questions/<int:question_id>/answers/')
 api.add_resource(UpdateAnswer, '/api/v1/questions/<int:question_id>/answers/<answer_id>/')
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
