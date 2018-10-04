@@ -8,4 +8,4 @@ os
 bin/
 lib64
 pyvenv.cfg
-venv/
+env/

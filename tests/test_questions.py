@@ -1,7 +1,8 @@
 """This file is used for testcases"""
 import json
 
-from tests import TestStackBase
+
+from basement import TestStackBase
 
 
 class TestQuestions(TestStackBase):
@@ -88,7 +89,9 @@ class TestQuestions(TestStackBase):
         response = self.client_app.get("/api/v1/questions/{}/".format(self.question_id))
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertTrue(response.content_type == 'application/json')
-        assert response_msg["question_subject"] == "What is computer programming?"
+        # import pdb; pdb.set_trace()
+        # print("data", response)
+        assert response_msg.get("question_subject") == "What is computer programming?"
         assert response.status_code == 200
 
     def test_get_question_no_id(self):
