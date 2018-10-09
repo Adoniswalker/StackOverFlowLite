@@ -1,6 +1,6 @@
 import json
 
-from tests import TestStackBase
+from basement import TestStackBase
 
 
 class TestAnswers(TestStackBase):

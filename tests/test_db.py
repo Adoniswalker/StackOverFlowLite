@@ -1,7 +1,7 @@
 """This module is used to test user"""
 import json
 
-from tests import TestStackBase
+from basement import TestStackBase
 
 
 class TestUser(TestStackBase):

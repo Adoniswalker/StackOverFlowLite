@@ -15,15 +15,14 @@ auth = Authentication()
 
 
 def get_username(first_name, last_name, email):
-    if last_name or first_name:
+
+    if last_name and first_name:
         return first_name + " " + last_name
     else:
         return email.split("@")[0]
 
 
 class Users:
-    def __init__(self):
-        pass
 
     def save(self, args):
         """
@@ -111,8 +110,8 @@ class Users:
 
     def get_user(self, user_id):
         question = db.qry("select u.account_id, u.first_name, u.last_name,u.email, "
-                          "(select count(q.posted_by) from questions q where"
-                          " q.posted_by = %s) as questions_counts,"
+                          "(select count(answer_obj.posted_by) from questions answer_obj where"
+                          " answer_obj.posted_by = %s) as questions_counts,"
                           "(select count(a.answeres_by) from answers a where "
                           "a.answeres_by = %s) as answers_counts"
                           " from users u where u.account_id = %s;",
@@ -128,17 +127,17 @@ class Question:
         Get all questions
         :return:
         """
-        questions = db.qry("select q.*, u.first_name, u.last_name, u.email, "
+        questions = db.qry("select answer_obj.*, u.first_name, u.last_name, u.email, "
                            "(select count(a.question_id) from answers a "
-                           "where q.question_id= a.question_id) as answers"
-                           " from questions q inner join users u on(q.posted_by ="
-                           " u.account_id) order by q.date_posted asc",
+                           "where answer_obj.question_id= a.question_id) as answers"
+                           " from questions answer_obj inner join users u on(answer_obj.posted_by ="
+                           " u.account_id) order by answer_obj.date_posted asc",
                            fetch="all")
         if not questions:
             return questions, 404
         for question in questions:
             question["date_posted"] = str(question["date_posted"])
-            question["url"] = request.host_url+"api/v1/questions/"+str(question["question_id"])+"/"
+            question["url"] = request.host_url + "api/v1/questions/" + str(question["question_id"]) + "/"
             question["username"] = get_username(question["first_name"], question["last_name"], question["email"])
             del question["email"]
         return questions
@@ -175,8 +174,8 @@ class Question:
                           "from questions qs left join answers ars using "
                           "(question_id) where qs.question_id = %s group by qs.question_id order by "
                           "date_posted desc) al inner join users u "
-                          "on(al.posted_by = u.account_id);", (question_id,),  fetch="one")
-        
+                          "on(al.posted_by = u.account_id);", (question_id,), fetch="one")
+
         if not question:
             return {"Error": "No question found"}, 404
         question["username"] = get_username(question["first_name"], question["last_name"], question["email"])
@@ -188,6 +187,8 @@ class Question:
         for answer in answers:
             answer["answer_date"] = str(answer["answer_date"])
             answer["username"] = get_username(answer["first_name"], answer["last_name"], answer["email"])
+            answer["url"] = f"{request.url_root}api/v1/questions/{str(answer['question_id'])}" \
+                            f"/answers/{str(answer['answer_id'])}/"
             del answer["email"]
         question["date_posted"] = str(question["date_posted"])
         question["answers"] = answers
@@ -310,9 +311,6 @@ class Question:
 
 class Answer:
     """This class manipulates the answer"""
-
-    def __init__(self):
-        pass
 
     def save(self, question_id, args):
         """
@@ -453,3 +451,21 @@ class Answer:
                 """
         query = "select answer_id from answers where answer =%s"
         return db.qry(query, (value,), fetch="all")
+
+    def delete(self, question_id, answer_id, params):
+        user_id = auth.jwt_required(params)
+        try:
+            user_id = int(user_id)
+        except ValueError as e:
+            return {"message": {"Authorization": user_id}}, 403
+        query = "select * from answers a where a.answer_id = %s"
+        results = db.qry(query, (answer_id,), fetch="one")
+        if not results:
+            return {"message": {"answer": "Answer not found"}}, 404
+        if not results["answeres_by"] == user_id:
+            return {"message": {"answer": "You dont have permission to delete this answer"}},401
+        delete_query = "delete from answers a where a.answer_id = %s and a.question_id = %s returning true"
+        if db.qry(delete_query, (answer_id, question_id,), commit=True, fetch="one"):
+            return {"message": {"answer": "Successfully deleted the answer"}}, 200
+        else:
+            return {"message": {"answer": "Unknown error occurred"}}, 400

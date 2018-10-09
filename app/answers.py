@@ -20,8 +20,17 @@ PUT_PARSER_ANSWER.add_argument('vote', type=int)
 PUT_PARSER_ANSWER.add_argument('Authorization', location='headers',
                                required=True, help="You have to be logged in")
 
+DEL_PARSER_ANSWER = reqparse.RequestParser(bundle_errors=True)
+DEL_PARSER_ANSWER.add_argument('Authorization', location='headers',
+                               required=True, help="You have to be logged in")
+
 
 class UpdateAnswer(Resource):
+
+    def delete(self, question_id, answer_id):
+        args = DEL_PARSER_ANSWER.parse_args()
+        return answer.delete(question_id, answer_id, args)
+
     def put(self, question_id, answer_id):
         """
         used to accept put request

@@ -11,8 +11,10 @@
             {% raw %}
             <div class="noedit">
                 <h3> {{ question_subject }}</h3>
-                <button class="delete-question auth" title="Delete question" data-id="{{ question_id }}">X</button>
-                <button class="edit-question auth" title="Edit question">edit</button>
+                <button class="delete-question auth" title="Delete question" data-id="{{ question_id }}">
+                    <img title="Delete question" src="../static/images/garbage.png" class="icon-style"></button>
+                <button class="edit-question auth" title="Edit question">
+                    <img title="Edit question" src="../static/images/edit.png" class="icon-style"></button>
                 <span class="question_vote">{{ answers_no }}</span><span class="votes">Answers</span>
                 <p> {{ question_body }}</p>
                 <span class="question_tip">Asked <span class="emphatic-value"
@@ -34,20 +36,23 @@
         </div>
         <template id="answers_template">
             {% raw %}
-            <div class="answer" data-id="{{ answer_id }}">
+            <div class="answer" data-id="{{ answer_id }}" data-accepted="{{ accepted }}">
                 <div class="noedit">
                     <p>{{answer}}</p>
-                    <button class="click-edit-answer auth">Edit</button>
+                    <button class="click-edit-answer auth">
+                        <img src="../static/images/edit.png" class="icon-style" title="Edit answer"></button>
+                    <button class="click-delete-answer auth">
+                        <img src="../static/images/garbage.png" class="icon-style" title="Delete answer"></button>
                     <p class="question_tip">Answered <span class="emphatic-value" title="{{ answer_date }}">{{ human_date }}</span>
                         by
                         <span class="emphatic-value">{{ username }}</span></p>
-                    <input type="checkbox" class="accept-checkbox">
+                    <button ><img class="icon-style accept-icon" title="Accept as preferred" src="../static/images/like.png"></button>
                     <p><img src="../static/images/icons/tick.png" class="accepted"
                             title="Accepted by who asked"></p>
                 </div>
                 <div class="edit answer">
-                    <label for="answer_edit">Update answer</label>
-                    <textarea class="answer-edit"></textarea>
+                    <label for="answer-edit">Update answer</label>
+                    <textarea class="answer_edit" id="answer-edit"></textarea>
                     <span class="alert-danger" id="answer_edit_error"></span>
                     <button class="answer_edit">save</button>
                     <button class="cancel_answer_edit">cancel</button>
@@ -56,7 +61,7 @@
             {% endraw %}
         </template>
         <form class="form" onsubmit="event.preventDefault(); return addAnswer()" name="post_answer">
-            <h3>Post an answer</h3>
+            <label for="answer_area">Post an answer</label>
             <textarea id="answer_area" name="answer"></textarea>
             <span id="answer_error" class="alert-danger"></span>
             <button class="button">Answer</button>
