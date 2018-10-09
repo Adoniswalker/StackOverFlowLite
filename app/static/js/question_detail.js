@@ -44,7 +44,8 @@ class Questions {
         let delete_btn = this.question_body.querySelector(".delete-question");
         let edit_btn = this.question_body.querySelector(".edit-question");
         delete_btn.addEventListener("click", function () {
-            self.delete_question();
+            // Confirm("Are you sure", "Are you sure you want to delete this question", "Yes", "Close", self.delete_question);
+            self.delete_question()
         });
         edit_btn.addEventListener("click", function () {
             self.set_question();
@@ -231,24 +232,59 @@ class Answers extends Questions {
         answer["human_date"] = prettyDate(answer["answer_date"]) || answer["answer_date"];
         let content = Mustache.render(temp.innerHTML, answer);
         answer_body.insertAdjacentHTML('afterbegin', content);
-        let d = answer_body.querySelector(`[data-id='${answer_id}'`);
+        let answer_element = answer_body.querySelector(`[data-id='${answer_id}'`);
+        console.log(answer_element);
 
-        this.set_edit_btn_answer(answer, d, question_ownwer);
-        if (d) {
-            d.querySelector(".click-edit-answer").addEventListener('click', function () {
-                d.classList.add("answer-edit");
-                d.querySelector(".answer-edit").value = d.querySelector("p").innerText;
-                d.querySelector(".answer_edit").addEventListener("click", function () {
-                    self.submitEdit(d);
+        this.set_edit_btn_answer(answer, answer_element, question_ownwer);
+        if (answer_element) {
+            answer_element.querySelector(".click-edit-answer").addEventListener('click', function () {
+                answer_element.classList.add("answer-edit");
+                answer_element.querySelector(".answer-edit").value = answer_element.querySelector("p").innerText;
+                answer_element.querySelector(".answer_edit").addEventListener("click", function () {
+                    self.submitEdit(answer_element);
                 });
-                d.querySelector(".cancel_answer_edit").addEventListener("click", function () {
-                    Answers.cancelAnswerEdit(d);
+                answer_element.querySelector(".cancel_answer_edit").addEventListener("click", function () {
+                    Answers.cancelAnswerEdit(answer_element);
                 })
+            });
+            answer_element.querySelector(".click-delete-answer").addEventListener("click", function () {
+                Confirm("Delete answer", "Are you sure you want to delete answer?", "Yes", "Close",
+                    Answers.delete,[answer, answer_element, answer_body]);
             })
         }
     }
-
-    set_preferred(answer, answer_body, answer_checkbox) {
+     static delete (answer, d, answer_body){
+         fetch(`/api/v1/questions/${answer["question_id"]}/answers/${answer["answer_id"]}/`, {
+            method: "DELETE",
+            mode: "cors",
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "Authorization": "Bearer " + read_cookie("token"),
+            }
+        }).then((res) => {
+            res.json().then((data) => {
+                if (res.status === 200) {
+                    answer_body.removeChild(d);
+                    popup("#answer_edit_error", data["message"]["answer"]);
+                }
+                else if (res.status === 401) {
+                    popup("#answer_edit_error", data["message"]["Authorization"]);
+                } else if (res.status === 403) {
+                    popup("#answer_edit_error", data["message"]["Authorization"]);
+                }
+                else if (res.status === 404) {
+                    // console.log(d);
+                    popup("#answer_edit_error", data["message"]["answer"]);
+                }
+            });
+        }).catch((err) => {
+            show_notification("Error" + err);
+        });
+     }
+    set_preferred(answer, answer_body) {
+        // answer_body.setAttribute("waxi", "me");
+        let data_accepted = answer_body.getAttribute("data-accepted");
+        let accept_value = ( data_accepted !== "true");
         fetch(`/api/v1/questions/${answer["question_id"]}/answers/${answer["answer_id"]}/`, {
             method: "PUT",
             mode: "cors",
@@ -256,27 +292,22 @@ class Answers extends Questions {
                 "Content-type": "application/json; charset=UTF-8",
                 "Authorization": "Bearer " + read_cookie("token"),
             },
-            body: JSON.stringify({"vote": answer_checkbox.checked}),
+            body: JSON.stringify({"vote": accept_value}),
         }).then((res) => {
             res.json().then((data) => {
-                if (res.status === 200) {
-                    if (data["accepted"]) {
+                if (res.ok) {
+                    if(data["accepted"]){
+                        answer_body.querySelector(".accept-icon").src = "/static/images/dislike.png";
+                        answer_body.setAttribute("data-accepted", "true");
                         answer_body.classList.add("accepted-display");
-                        show_notification("Answer successfully accepted");
-                    } else {
+                    }else {
+                        answer_body.setAttribute("data-accepted", "false");
+                        answer_body.querySelector(".accept-icon").src = "/static/images/like.png";
                         answer_body.classList.remove("accepted-display");
-                        show_notification("Answer successfully unaccepted");
                     }
-
                 }
-                else if (res.status === 401) {
-                    // changeHtml(data["message"]["Authorization"], "login_err");
+                else{
                     popup("#answer_edit_error", data["message"]["Authorization"]);
-                } else if (res.status === 403) {
-                    popup("#answer_edit_error", data["message"]["Authorization"]);
-                }
-                else if (res.status === 404) {
-                    popup("#answer_edit_error", data["message"]["question"]);
                 }
             });
         }).catch((err) => {
@@ -296,13 +327,13 @@ class Answers extends Questions {
         }
         if (user && (user))
             if (user && (user["account_id"] === question_owner)) {
-                let answer_checkbox = answer_body.querySelector(".accept-checkbox");
+                let accept_icon = answer_body.querySelector(".accept-icon");
                 answer_body.classList.add("question_owner");
-                answer_checkbox.addEventListener("change", function () {
-                    self.set_preferred(answer, answer_body, answer_checkbox)
+                accept_icon.addEventListener("click", function () {
+                    self.set_preferred(answer, answer_body, accept_icon)
                 });
                 if (answer["accepted"]) {
-                    answer_checkbox.checked = true;
+                    accept_icon.checked = true;
                 }
             }
         return answer
@@ -310,13 +341,13 @@ class Answers extends Questions {
 
 }
 
-const q = new Answers();
+const answer_obj = new Answers();
 document.addEventListener('DOMContentLoaded', function () {
-    q.get_question_detail();
+    answer_obj.get_question_detail();
 }, true);
 
 function addAnswer() {
-    q.addAnswer()
+    answer_obj.addAnswer()
 }
 
 

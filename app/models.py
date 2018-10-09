@@ -110,8 +110,8 @@ class Users:
 
     def get_user(self, user_id):
         question = db.qry("select u.account_id, u.first_name, u.last_name,u.email, "
-                          "(select count(q.posted_by) from questions q where"
-                          " q.posted_by = %s) as questions_counts,"
+                          "(select count(answer_obj.posted_by) from questions answer_obj where"
+                          " answer_obj.posted_by = %s) as questions_counts,"
                           "(select count(a.answeres_by) from answers a where "
                           "a.answeres_by = %s) as answers_counts"
                           " from users u where u.account_id = %s;",
@@ -127,11 +127,11 @@ class Question:
         Get all questions
         :return:
         """
-        questions = db.qry("select q.*, u.first_name, u.last_name, u.email, "
+        questions = db.qry("select answer_obj.*, u.first_name, u.last_name, u.email, "
                            "(select count(a.question_id) from answers a "
-                           "where q.question_id= a.question_id) as answers"
-                           " from questions q inner join users u on(q.posted_by ="
-                           " u.account_id) order by q.date_posted asc",
+                           "where answer_obj.question_id= a.question_id) as answers"
+                           " from questions answer_obj inner join users u on(answer_obj.posted_by ="
+                           " u.account_id) order by answer_obj.date_posted asc",
                            fetch="all")
         if not questions:
             return questions, 404

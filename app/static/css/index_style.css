@@ -164,13 +164,13 @@ div.auth-answer .auth{
 }
 
 /************************voting************************/
-.accept-checkbox{
+.accept-icon{
     display: none;
     width: 20px;
     margin: 0;
 }
 
-.question_owner .accept-checkbox{
+.question_owner .accept-icon{
     display: initial;
 }
 

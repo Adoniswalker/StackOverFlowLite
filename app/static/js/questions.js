@@ -64,6 +64,7 @@ function addQuestion() {
                     question_subject_tag.value = '';
                     question_body_tag.value = '';
                     show_notification("You successfully posted the question", true);
+                    slide_notify("You successfully posted the question");
                 }
                 else if (res.status === 400) {
                     changeHtml(data["message"]["Authorization"], "login_error");
