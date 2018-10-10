@@ -1,10 +1,10 @@
 // theDiv.appendChild(content);
-function trimfield(str) {
+const trimfield = str => {
     //Remove spaces from strings
     return str.replace(/^\s+|\s+$/g, '');
-}
+};
 
-function show_notification(text, success) {
+const show_notification = (text, success) => {
     if (success) {
         $("#message").css("background-color", "green");
     } else {
@@ -17,9 +17,9 @@ function show_notification(text, success) {
         return false;
     }
     );
-}
+};
 
-function read_cookie(name) {
+const read_cookie = name => {
     let nameEQ = name + "=";
     let ca = document.cookie.split(';');
     for (let i = 0; i < ca.length; i++) {
@@ -28,9 +28,9 @@ function read_cookie(name) {
         if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
     }
     return null;
-}
+};
 
-function changeHtml(text, parentId) {
+const changeHtml = (text, parentId) => {
     let parentElem = document.getElementById(parentId);
     if ((typeof text !== 'undefined') && text) {
         parentElem.innerText = text
@@ -38,22 +38,22 @@ function changeHtml(text, parentId) {
         parentElem.innerText = ''
     }
 
-}
+};
 
-function get_user() {
+const get_user = () => {
     return JSON.parse(localStorage.getItem('user'));
-}
+};
 
-function is_user_logged_in() {
+const is_user_logged_in = ()=> {
     if (read_cookie("token")) {
         return true
     } else {
         localStorage.removeItem("user");
         return false;
     }
-}
+};
 
-function set_unset_user() {
+const set_unset_user =()=> {
     if (is_user_logged_in()) {
         $("#logout_link").show().click(logout_user);
         $("#signup_link").hide();
@@ -63,9 +63,9 @@ function set_unset_user() {
         $("#signup_link").show();
         $("#login_link").show();
     }
-}
+};
 
-function logout_user(event) {
+const logout_user = (event) => {
     //used to logout user
     // should be here to ensure user can logout anywhere
     event.preventDefault();
@@ -78,7 +78,6 @@ function logout_user(event) {
     }).then((res) => {
         res.json().then((data) => {
             if (res.status === 200) {
-                console.log(data);
 
                 //delete the token by setting past date
                 let now = new Date();
@@ -100,11 +99,10 @@ function logout_user(event) {
         });
     })
         .catch((err) => {
-            console.log("Eror", err);
         });
-}
+};
 
-function createCookie(name, value, days) {
+const createCookie = (name, value, days) => {
     let expires;
     if (days) {
         const date = new Date();
@@ -117,12 +115,12 @@ function createCookie(name, value, days) {
     let cookie = name + "=" + value + expires;
     document.cookie = cookie;
     return cookie;
-}
+};
 
 set_unset_user();
 
 
-function popup(parent, message) {
+const popup = (parent, message) => {
     // It gives a small popup showing a message, parent is the tag to be displayed below
     //and message is the message to be passes
     if ((typeof message !== 'undefined') && message) {
@@ -133,15 +131,15 @@ function popup(parent, message) {
         $(parent).after($err);
         $err.fadeIn('fast');
     }
-}
+};
 
-$(document).on('click', ".error-notification", function () {
+$(document).on("click", ".error-notification", function () {
     $(this).fadeOut('fast', function () {
         $(this).remove();
     });
 });
 
-function prettyDate(time, now = new Date()) {
+const prettyDate = (time, now = new Date()) => {
     let date = new Date(time || ""),
         diff = ((new Date(now).getTime() - date.getTime()) / 1000),
         day_diff = Math.floor(diff / 86400);
@@ -163,48 +161,50 @@ function prettyDate(time, now = new Date()) {
         day_diff < 366 && Math.ceil(day_diff / 30) + " months ago" ||
         day_diff < 731 && "last year" ||
         day_diff > 731 && Math.ceil(day_diff / 365) + " years ago";
-}
+};
 
-function insert_question_list(data) {
-    let user_question_list_Div = document.getElementById("question_questions_list");
-    let user = get_user();
-    if (is_user_logged_in()) {
-        if (user["account_id"] === data["posted_by"]) {
-            data["delete_span"] = "edit";
-        }
-    }
-    data["human_date"] = prettyDate(data["date_posted"]) || data["date_posted"];
-    let temp = document.getElementById("user_questions_template");
-    let content = Mustache.render(temp.innerHTML, data);
-    user_question_list_Div.insertAdjacentHTML('afterbegin', content);
-}
-function slide_notify (message) {
+// const insert_question_list = (data) => {
+//     let user_question_list_Div = document.getElementById("question_questions_list");
+//     let user = get_user();
+//     if (is_user_logged_in()) {
+//         if (user["account_id"] === data["posted_by"]) {
+//             data["delete_span"] = "edit";
+//         }
+//     }
+//     data["human_date"] = prettyDate(data["date_posted"]) || data["date_posted"];
+//     let temp = document.getElementById("user_questions_template");
+//     let content = Mustache.render(temp.innerHTML, data);
+//     user_question_list_Div.insertAdjacentHTML('afterbegin', content);
+// };
+const slide_notify =  (message) => {
     $(".custom-notification-content").html(message);
     $(".custom-social-proof").stop().slideToggle('slow');
     setTimeout(()=> {$(".custom-social-proof").stop().slideToggle('slow')}, 4000);
     $(".custom-close").click(function () {
         $(".custom-social-proof").stop().slideToggle('slow');
     });
-}
+};
 
 
-function Confirm(title, msg, $true, $false, $callback, args) { /*change*/
-    var $content =  "<div class='dialog-ovelay'>" +
-        "<div class='dialog'><header>" +
-        " <h3> " + title + " </h3> " +
-        "<i class='fa fa-close'></i>" +
-        "</header>" +
-        "<div class='dialog-msg'>" +
-        " <p> " + msg + " </p> " +
-        "</div>" +
-        "<footer>" +
-        "<div class='controls'>" +
-        " <button class='button button-danger doAction'>" + $true + "</button> " +
-        " <button class='button button-default cancelAction'>" + $false + "</button> " +
-        "</div>" +
-        "</footer>" +
-        "</div>" +
-        "</div>";
+const Confirm = (title, msg, $true, $false, $callback, args) => { /*change*/
+    let $content =  `
+    <div class='dialog-ovelay'>
+        <div class='dialog'>
+            <header>
+                <h3> ${title} </h3> 
+                <i class='fa fa-close'></i>
+            </header>
+        <div class='dialog-msg'>
+            <p> ${msg} </p> 
+        </div>
+        <footer>
+            <div class='controls'>
+                <button class='button button-danger doAction'>${$true}</button> 
+                <button class='button button-default cancelAction'>${$false}</button>
+            </div>
+        </footer>
+     </div>`;
+    console.log($content);
     $('body').prepend($content);
     $('.doAction').click(function () {
         $callback.apply(false, args);
@@ -219,4 +219,4 @@ function Confirm(title, msg, $true, $false, $callback, args) { /*change*/
         });
     });
 
-}
+};

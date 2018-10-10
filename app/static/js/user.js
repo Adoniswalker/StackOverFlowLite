@@ -7,7 +7,7 @@ if (signup_form) {
     });
 }
 
-function create_user(signup_data) {
+const  create_user = signup_data => {
     fetch("/api/v1/auth/signup/", {
         method: "POST",
         mode: "cors",
@@ -18,15 +18,13 @@ function create_user(signup_data) {
                 window.location.replace("/login")
             }
             else {
-                console.log(data["message"]["email"]);
                 changeHtml(data["message"]["email"], "email_error");
                 changeHtml(data["message"]["password"], "password_error");
             }
         });
     }).catch((err) => {
-        console.log("Eror", err);
     });
-}
+};
 
 const login_form = document.getElementById('login');
 
@@ -37,7 +35,7 @@ if (login_form) {
     });
 }
 
-function loginUser(login_data) {
+const loginUser = login_data => {
     "use strict";
     fetch("/api/v1/auth/login/", {
         method: "POST",
@@ -62,9 +60,8 @@ function loginUser(login_data) {
         });
     })
         .catch((err) => {
-            console.log("Error", err);
         });
-}
+};
 
 
 

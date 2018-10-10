@@ -2,7 +2,7 @@
 "use strict"; //enable strict mode for debugging
 
 
-class Questions {
+class Question {
     constructor() {
         this.question_body = document.getElementById("question");
         this.question_id = this.question_body.getAttribute("data-id");
@@ -92,7 +92,8 @@ class Questions {
                 if (res.status === 200) {
                     this.question_body.querySelector("h3").innerText = data["question_subject"];
                     this.question_body.querySelector("p").innerText = data["question_body"];
-                    this.question_remove_edit()
+                    this.question_remove_edit();
+                    slide_notify("<p>You have successfully updated this question</p>");
                 }
                 else if (res.status === 400) {
                     popup("#question_error", data["message"]["question_subject"]);
@@ -186,14 +187,14 @@ class Questions {
     }
 }
 
-class Answers extends Questions {
+class Answers extends Question {
 
     static cancelAnswerEdit(answer) {
         answer.classList.remove("answer-edit");
     }
 
     submitEdit(answer) {
-        let answer_text = answer.querySelector(".answer-edit").value;
+        let answer_text = answer.querySelector("#answer-edit").value;
         let answer_id = answer.getAttribute("data-id");
         fetch(`/api/v1/questions/${this.question_id}/answers/${answer_id}/`, {
             method: "PUT",
@@ -225,29 +226,28 @@ class Answers extends Questions {
         });
     }
 
-    insert_answer(answer, answer_body, question_ownwer) {
+    insert_answer(answer, answer_body, question_owner) {
         self = this;
         let answer_id = answer["answer_id"];
         let temp = document.getElementById("answers_template");
         answer["human_date"] = prettyDate(answer["answer_date"]) || answer["answer_date"];
         let content = Mustache.render(temp.innerHTML, answer);
         answer_body.insertAdjacentHTML('afterbegin', content);
-        let answer_element = answer_body.querySelector(`[data-id='${answer_id}'`);
-        console.log(answer_element);
+        let answer_element = answer_body.querySelector(`[data-id='${answer_id}']`);
 
-        this.set_edit_btn_answer(answer, answer_element, question_ownwer);
+        this.set_edit_btn_answer(answer, answer_element, question_owner);
         if (answer_element) {
-            answer_element.querySelector(".click-edit-answer").addEventListener('click', function () {
+            answer_element.querySelector(".click-edit-answer").addEventListener('click', () => {
                 answer_element.classList.add("answer-edit");
-                answer_element.querySelector(".answer-edit").value = answer_element.querySelector("p").innerText;
-                answer_element.querySelector(".answer_edit").addEventListener("click", function () {
+                answer_element.querySelector("#answer-edit").value = answer_element.querySelector("p").innerText;
+                answer_element.querySelector(".answer_edit_btn").addEventListener("click", () => {
                     self.submitEdit(answer_element);
                 });
-                answer_element.querySelector(".cancel_answer_edit").addEventListener("click", function () {
+                answer_element.querySelector(".cancel_answer_edit").addEventListener("click", () => {
                     Answers.cancelAnswerEdit(answer_element);
                 })
             });
-            answer_element.querySelector(".click-delete-answer").addEventListener("click", function () {
+            answer_element.querySelector(".click-delete-answer").addEventListener("click", () => {
                 Confirm("Delete answer", "Are you sure you want to delete answer?", "Yes", "Close",
                     Answers.delete,[answer, answer_element, answer_body]);
             })
@@ -273,7 +273,6 @@ class Answers extends Questions {
                     popup("#answer_edit_error", data["message"]["Authorization"]);
                 }
                 else if (res.status === 404) {
-                    // console.log(d);
                     popup("#answer_edit_error", data["message"]["answer"]);
                 }
             });
@@ -346,9 +345,9 @@ document.addEventListener('DOMContentLoaded', function () {
     answer_obj.get_question_detail();
 }, true);
 
-function addAnswer() {
+const  addAnswer = () => {
     answer_obj.addAnswer()
-}
+};
 
 
 

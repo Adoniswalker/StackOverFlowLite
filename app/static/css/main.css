@@ -155,11 +155,16 @@ input[type=text]:focus {
     background: #405580;
     width: 100%;
     height: 50px;
-    /*position: fixed;*/
+    position: fixed;
     bottom: 0;
     left: 0;
     z-index: 100;
     opacity: 0.9;
+}
+.question_container #answer_area{
+    height: 70%;
+    width: 50%;
+    clear: both;
 }
 
 #footer .copyright {
@@ -313,8 +318,8 @@ span.delete {
 .custom-social-proof {
     display: none;
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  top: 20px;
+  right: 20px;
   z-index: 9999999999999 !important;
   font-family: 'Open Sans', sans-serif;
 }

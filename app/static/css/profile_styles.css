@@ -16,7 +16,7 @@
     transition: box-shadow ease-in-out .1s, transform ease-in-out .1s;
     bottom: 0;
     right: 0;
-    position: fixed;
+    /*position: fixed;*/
 }
 
 .content-nav {

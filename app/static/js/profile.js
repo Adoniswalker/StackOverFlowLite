@@ -1,4 +1,4 @@
-function get_all_user_questions() {
+const get_all_user_questions = ()=> {
     fetch("/api/v1/questions/user/", {
         method: "GET",
         mode: "cors",
@@ -24,10 +24,11 @@ function get_all_user_questions() {
     }).catch((err) => {
         show_notification("Unable to load questions, try again later");
     });
-}
+};
+
 document.addEventListener('DOMContentLoaded', get_all_user_questions, true);
 
-function set_counts() {
+const set_counts = ()=> {
     let question_count = document.getElementById("question_count");
     let answer_count = document.getElementById("answer_count");
     fetch("/api/v1/auth/signup/", {
@@ -45,4 +46,4 @@ function set_counts() {
             }
         })
     })
-}
+};
