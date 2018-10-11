@@ -154,38 +154,41 @@ class Question {
 			//clear any previous errors
 			changeHtml(false, "answer_error");
 			let data = {"answer": answer};
-			fetch(`/api/v1/questions/${this.question_id}/answers/`, {
-				method: "POST",
-				mode: "cors",
-				headers: {
-					"Content-type": "application/json; charset=UTF-8",
-					"Authorization": "Bearer " + read_cookie("token")
-				},
-				body: JSON.stringify(data)
-			}).then((res) => {
-				res.json().then((data) => {
-					if (res.status === 201) {
-						self.insert_answer(data, this.answer_body);
-						answer_tag.value = "";
-						slide_notify("Your answer was successfully posted")
-					}
-					else if (res.status === 400) {
-						// changeHtml(data["message"]["Authorization"], "login_err");
-						popup("#login_err", data["message"]["Authorization"]);
-						changeHtml(data["message"]["answer"], "answer_error");
-					} else if (res.status === 404) {
-						changeHtml(data["message"]["question"], "login_err");
-					}
-					else if (res.status === 403) {
-						popup("#login_err", data["message"]["Authorization"]);
-					}
-				});
-			}).catch((err) => {
-				show_notification("Error" + err);
-			});
+			this.postAnswer(data, answer_tag);
 		}
-
 	}
+
+	postAnswer(data, answer_tag){
+        fetch(`/api/v1/questions/${this.question_id}/answers/`, {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "Authorization": "Bearer " + read_cookie("token")
+            },
+            body: JSON.stringify(data)
+        }).then((res) => {
+            res.json().then((data) => {
+                if (res.status === 201) {
+                    self.insert_answer(data, this.answer_body);
+                    answer_tag.value = "";
+                    slide_notify("Your answer was successfully posted")
+                }
+                else if (res.status === 400) {
+                    // changeHtml(data["message"]["Authorization"], "login_err");
+                    popup("#login_err", data["message"]["Authorization"]);
+                    changeHtml(data["message"]["answer"], "answer_error");
+                } else if (res.status === 404) {
+                    changeHtml(data["message"]["question"], "login_err");
+                }
+                else if (res.status === 403) {
+                    popup("#login_err", data["message"]["Authorization"]);
+                }
+            });
+        }).catch((err) => {
+            show_notification("Error" + err);
+        });
+    }
 }
 
 class Answers extends Question {

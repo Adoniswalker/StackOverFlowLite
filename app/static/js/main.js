@@ -78,13 +78,11 @@ const logout_user = (event) => {
 	}).then((res) => {
 		res.json().then((data) => {
 			if (res.status === 200) {
-
 				//delete the token by setting past date
 				let now = new Date();
 				now.setMonth(now.getMonth() - 1);
 				let token = "token=" + read_cookie("token");
 				document.cookie = token + ";expires=" + now.toUTCString() + ";";
-
 				// delete user details from local storage
 				window.localStorage.removeItem("user");
 				//redirect user to homepage
@@ -93,8 +91,6 @@ const logout_user = (event) => {
 				window.localStorage.removeItem("user");
 				window.location.replace("/");
 				show_notification(data["message"]["Authorization"]);
-				// changeHtml(data["Error"], "wrong_error");
-				// changeHtml(data["message"]["email"], "login_mail_error");
 			}
 		});
 	})
