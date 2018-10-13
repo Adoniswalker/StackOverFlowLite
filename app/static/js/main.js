@@ -1,10 +1,13 @@
 // theDiv.appendChild(content);
-const trimfield = str => {
+
+let $ = require("jquery");
+
+export 	const trimfield = str => {
 	//Remove spaces from strings
 	return str.replace(/^\s+|\s+$/g, "");
 };
 
-const show_notification = (text, success) => {
+export const show_notification = (text, success) => {
 	if (success) {
 		$("#message").css("background-color", "green");
 	} else {
@@ -19,7 +22,7 @@ const show_notification = (text, success) => {
 	);
 };
 
-const read_cookie = name => {
+export const read_cookie = name => {
 	let nameEQ = name + "=";
 	let ca = document.cookie.split(";");
 	for (let i = 0; i < ca.length; i++) {
@@ -30,7 +33,7 @@ const read_cookie = name => {
 	return null;
 };
 
-const changeHtml = (text, parentId) => {
+export const changeHtml = (text, parentId) => {
 	let parentElem = document.getElementById(parentId);
 	if ((typeof text !== "undefined") && text) {
 		parentElem.innerText = text;
@@ -40,11 +43,11 @@ const changeHtml = (text, parentId) => {
 
 };
 
-const get_user = () => {
+export const get_user = () => {
 	return JSON.parse(localStorage.getItem("user"));
 };
 
-const is_user_logged_in = ()=> {
+export const is_user_logged_in = ()=> {
 	if (read_cookie("token")) {
 		return true;
 	} else {
@@ -65,7 +68,7 @@ const set_unset_user =()=> {
 	}
 };
 
-const logout_user = (event) => {
+export const logout_user = (event) => {
 	//used to logout user
 	// should be here to ensure user can logout anywhere
 	event.preventDefault();
@@ -98,7 +101,7 @@ const logout_user = (event) => {
 		});
 };
 
-const createCookie = (name, value, days) => {
+export const createCookie = (name, value, days) => {
 	let expires;
 	if (days) {
 		const date = new Date();
@@ -116,7 +119,7 @@ const createCookie = (name, value, days) => {
 set_unset_user();
 
 
-const popup = (parent, message) => {
+export const popup = (parent, message) => {
 	// It gives a small popup showing a message, parent is the tag to be displayed below
 	//and message is the message to be passes
 	if ((typeof message !== "undefined") && message) {
@@ -135,7 +138,7 @@ $(document).on("click", ".error-notification", function () {
 	});
 });
 
-const prettyDate = (time, now = new Date()) => {
+export const prettyDate = (time, now = new Date()) => {
 	let date = new Date(time || ""),
 		diff = ((new Date(now).getTime() - date.getTime()) / 1000),
 		day_diff = Math.floor(diff / 86400);
@@ -160,7 +163,7 @@ const prettyDate = (time, now = new Date()) => {
 };
 
 
-const slide_notify =  (message) => {
+export const slide_notify =  (message) => {
 	$(".custom-notification-content").html(message);
 	$(".custom-social-proof").stop().slideToggle("slow");
 	setTimeout(()=> {$(".custom-social-proof").stop().slideToggle("slow");}, 4000);
@@ -170,7 +173,7 @@ const slide_notify =  (message) => {
 };
 
 
-const Confirm = (title, msg, $true, $false, $callback, args) => { /*change*/
+export const Confirm = (title, msg, $true, $false, $callback, args) => { /*change*/
 	let $content =  `
     <div class='dialog-ovelay'>
         <div class='dialog'>

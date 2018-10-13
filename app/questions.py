@@ -258,5 +258,5 @@ class UserQuestions(Resource):
             user_id = int(user_id)
         except ValueError as e:
             return {"message": {"Authorization": user_id}}, 403
-        return quest.get_user_question(user_id), 200
+        return quest.get_user_question(user_id)
 

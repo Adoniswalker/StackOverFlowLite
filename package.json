@@ -1,25 +1,34 @@
 {
-  "name": "stackoverflowlite",
+  "name": "StackOverFlowLite",
   "version": "1.0.0",
-  "description": "site to answer questions",
-  "main": "index.js",
+  "description": "StackOverflow-lite is a platform where people can ask questions and provide answers",
+  "private": true,
   "directories": {
     "test": "tests"
   },
-  "dependencies": {
-    "eslint": "^5.6.1"
-  },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --config webpack/webpack.config.js"
   },
   "repository": {
     "type": "git",
-    "url": "./node_modules/.bin/eslint --init"
+    "url": "git+https://github.com/Adoniswalker/StackOverFlowLite.git"
   },
-  "keywords": [
-    "questions"
-  ],
-  "author": "Denis ngeno",
-  "license": "UNLICENSED"
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Adoniswalker/StackOverFlowLite/issues"
+  },
+  "homepage": "https://github.com/Adoniswalker/StackOverFlowLite#readme",
+  "devDependencies": {
+    "jasmine": "^3.2.0",
+    "sinon": "^6.3.5",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
+  },
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "mustache": "^3.0.0"
+  }
 }

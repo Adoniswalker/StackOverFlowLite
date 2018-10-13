@@ -1,3 +1,4 @@
+import { changeHtml, createCookie } from './main'
 let signup_form = document.getElementById("signup");
 
 if (signup_form) {

@@ -1,4 +1,7 @@
 //This file will be used to manipulate questions
+import Mustache from 'mustache';
+import { get_user, show_notification, trimfield, read_cookie, changeHtml, is_user_logged_in,
+	slide_notify, popup, prettyDate} from './main';
 "use strict"; //enable strict mode for debugging
 
 
@@ -110,8 +113,11 @@ class Questions {
 const questions_object = new Questions();
 document.addEventListener("DOMContentLoaded", () => {
 	questions_object.get_all_questions();
+	document.getElementById("question_form").addEventListener("submit",
+	() => {
+	    questions_object.addQuestion()
+	}, false);
+
 }, true);
 
-const addQuestion = () => {
-	questions_object.addQuestion();
-};
+

@@ -1,3 +1,5 @@
+import Mustache from 'mustache'
+import {show_notification,read_cookie,get_user, is_user_logged_in, prettyDate} from './main'
 const get_all_user_questions = ()=> {
 	fetch("/api/v1/questions/user/", {
 		method: "GET",

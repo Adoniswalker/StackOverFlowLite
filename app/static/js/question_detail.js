@@ -1,7 +1,8 @@
 //This file will be used to manipulate questions
 "use strict"; //enable strict mode for debugging
-
-
+import Mustache from 'mustache';
+import { show_notification, prettyDate,read_cookie,get_user, slide_notify,popup,trimfield,changeHtml,
+	Confirm} from './main';
 class Question {
 	constructor() {
 		this.question_body = document.getElementById("question");
@@ -348,8 +349,10 @@ class Answers extends Question {
 const answer_obj = new Answers();
 document.addEventListener("DOMContentLoaded", function () {
 	answer_obj.get_question_detail();
-}, true);
 
-const  addAnswer = () => {
-	answer_obj.addAnswer();
-};
+	document.getElementById("answer_form").addEventListener("submit", ()=>{
+	    answer_obj.addAnswer()
+    },true);
+
+
+}, true);

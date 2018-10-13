@@ -60,7 +60,7 @@
             </div>
             {% endraw %}
         </template>
-        <form class="form" onsubmit="event.preventDefault(); return addAnswer()" name="post_answer">
+        <form class="form" onsubmit="event.preventDefault();" id ="answer_form" name="post_answer">
             <label for="answer_area">Post an answer</label>
             <textarea id="answer_area" name="answer"></textarea>
             <span id="answer_error" class="alert-danger"></span>
@@ -68,9 +68,8 @@
             <span id="login_err" class="alert-danger"></span>
         </form>
     </div>
-
 {% endblock %}
 {% block js %}
-    <script src="../static/js/question_detail.js"></script>
+    <script src="../static/js/dist/questions_detail.bundle.js"></script>
 
 {% endblock %}
