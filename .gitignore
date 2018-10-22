@@ -8,4 +8,11 @@ os
 bin/
 lib64
 pyvenv.cfg
-env/
+venv/
+.DS_Store
+app/.DS_Store
+app/static/.DS_Store
+app/static/images/.DS_Store
+app/static/images/icons/.DS_Store
+node_modules
+dist/
