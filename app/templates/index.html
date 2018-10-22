@@ -21,6 +21,7 @@ You can edit or delete' >{{ delete_span }}</span>
         </template>
         <div class="post_question">
             <h2>Post a question</h2>
+            <input type="button" value="login to post">
             <form method="POST" class="form" id="question_form" onsubmit="event.preventDefault();return addQuestion()"
                   name="post_question">
                     <label for="subject">Subject</label>

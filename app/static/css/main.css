@@ -1,4 +1,4 @@
-/*changing the defaults*/
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600"); /*changing the defaults*/
 * {
     margin: 0;
     border: 0;
@@ -122,7 +122,7 @@ input {
 }
 
 input[type=text]:focus {
-    /*border: 3px solid lightskyblue;*/
+    border: 3px solid lightskyblue;
 }
 
 .form_div {
@@ -314,7 +314,7 @@ span.delete {
         width: 70%;
     }
 }
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600");
+
 .custom-social-proof {
     display: none;
   position: fixed;
