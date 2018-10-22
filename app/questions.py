@@ -2,7 +2,7 @@ from flask_restful import reqparse, Resource
 
 from app.db import DatabaseConfig
 from app.auth import Authentication
-from app.models import Question
+from app.question_model import Question
 
 db = DatabaseConfig()
 auth = Authentication()
@@ -259,4 +259,3 @@ class UserQuestions(Resource):
         except ValueError as e:
             return {"message": {"Authorization": user_id}}, 403
         return quest.get_user_question(user_id)
-

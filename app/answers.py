@@ -3,7 +3,7 @@ from flask_restful import Resource, reqparse
 
 from app.db import DatabaseConfig
 from app.auth import Authentication
-from app.models import Answer
+from app.answer_model import Answer
 
 answer = Answer()
 auth = Authentication()
