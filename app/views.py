@@ -18,7 +18,7 @@ db_obj = DatabaseConfig()
 user = Users()
 auth = Authentication()
 app.config['SWAGGER'] = {
-    'title': 'Stackoverflow-lite RESTful documentation',
+    'title': 'StackOverFlow-lite Restful documentation',
     'uiversion': 2
 }
 

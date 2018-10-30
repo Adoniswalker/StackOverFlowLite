@@ -66,7 +66,7 @@
     margin: 85px 30px;
 }
 #question_form{
-    display: none;
+    /*display: none;*/
 
 }
 .question_item h4{

@@ -61,7 +61,9 @@ const set_unset_user =()=> {
 		$("#logout_link").show().click(logout_user);
 		$("#signup_link").hide();
 		$("#login_link").hide();
+		$("#profile_link").show();
 	} else {
+		$("#profile_link").show();
 		$("#logout_link").hide();
 		$("#signup_link").show();
 		$("#login_link").show();
@@ -128,7 +130,7 @@ export const popup = (parent, message) => {
 			.html("<h2>" + message + "</h2>(click on this box to close)")
 			.css("left", $(parent).position().left);
 		$(parent).after($err);
-		$err.fadeIn("fast");
+		$err.fadeIn("fast").fadeOut(3000);
 	}
 };
 
