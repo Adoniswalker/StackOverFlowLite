@@ -33,7 +33,7 @@ pylint==1.6.4
 pytest==3.0.7
 pytest-cov==2.5.1
 pytz==2018.5
-PyYAML==3.13
+PyYAML==5.4
 requests==2.19.1
 six==1.11.0
 testing.common.database==2.0.3
