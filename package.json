@@ -25,7 +25,7 @@
     "jasmine": "^3.2.0",
     "sinon": "^6.3.5",
     "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "jquery": "^3.3.1",
